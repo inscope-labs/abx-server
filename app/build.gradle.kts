@@ -23,7 +23,7 @@ android {
       if (keystoreFile != null && keystoreFile.exists()) {
         storeFile = keystoreFile
         storePassword = System.getenv("STORE_PASSWORD") ?: ""
-        keyAlias = "hc-upload"
+        keyAlias = "upload"
         keyPassword = System.getenv("KEY_PASSWORD") ?: ""
       } else {
         val debugKeystore = signingConfigs.getByName("debug")
