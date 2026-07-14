@@ -1,6 +1,7 @@
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.secrets)
+  alias(libs.plugins.google.services)
 }
 
 secrets {
