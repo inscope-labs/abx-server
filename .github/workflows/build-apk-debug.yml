@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   debug-build:
@@ -29,7 +29,11 @@ jobs:
 
       - name: Build debug APK
         shell: bash
-        run: gradle --no-daemon --stacktrace :app:assembleDebug
+        run: |
+          mkdir -p build-logs/debug
+          LOGFILE="build-logs/debug/debug-$(date -u +%Y-%m-%dT%H-%M-%SZ)-run${{ github.run_id }}.log"
+          echo "LOGFILE=$LOGFILE" >> "$GITHUB_ENV"
+          gradle --no-daemon --stacktrace :app:assembleDebug 2>&1 | tee "$LOGFILE"
 
       - name: Verify APK exists
         shell: bash
@@ -41,6 +45,15 @@ jobs:
           fi
           echo "Debug APK built: $APK ($(stat -c%s "$APK") bytes)"
 
+      - name: Summarize warnings and errors
+        shell: bash
+        run: |
+          {
+            echo ""
+            echo "===== WARNING/ERROR SUMMARY ====="
+            grep -iE "warning:|error:|failed|exception" "$LOGFILE" || echo "None found."
+          } >> "$LOGFILE"
+
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
@@ -48,3 +61,12 @@ jobs:
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 14
+
+      - name: Commit build log
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "$LOGFILE"
+          git commit -m "ci: add debug build log ($LOGFILE)" || echo "Nothing to commit"
+          git push
