@@ -2,6 +2,7 @@ plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.secrets)
   alias(libs.plugins.google.services)
+  alias(libs.plugins.kotlin.compose)
 }
 
 secrets {
@@ -11,6 +12,10 @@ secrets {
 android {
   namespace = "com.inscopelabs.abx.server"
   compileSdk = 36
+
+  buildFeatures {
+    compose = true
+  }
 
   defaultConfig {
     applicationId = "com.inscopelabs.abx.server"
@@ -63,4 +68,5 @@ android {
 dependencies {
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.appcompat)
+  compileOnly("androidx.compose.runtime:runtime:1.7.0")
 }
