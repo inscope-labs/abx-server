@@ -22,7 +22,7 @@ android {
     applicationId = "com.inscopelabs.abx.server"
     minSdk = 24
     targetSdk = 36
-    versionCode = 1
+    versionCode = 2
     versionName = "1.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -67,6 +67,7 @@ android {
 }
 
 dependencies {
+  implementation(project(":core:keystore"))
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.appcompat)
   compileOnly("androidx.compose.runtime:runtime:1.7.0")
