@@ -1,5 +1,10 @@
 plugins {
   alias(libs.plugins.android.application)
+  alias(libs.plugins.secrets)
+}
+
+secrets {
+  defaultPropertiesFileName = "app/local.defaults.properties"
 }
 
 android {
