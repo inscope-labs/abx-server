@@ -2,6 +2,7 @@ package com.inscopelabs.abx.server
 
 import android.app.Application
 import com.inscopelabs.abx.server.core.keystore.KeyStoreManager
+import com.inscopelabs.abx.server.core.audit.AuditLog
 import com.inscopelabs.abx.server.boot.BootGuard
 
 class HelloApplication : Application() {
@@ -15,6 +16,10 @@ class HelloApplication : Application() {
             val km = KeyStoreManager(this)
             keyStoreManager = km
             BootGuard.stageSuccess("KeyStoreManager")
+
+            BootGuard.stageStart("AuditLog")
+            AuditLog.initialize(this, km)
+            BootGuard.stageSuccess("AuditLog")
         } catch (t: Throwable) {
             BootGuard.recordFailure(this, "Application.onCreate", t)
         }
