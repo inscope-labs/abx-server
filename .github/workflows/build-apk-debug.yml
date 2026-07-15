@@ -10,7 +10,7 @@ jobs:
   debug-build:
     name: Build Debug APK
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: Checkout Code
@@ -27,13 +27,69 @@ jobs:
         with:
           gradle-version: "9.6.1"
 
+      - name: Initialize build log & display build info
+        shell: bash
+        run: |
+          mkdir -p build-logs/debug diagnostics/manifest diagnostics/apk diagnostics/reports
+          LOGFILE="build-logs/debug/debug-$(date -u +%Y-%m-%dT%H-%M-%SZ)-run${{ github.run_id }}.log"
+          echo "LOGFILE=$LOGFILE" >> "$GITHUB_ENV"
+          VERSION_CODE=$(grep -m1 'versionCode' app/build.gradle.kts | grep -oE '[0-9]+')
+          VERSION_NAME=$(grep -m1 'versionName' app/build.gradle.kts | grep -oE '"[^"]+"' | tr -d '"')
+          {
+            echo "===== BUILD INFO ====="
+            echo "Run ID:       ${{ github.run_id }}"
+            echo "Commit SHA:   ${{ github.sha }}"
+            echo "Ref:          ${{ github.ref }}"
+            echo "Triggered by: ${{ github.actor }}"
+            echo "Timestamp:    $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo "versionCode:  $VERSION_CODE"
+            echo "versionName:  $VERSION_NAME"
+            echo "======================="
+            echo ""
+          } | tee "$LOGFILE"
+
+      - name: Android Lint
+        continue-on-error: true
+        shell: bash
+        run: |
+          gradle --no-daemon :app:lintDebug --stacktrace --warning-mode all 2>&1 | tee diagnostics/reports/lint.log
+
+      - name: ktlint
+        continue-on-error: true
+        shell: bash
+        run: |
+          if find . -name "*.gradle*" | xargs grep -q ktlint; then
+            gradle --no-daemon ktlintCheck --stacktrace 2>&1 | tee diagnostics/reports/ktlint.log || true
+          else
+            echo "ktlint not configured" | tee diagnostics/reports/ktlint.log
+          fi
+
+      - name: detekt
+        continue-on-error: true
+        shell: bash
+        run: |
+          if find . -name "*.gradle*" | xargs grep -q detekt; then
+            gradle --no-daemon detekt --stacktrace 2>&1 | tee diagnostics/reports/detekt.log || true
+          else
+            echo "detekt not configured" | tee diagnostics/reports/detekt.log
+          fi
+
+      - name: Unit Tests
+        continue-on-error: true
+        shell: bash
+        run: |
+          gradle --no-daemon :app:testDebugUnitTest --stacktrace --warning-mode all 2>&1 | tee diagnostics/reports/unit-tests.log
+
+      - name: Generate Dependency Report
+        continue-on-error: true
+        shell: bash
+        run: |
+          gradle --no-daemon :app:dependencies --configuration debugRuntimeClasspath > diagnostics/dependencies.txt
+
       - name: Build debug APK
         shell: bash
         run: |
-          mkdir -p build-logs/debug
-          LOGFILE="build-logs/debug/debug-$(date -u +%Y-%m-%dT%H-%M-%SZ)-run${{ github.run_id }}.log"
-          echo "LOGFILE=$LOGFILE" >> "$GITHUB_ENV"
-          gradle --no-daemon --stacktrace :app:assembleDebug 2>&1 | tee "$LOGFILE"
+          gradle --no-daemon --stacktrace :app:assembleDebug 2>&1 | tee -a "$LOGFILE"
 
       - name: Verify APK exists
         shell: bash
@@ -44,6 +100,18 @@ jobs:
             exit 1
           fi
           echo "Debug APK built: $APK ($(stat -c%s "$APK") bytes)"
+
+      - name: Collect Manifest Diagnostics
+        continue-on-error: true
+        shell: bash
+        run: |
+          find app/build -path "*merged_manifests*" -type f -exec cp {} diagnostics/manifest/ \;
+
+      - name: Inspect APK Contents
+        continue-on-error: true
+        shell: bash
+        run: |
+          unzip -l app/build/outputs/apk/debug/app-debug.apk > diagnostics/apk/apk-contents.txt
 
       - name: Summarize warnings and errors
         shell: bash
@@ -60,6 +128,15 @@ jobs:
           name: abx-server-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload Diagnostics Bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: abx-server-debug-diagnostics
+          path: |
+            diagnostics/
           retention-days: 14
 
       - name: Commit build log
