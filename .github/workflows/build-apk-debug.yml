@@ -49,36 +49,86 @@ jobs:
           } | tee "$LOGFILE"
 
       - name: Android Lint
+        id: lint
         continue-on-error: true
         shell: bash
         run: |
+          set +e
           gradle --no-daemon :app:lintDebug --stacktrace --warning-mode all 2>&1 | tee diagnostics/reports/lint.log
+          EXIT_CODE=${PIPESTATUS[0]}
+          set -e
+          if [ "$EXIT_CODE" -eq 0 ]; then
+            echo "✅ **Android Lint**: passed" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "❌ **Android Lint**: FAILED (exit $EXIT_CODE) — see diagnostics/reports/lint.log in the abx-server-debug-diagnostics artifact" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            tail -n 40 diagnostics/reports/lint.log >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: ktlint
+        id: ktlint
         continue-on-error: true
         shell: bash
         run: |
           if find . -name "*.gradle*" | xargs grep -q ktlint; then
-            gradle --no-daemon ktlintCheck --stacktrace 2>&1 | tee diagnostics/reports/ktlint.log || true
+            set +e
+            gradle --no-daemon ktlintCheck --stacktrace 2>&1 | tee diagnostics/reports/ktlint.log
+            EXIT_CODE=${PIPESTATUS[0]}
+            set -e
+            if [ "$EXIT_CODE" -eq 0 ]; then
+              echo "✅ **ktlint**: passed" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "❌ **ktlint**: FAILED (exit $EXIT_CODE) — see diagnostics/reports/ktlint.log in the abx-server-debug-diagnostics artifact" >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+              tail -n 40 diagnostics/reports/ktlint.log >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+            fi
           else
             echo "ktlint not configured" | tee diagnostics/reports/ktlint.log
+            echo "⚪ **ktlint**: not configured" >> "$GITHUB_STEP_SUMMARY"
           fi
 
       - name: detekt
+        id: detekt
         continue-on-error: true
         shell: bash
         run: |
           if find . -name "*.gradle*" | xargs grep -q detekt; then
-            gradle --no-daemon detekt --stacktrace 2>&1 | tee diagnostics/reports/detekt.log || true
+            set +e
+            gradle --no-daemon detekt --stacktrace 2>&1 | tee diagnostics/reports/detekt.log
+            EXIT_CODE=${PIPESTATUS[0]}
+            set -e
+            if [ "$EXIT_CODE" -eq 0 ]; then
+              echo "✅ **detekt**: passed" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "❌ **detekt**: FAILED (exit $EXIT_CODE) — see diagnostics/reports/detekt.log in the abx-server-debug-diagnostics artifact" >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+              tail -n 40 diagnostics/reports/detekt.log >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+            fi
           else
             echo "detekt not configured" | tee diagnostics/reports/detekt.log
+            echo "⚪ **detekt**: not configured" >> "$GITHUB_STEP_SUMMARY"
           fi
 
       - name: Unit Tests
+        id: unit-tests
         continue-on-error: true
         shell: bash
         run: |
+          set +e
           gradle --no-daemon :app:testDebugUnitTest --stacktrace --warning-mode all 2>&1 | tee diagnostics/reports/unit-tests.log
+          EXIT_CODE=${PIPESTATUS[0]}
+          set -e
+          if [ "$EXIT_CODE" -eq 0 ]; then
+            echo "✅ **Unit Tests**: passed" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "❌ **Unit Tests**: FAILED (exit $EXIT_CODE) — see diagnostics/reports/unit-tests.log in the abx-server-debug-diagnostics artifact" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            tail -n 40 diagnostics/reports/unit-tests.log >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Generate Dependency Report
         continue-on-error: true
@@ -121,6 +171,17 @@ jobs:
             echo "===== WARNING/ERROR SUMMARY ====="
             grep -iE "warning:|error:|failed|exception" "$LOGFILE" || echo "None found."
           } >> "$LOGFILE"
+
+      - name: Write build summary
+        shell: bash
+        run: |
+          {
+            echo "## Build Info"
+            echo "- versionCode: $(grep -m1 'versionCode' app/build.gradle.kts | grep -oE '[0-9]+')"
+            echo "- versionName: $(grep -m1 'versionName' app/build.gradle.kts | grep -oE '\"[^\"]+\"' | tr -d '\"')"
+            echo "- Commit: ${{ github.sha }}"
+            echo "- Run: ${{ github.run_id }}"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
