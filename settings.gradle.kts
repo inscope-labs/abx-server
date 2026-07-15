@@ -27,3 +27,5 @@ rootProject.name = "ABX Server"
 include(":app")
 include(":core:keystore")
 include(":core:audit")
+include(":core:session")
+include(":core:tunnel")
