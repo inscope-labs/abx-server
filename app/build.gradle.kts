@@ -68,6 +68,7 @@ android {
 
 dependencies {
   implementation(project(":core:keystore"))
+  implementation(project(":core:audit"))
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.appcompat)
   compileOnly("androidx.compose.runtime:runtime:1.7.0")
