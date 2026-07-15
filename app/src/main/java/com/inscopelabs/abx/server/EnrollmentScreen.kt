@@ -57,99 +57,8 @@ import com.inscopelabs.abx.server.core.mcp.McpExecutor
 import com.inscopelabs.abx.server.core.mcp.FileSystemReaderImpl
 import com.inscopelabs.abx.server.core.policy.PolicyEngineImpl
 import com.inscopelabs.abx.server.core.policy.Capability
-
-// Self-contained custom private MockR string resource mock system and helper extension functions
-private object MockR {
-    enum class string(val value: String) {
-        app_name("ABX"),
-        title_enrollment("ABC Server Enrollment"),
-        section_device_identity("Device Identity"),
-        section_verification("Verification"),
-        section_security_status("Security Status"),
-        section_enclave_actions("Hardware-Backed Actions"),
-        label_fingerprint_title("Device Fingerprint (SHA-256)"),
-        btn_copy_fingerprint("Copy fingerprint"),
-        btn_view_full("View Full Fingerprint"),
-        btn_hide_full("Hide Full Fingerprint"),
-        msg_fingerprint_copied("Fingerprint copied to clipboard"),
-        label_scan_to_enroll("Scan to Enroll Device"),
-        desc_verification_instruction("Present this QR code to the gateway or server to enroll this secure device."),
-        label_hardware_enclave("Hardware Enclave Status"),
-        label_provider_backend("Provider Backend"),
-        label_key_isolation("Key Material Isolation"),
-        label_hardware_backed("Hardware Backed (TEE)"),
-        label_strongbox_support("StrongBox Support"),
-        val_android_keystore("Android KeyStore (Hardware Secured)"),
-        val_jvm_sandbox("JVM Sandbox (Test Environment)"),
-        val_key_isolation_text("NON-EXPORTABLE (Private key locked in HSM)"),
-        val_hardware_backed_yes("YES (Cryptographic actions restricted to chip)"),
-        val_hardware_backed_no("NO (TEE fallback unavailable)"),
-        val_strongbox_yes("YES (Discrete Hardware Security Module)"),
-        btn_rotate_key("Rotate Secure Keypair"),
-        btn_clear_credentials("Clear Credentials & Deconstruct Identity"),
-        msg_keys_cleared("Secure keys successfully cleared and deconstructed."),
-        msg_rotated_success("New EC-256 device credential keypair rotated successfully."),
-        msg_secure_active("Secure keypair active."),
-        msg_init_failed("Credential initialization failed: %1\$s"),
-        btn_about_info("About & Privacy Policy"),
-        dialog_about_title("About ABC Server"),
-        dialog_about_version("Version 7.0"),
-        dialog_about_spec("Architecture: Specification v3.0"),
-        dialog_about_support("Support Email: afterdawn.service@gmail.com"),
-        dialog_about_privacy_title("Privacy Policy"),
-        dialog_about_privacy_text("ABC Server operates offline and locally on your device. It does NOT collect, harvest, or transmit any user-identifiable information, usage statistics, or location data. All generated cryptographic keys are isolated and secured inside the device's Hardware Security Module (HSM) / Secure Enclave and cannot be exported or accessed by external applications."),
-        dialog_about_terms_title("Terms of Service"),
-        dialog_about_terms_text("This utility is provided \"as is\" to facilitate secure, hardware-attested authentication. You are responsible for ensuring your physical device security."),
-        btn_close("Close"),
-        error_state_title("Secure Identity Initialization Failed"),
-        error_state_desc("The application was unable to establish a secure, hardware-backed identity key pair. This might occur if hardware cryptography is restricted or the secure enclave is temporarily locked."),
-        btn_retry_initialization("Retry Initialization"),
-        tab_connect("Connect"),
-        tab_access("Access"),
-        tab_activity("Activity"),
-        tab_remove("Remove"),
-        btn_start_session("Start Session"),
-        btn_stop_session("Stop Session"),
-        ttl_display("Time Remaining: %1\$d seconds"),
-        ttl_inactive("Session Inactive"),
-        policy_summary_title("Allowed Actions & Folders"),
-        policy_summary_desc("When a session is active, your authorized AI assistant is granted scoped permissions:"),
-        policy_summary_details("✓ Read Files\n✓ Write & Save Files\n\nAuthorized Directories:\n• Downloads (/storage/emulated/0/Download)\n• Documents (/storage/emulated/0/Documents)"),
-        policy_inactive_desc("No active session. Your assistant has zero access to any files on this device."),
-        advanced_toggle("Advanced Technical Details"),
-        audit_title("Security Activity Logs"),
-        audit_subtitle("Chronological ledger of security policy validations and unauthorized block events."),
-        audit_empty("No security block events or rejections recorded yet."),
-        audit_integrity_valid("Log Chain Integrity: SECURE (Hardware Key Attested)"),
-        audit_integrity_invalid("Log Chain Integrity: CORRUPTED / TAMPERED"),
-        uninstall_instructions_title("Uninstalling ABC Server"),
-        uninstall_instructions_desc("To fully and permanently remove all data from ABC Server, simply uninstall the application.\n\nUnder Android's File-Based Encryption (FBE) model, all isolated credentials, in-memory states, sandbox files, and log databases are completely and irrecoverably purged from hardware memory upon uninstallation."),
-        clear_explanation("You can also manually wipe the security key pair immediately using the button below. This instantly invalidates any currently issued capability tokens and prevents any future authorization checks."),
-        btn_clear_data("Deconstruct Secure Identity Now"),
-        mock_pairing_button("Simulate Gateway Enrollment"),
-        mock_pairing_title("Mock Gateway Enrollment"),
-        mock_pairing_prompt("Enter gateway pairing token or click Enroll:"),
-        dialog_enroll_success("Device enrolled and paired successfully!")
-    }
-}
-
-private fun Context.getString(resId: MockR.string): String {
-    return resId.value
-}
-
-private fun Context.getString(resId: MockR.string, vararg formatArgs: Any?): String {
-    return String.format(resId.value, *formatArgs)
-}
-
-@Composable
-private fun stringResource(resId: MockR.string): String {
-    return resId.value
-}
-
-@Composable
-private fun stringResource(resId: MockR.string, vararg formatArgs: Any?): String {
-    return String.format(resId.value, *formatArgs)
-}
+import androidx.compose.ui.res.stringResource
+import com.inscopelabs.abx.server.BuildConfig
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -246,16 +155,16 @@ fun EnrollmentScreen(
             }
 
             enrollStatusMessage = if (forceRegenerate) {
-                context.getString(MockR.string.msg_rotated_success)
+                context.getString(R.string.msg_rotated_success)
             } else {
-                context.getString(MockR.string.msg_secure_active)
+                context.getString(R.string.msg_secure_active)
             }
         } catch (e: Exception) {
             keyPair = null
             fingerprint = ""
             formattedFingerprint = ""
             qrBitmap = null
-            enrollStatusMessage = context.getString(MockR.string.msg_init_failed, e.message ?: "Unknown Error")
+            enrollStatusMessage = context.getString(R.string.msg_init_failed, e.message ?: "Unknown Error")
         }
     }
 
@@ -270,9 +179,9 @@ fun EnrollmentScreen(
             isHardwareBacked = false
             isStrongBoxBacked = false
             gatewayPairedStatus = "Not paired with any gateway"
-            enrollStatusMessage = context.getString(MockR.string.msg_keys_cleared)
+            enrollStatusMessage = context.getString(R.string.msg_keys_cleared)
             coroutineScope.launch {
-                snackbarHostState.showSnackbar(context.getString(MockR.string.msg_keys_cleared))
+                snackbarHostState.showSnackbar(context.getString(R.string.msg_keys_cleared))
             }
         } catch (e: Exception) {
             coroutineScope.launch {
@@ -316,7 +225,7 @@ fun EnrollmentScreen(
                             modifier = Modifier.padding(end = 8.dp)
                         )
                         Text(
-                            text = stringResource(MockR.string.app_name),
+                            text = stringResource(R.string.app_name),
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -331,7 +240,7 @@ fun EnrollmentScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Info,
-                            contentDescription = stringResource(MockR.string.btn_about_info)
+                            contentDescription = stringResource(R.string.btn_about_info)
                         )
                     }
                 },
@@ -352,28 +261,28 @@ fun EnrollmentScreen(
                             selected = selectedTab == 0,
                             onClick = { selectedTab = 0 },
                             icon = { Icon(Icons.Default.QrCodeScanner, contentDescription = null) },
-                            label = { Text(stringResource(MockR.string.tab_connect)) },
+                            label = { Text(stringResource(R.string.tab_connect)) },
                             modifier = Modifier.testTag("nav_tab_connect")
                         )
                         NavigationBarItem(
                             selected = selectedTab == 1,
                             onClick = { selectedTab = 1 },
                             icon = { Icon(Icons.Default.VpnKey, contentDescription = null) },
-                            label = { Text(stringResource(MockR.string.tab_access)) },
+                            label = { Text(stringResource(R.string.tab_access)) },
                             modifier = Modifier.testTag("nav_tab_access")
                         )
                         NavigationBarItem(
                             selected = selectedTab == 2,
                             onClick = { selectedTab = 2 },
                             icon = { Icon(Icons.Default.History, contentDescription = null) },
-                            label = { Text(stringResource(MockR.string.tab_activity)) },
+                            label = { Text(stringResource(R.string.tab_activity)) },
                             modifier = Modifier.testTag("nav_tab_activity")
                         )
                         NavigationBarItem(
                             selected = selectedTab == 3,
                             onClick = { selectedTab = 3 },
                             icon = { Icon(Icons.Default.Delete, contentDescription = null) },
-                            label = { Text(stringResource(MockR.string.tab_remove)) },
+                            label = { Text(stringResource(R.string.tab_remove)) },
                             modifier = Modifier.testTag("nav_tab_remove")
                         )
                     }
@@ -405,32 +314,32 @@ fun EnrollmentScreen(
                         NavigationRailItem(
                             selected = selectedTab == 0,
                             onClick = { selectedTab = 0 },
-                            icon = { Icon(Icons.Default.QrCodeScanner, contentDescription = stringResource(MockR.string.tab_connect)) },
-                            label = { Text(stringResource(MockR.string.tab_connect)) },
+                            icon = { Icon(Icons.Default.QrCodeScanner, contentDescription = stringResource(R.string.tab_connect)) },
+                            label = { Text(stringResource(R.string.tab_connect)) },
                             modifier = Modifier.testTag("nav_tab_connect_rail")
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         NavigationRailItem(
                             selected = selectedTab == 1,
                             onClick = { selectedTab = 1 },
-                            icon = { Icon(Icons.Default.VpnKey, contentDescription = stringResource(MockR.string.tab_access)) },
-                            label = { Text(stringResource(MockR.string.tab_access)) },
+                            icon = { Icon(Icons.Default.VpnKey, contentDescription = stringResource(R.string.tab_access)) },
+                            label = { Text(stringResource(R.string.tab_access)) },
                             modifier = Modifier.testTag("nav_tab_access_rail")
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         NavigationRailItem(
                             selected = selectedTab == 2,
                             onClick = { selectedTab = 2 },
-                            icon = { Icon(Icons.Default.History, contentDescription = stringResource(MockR.string.tab_activity)) },
-                            label = { Text(stringResource(MockR.string.tab_activity)) },
+                            icon = { Icon(Icons.Default.History, contentDescription = stringResource(R.string.tab_activity)) },
+                            label = { Text(stringResource(R.string.tab_activity)) },
                             modifier = Modifier.testTag("nav_tab_activity_rail")
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         NavigationRailItem(
                             selected = selectedTab == 3,
                             onClick = { selectedTab = 3 },
-                            icon = { Icon(Icons.Default.Delete, contentDescription = stringResource(MockR.string.tab_remove)) },
-                            label = { Text(stringResource(MockR.string.tab_remove)) },
+                            icon = { Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.tab_remove)) },
+                            label = { Text(stringResource(R.string.tab_remove)) },
                             modifier = Modifier.testTag("nav_tab_remove_rail")
                         )
                     }
@@ -535,7 +444,7 @@ fun EnrollmentScreen(
             },
             title = {
                 Text(
-                    text = stringResource(MockR.string.dialog_about_title),
+                    text = stringResource(R.string.dialog_about_title),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -551,19 +460,19 @@ fun EnrollmentScreen(
                 ) {
                     Column {
                         Text(
-                            text = stringResource(MockR.string.dialog_about_version),
+                            text = "Version ${BuildConfig.VERSION_NAME}",
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = stringResource(MockR.string.dialog_about_spec),
+                            text = stringResource(R.string.dialog_about_spec),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
-                            text = stringResource(MockR.string.dialog_about_support),
+                            text = stringResource(R.string.dialog_about_support),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -573,13 +482,13 @@ fun EnrollmentScreen(
 
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text(
-                            text = stringResource(MockR.string.dialog_about_privacy_title),
+                            text = stringResource(R.string.dialog_about_privacy_title),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary
                         )
                         Text(
-                            text = stringResource(MockR.string.dialog_about_privacy_text),
+                            text = stringResource(R.string.dialog_about_privacy_text),
                             style = MaterialTheme.typography.bodyMedium,
                             lineHeight = 20.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -590,13 +499,13 @@ fun EnrollmentScreen(
 
                     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text(
-                            text = stringResource(MockR.string.dialog_about_terms_title),
+                            text = stringResource(R.string.dialog_about_terms_title),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary
                         )
                         Text(
-                            text = stringResource(MockR.string.dialog_about_terms_text),
+                            text = stringResource(R.string.dialog_about_terms_text),
                             style = MaterialTheme.typography.bodyMedium,
                             lineHeight = 20.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -610,7 +519,7 @@ fun EnrollmentScreen(
                     modifier = Modifier.heightIn(min = 48.dp)
                 ) {
                     Text(
-                        text = stringResource(MockR.string.btn_close),
+                        text = stringResource(R.string.btn_close),
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -624,7 +533,7 @@ fun EnrollmentScreen(
             onDismissRequest = { showPairingDialog = false },
             title = {
                 Text(
-                    text = stringResource(MockR.string.mock_pairing_title),
+                    text = stringResource(R.string.mock_pairing_title),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
@@ -632,7 +541,7 @@ fun EnrollmentScreen(
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Text(
-                        text = stringResource(MockR.string.mock_pairing_prompt),
+                        text = stringResource(R.string.mock_pairing_prompt),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -657,7 +566,7 @@ fun EnrollmentScreen(
                         }
                         showPairingDialog = false
                         coroutineScope.launch {
-                            snackbarHostState.showSnackbar(context.getString(MockR.string.dialog_enroll_success))
+                            snackbarHostState.showSnackbar(context.getString(R.string.dialog_enroll_success))
                         }
                     },
                     modifier = Modifier
@@ -804,13 +713,13 @@ fun ConnectScreenContent(
                         modifier = Modifier.size(64.dp)
                     )
                     Text(
-                        text = stringResource(MockR.string.error_state_title),
+                        text = stringResource(R.string.error_state_title),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
                     )
                     Text(
-                        text = stringResource(MockR.string.error_state_desc),
+                        text = stringResource(R.string.error_state_desc),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
@@ -825,7 +734,7 @@ fun ConnectScreenContent(
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Text(
-                            text = stringResource(MockR.string.btn_retry_initialization),
+                            text = stringResource(R.string.btn_retry_initialization),
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -856,7 +765,7 @@ fun ConnectScreenContent(
                             modifier = Modifier.size(24.dp)
                         )
                         Text(
-                            text = stringResource(MockR.string.section_device_identity),
+                            text = stringResource(R.string.section_device_identity),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )
@@ -865,7 +774,7 @@ fun ConnectScreenContent(
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
 
                     Text(
-                        text = stringResource(MockR.string.label_fingerprint_title),
+                        text = stringResource(R.string.label_fingerprint_title),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontWeight = FontWeight.SemiBold
@@ -898,7 +807,7 @@ fun ConnectScreenContent(
                                     val clip = ClipData.newPlainText("ABX Public Key Fingerprint", fingerprint)
                                     clipboard.setPrimaryClip(clip)
                                     coroutineScope.launch {
-                                        snackbarHostState.showSnackbar(context.getString(MockR.string.msg_fingerprint_copied))
+                                        snackbarHostState.showSnackbar(context.getString(R.string.msg_fingerprint_copied))
                                     }
                                 }
                             },
@@ -909,7 +818,7 @@ fun ConnectScreenContent(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.ContentCopy,
-                                contentDescription = stringResource(MockR.string.btn_copy_fingerprint),
+                                contentDescription = stringResource(R.string.btn_copy_fingerprint),
                                 modifier = Modifier.size(22.dp)
                             )
                         }
@@ -928,7 +837,7 @@ fun ConnectScreenContent(
                             modifier = Modifier.padding(end = 4.dp)
                         )
                         Text(
-                            text = if (isFingerprintExpanded) stringResource(MockR.string.btn_hide_full) else stringResource(MockR.string.btn_view_full),
+                            text = if (isFingerprintExpanded) stringResource(R.string.btn_hide_full) else stringResource(R.string.btn_view_full),
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -959,7 +868,7 @@ fun ConnectScreenContent(
                             modifier = Modifier.size(24.dp)
                         )
                         Text(
-                            text = stringResource(MockR.string.section_verification),
+                            text = stringResource(R.string.section_verification),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )
@@ -968,7 +877,7 @@ fun ConnectScreenContent(
                     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
 
                     Text(
-                        text = stringResource(MockR.string.label_scan_to_enroll),
+                        text = stringResource(R.string.label_scan_to_enroll),
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.SemiBold
@@ -998,7 +907,7 @@ fun ConnectScreenContent(
                     }
 
                     Text(
-                        text = stringResource(MockR.string.desc_verification_instruction),
+                        text = stringResource(R.string.desc_verification_instruction),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -1026,7 +935,7 @@ fun ConnectScreenContent(
                             modifier = Modifier.padding(end = 8.dp)
                         )
                         Text(
-                            text = stringResource(MockR.string.mock_pairing_button),
+                            text = stringResource(R.string.mock_pairing_button),
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -1060,7 +969,7 @@ fun ConnectScreenContent(
                                 modifier = Modifier.size(24.dp)
                             )
                             Text(
-                                    text = stringResource(MockR.string.label_hardware_enclave),
+                                    text = stringResource(R.string.label_hardware_enclave),
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold
                             )
@@ -1086,21 +995,21 @@ fun ConnectScreenContent(
                     HorizontalDivider(color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f))
 
                     SecurityStatusRow(
-                        label = stringResource(MockR.string.label_provider_backend),
-                        value = if (keyStoreManager.isAndroidKeyStore) stringResource(MockR.string.val_android_keystore) else stringResource(MockR.string.val_jvm_sandbox)
+                        label = stringResource(R.string.label_provider_backend),
+                        value = if (keyStoreManager.isAndroidKeyStore) stringResource(R.string.val_android_keystore) else stringResource(R.string.val_jvm_sandbox)
                     )
                     SecurityStatusRow(
-                        label = stringResource(MockR.string.label_key_isolation),
-                        value = stringResource(MockR.string.val_key_isolation_text)
+                        label = stringResource(R.string.label_key_isolation),
+                        value = stringResource(R.string.val_key_isolation_text)
                     )
                     SecurityStatusRow(
-                        label = stringResource(MockR.string.label_hardware_backed),
-                        value = if (isHardwareBacked || !keyStoreManager.isAndroidKeyStore) stringResource(MockR.string.val_hardware_backed_yes) else stringResource(MockR.string.val_hardware_backed_no)
+                        label = stringResource(R.string.label_hardware_backed),
+                        value = if (isHardwareBacked || !keyStoreManager.isAndroidKeyStore) stringResource(R.string.val_hardware_backed_yes) else stringResource(R.string.val_hardware_backed_no)
                     )
                     if (isStrongBoxBacked) {
                         SecurityStatusRow(
-                            label = stringResource(MockR.string.label_strongbox_support),
-                            value = stringResource(MockR.string.val_strongbox_yes)
+                            label = stringResource(R.string.label_strongbox_support),
+                            value = stringResource(R.string.val_strongbox_yes)
                         )
                     }
                 }
@@ -1128,7 +1037,7 @@ fun ConnectScreenContent(
                             modifier = Modifier.size(24.dp)
                         )
                         Text(
-                            text = stringResource(MockR.string.section_enclave_actions),
+                            text = stringResource(R.string.section_enclave_actions),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )
@@ -1154,7 +1063,7 @@ fun ConnectScreenContent(
                             modifier = Modifier.padding(end = 8.dp)
                         )
                         Text(
-                            text = stringResource(MockR.string.btn_rotate_key),
+                            text = stringResource(R.string.btn_rotate_key),
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -1179,7 +1088,7 @@ fun ConnectScreenContent(
                             modifier = Modifier.padding(end = 8.dp)
                         )
                         Text(
-                            text = stringResource(MockR.string.btn_clear_credentials),
+                            text = stringResource(R.string.btn_clear_credentials),
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -1250,7 +1159,7 @@ fun AccessScreenContent(
                 // TTL Countdown Display
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        text = if (isActive) stringResource(MockR.string.ttl_display, ttlRemaining) else stringResource(MockR.string.ttl_inactive),
+                        text = if (isActive) stringResource(R.string.ttl_display, ttlRemaining) else stringResource(R.string.ttl_inactive),
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.ExtraBold,
                         textAlign = TextAlign.Center,
@@ -1288,7 +1197,7 @@ fun AccessScreenContent(
                         modifier = Modifier.size(28.dp).padding(end = 8.dp)
                     )
                     Text(
-                        text = if (isActive) stringResource(MockR.string.btn_stop_session) else stringResource(MockR.string.btn_start_session),
+                        text = if (isActive) stringResource(R.string.btn_stop_session) else stringResource(R.string.btn_start_session),
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleMedium
                     )
@@ -1339,7 +1248,7 @@ fun AccessScreenContent(
                         modifier = Modifier.size(24.dp)
                     )
                     Text(
-                        text = stringResource(MockR.string.policy_summary_title),
+                        text = stringResource(R.string.policy_summary_title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -1349,7 +1258,7 @@ fun AccessScreenContent(
 
                 if (isActive) {
                     Text(
-                        text = stringResource(MockR.string.policy_summary_desc),
+                        text = stringResource(R.string.policy_summary_desc),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.primary
@@ -1360,7 +1269,7 @@ fun AccessScreenContent(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = stringResource(MockR.string.policy_summary_details),
+                            text = stringResource(R.string.policy_summary_details),
                             style = MaterialTheme.typography.bodyMedium,
                             lineHeight = 22.sp,
                             modifier = Modifier.padding(12.dp)
@@ -1368,7 +1277,7 @@ fun AccessScreenContent(
                     }
                 } else {
                     Text(
-                        text = stringResource(MockR.string.policy_inactive_desc),
+                        text = stringResource(R.string.policy_inactive_desc),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
@@ -1405,7 +1314,7 @@ fun AccessScreenContent(
                             modifier = Modifier.size(24.dp)
                         )
                         Text(
-                            text = stringResource(MockR.string.advanced_toggle),
+                            text = stringResource(R.string.advanced_toggle),
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -1482,12 +1391,12 @@ fun ActivityScreenContent(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
-                text = stringResource(MockR.string.audit_title),
+                text = stringResource(R.string.audit_title),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = stringResource(MockR.string.audit_subtitle),
+                text = stringResource(R.string.audit_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -1511,7 +1420,7 @@ fun ActivityScreenContent(
                     tint = if (isChainSecure) Color(0xFF2E7D32) else Color(0xFFC62828)
                 )
                 Text(
-                    text = if (isChainSecure) stringResource(MockR.string.audit_integrity_valid) else stringResource(MockR.string.audit_integrity_invalid),
+                    text = if (isChainSecure) stringResource(R.string.audit_integrity_valid) else stringResource(R.string.audit_integrity_invalid),
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.bodyMedium,
                     color = if (isChainSecure) Color(0xFF2E7D32) else Color(0xFFC62828)
@@ -1597,7 +1506,7 @@ fun ActivityScreenContent(
                     modifier = Modifier.size(64.dp)
                 )
                 Text(
-                    text = stringResource(MockR.string.audit_empty),
+                    text = stringResource(R.string.audit_empty),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
@@ -1758,7 +1667,7 @@ fun RemoveScreenContent(
                         modifier = Modifier.size(24.dp)
                     )
                     Text(
-                        text = stringResource(MockR.string.uninstall_instructions_title),
+                        text = stringResource(R.string.uninstall_instructions_title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -1767,7 +1676,7 @@ fun RemoveScreenContent(
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
 
                 Text(
-                    text = stringResource(MockR.string.uninstall_instructions_desc),
+                    text = stringResource(R.string.uninstall_instructions_desc),
                     style = MaterialTheme.typography.bodyMedium,
                     lineHeight = 22.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -1807,7 +1716,7 @@ fun RemoveScreenContent(
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
 
                 Text(
-                    text = stringResource(MockR.string.clear_explanation),
+                    text = stringResource(R.string.clear_explanation),
                     style = MaterialTheme.typography.bodyMedium,
                     lineHeight = 20.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -1833,7 +1742,7 @@ fun RemoveScreenContent(
                         modifier = Modifier.padding(end = 8.dp)
                     )
                     Text(
-                        text = stringResource(MockR.string.btn_clear_data),
+                        text = stringResource(R.string.btn_clear_data),
                         fontWeight = FontWeight.Bold
                     )
                 }
