@@ -22,7 +22,7 @@ android {
     applicationId = "com.inscopelabs.abx.server"
     minSdk = 24
     targetSdk = 36
-    versionCode = 3
+    versionCode = 4
     versionName = "1.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -71,6 +71,9 @@ dependencies {
   implementation(project(":core:audit"))
   implementation(project(":core:session"))
   implementation(project(":core:tunnel"))
+  implementation(project(":core:policy"))
+  implementation(project(":core:filesystem"))
+  implementation(project(":core:mcp"))
   implementation(libs.retrofit)
   implementation(libs.converter.moshi)
   implementation(libs.moshi.kotlin)
