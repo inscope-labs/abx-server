@@ -74,6 +74,7 @@ dependencies {
   implementation(project(":core:policy"))
   implementation(project(":core:filesystem"))
   implementation(project(":core:mcp"))
+  implementation("com.google.zxing:core:3.5.3")
   implementation(libs.retrofit)
   implementation(libs.converter.moshi)
   implementation(libs.moshi.kotlin)
@@ -88,5 +89,6 @@ dependencies {
   implementation(libs.androidx.compose.ui.graphics)
   implementation(libs.androidx.compose.ui.tooling.preview)
   implementation(libs.androidx.compose.material3)
+  implementation(libs.androidx.compose.material.icons.extended)
   implementation(libs.androidx.lifecycle.runtime.ktx)
 }
