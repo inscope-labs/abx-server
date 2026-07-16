@@ -6,6 +6,16 @@ plugins {
   alias(libs.plugins.google.devtools.ksp)
 }
 
+import java.util.Properties
+import java.io.FileInputStream
+
+val versionProps = Properties().apply {
+  load(FileInputStream(rootProject.file("version.properties")))
+}
+val verMajor = versionProps.getProperty("versionMajor").trim()
+val verMinor = versionProps.getProperty("versionMinor").trim()
+val verDebug = versionProps.getProperty("versionDebug").trim()
+
 secrets {
   defaultPropertiesFileName = "app/local.defaults.properties"
 }
@@ -23,8 +33,8 @@ android {
     applicationId = "com.inscopelabs.abx.server"
     minSdk = 24
     targetSdk = 36
-    versionCode = 4
-    versionName = "1.0"
+    versionCode = versionProps.getProperty("versionCode").trim().toInt()
+    versionName = "$verMajor.$verMinor.$verDebug"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }

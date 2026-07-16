@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   release:
@@ -16,6 +16,19 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      - name: Bump version
+        shell: bash
+        run: |
+          CURRENT_CODE=$(grep -m1 'versionCode' version.properties | cut -d'=' -f2 | tr -d ' ')
+          CURRENT_DEBUG=$(grep -m1 'versionDebug' version.properties | cut -d'=' -f2 | tr -d ' ')
+          NEW_CODE=$((CURRENT_CODE + 1))
+          NEW_DEBUG=$((CURRENT_DEBUG + 1))
+          sed -i "s/^versionCode=.*/versionCode=$NEW_CODE/" version.properties
+          sed -i "s/^versionDebug=.*/versionDebug=$NEW_DEBUG/" version.properties
+          echo "NEW_VERSION_CODE=$NEW_CODE" >> "$GITHUB_ENV"
+          echo "NEW_VERSION_DEBUG=$NEW_DEBUG" >> "$GITHUB_ENV"
+          echo "Bumped versionCode -> $NEW_CODE, versionDebug -> $NEW_DEBUG"
 
       - name: Verify signing secrets are present
         shell: bash
@@ -80,6 +93,16 @@ jobs:
           path: app/build/outputs/bundle/release/app-release.aab
           if-no-files-found: error
           retention-days: 14
+
+      - name: Commit version bump
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add version.properties
+          git commit -m "ci: bump versionCode to $NEW_VERSION_CODE (versionDebug $NEW_VERSION_DEBUG)" || echo "Nothing to commit"
+          git pull --rebase origin main
+          git push
 
       - name: Clean up keystore
         if: always()
