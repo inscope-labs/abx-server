@@ -144,8 +144,13 @@ fun EnrollmentScreen(
                     val keyFactory = KeyFactory.getInstance(kp.private.algorithm, "AndroidKeyStore")
                     val keyInfo = keyFactory.getKeySpec(kp.private, KeyInfo::class.java) as KeyInfo
                     isHardwareBacked = keyInfo.isInsideSecureHardware
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         isStrongBoxBacked = keyInfo.securityLevel == KeyProperties.SECURITY_LEVEL_STRONGBOX
+                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        // Pre-API-31: cannot query securityLevel directly. Fall back to
+                        // the general hardware-backed signal; this cannot distinguish
+                        // StrongBox from TEE on these API levels.
+                        isStrongBoxBacked = false
                     }
                 } catch (e: Exception) {
                     isHardwareBacked = false
