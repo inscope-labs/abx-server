@@ -6,6 +6,11 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
 import android.security.keystore.KeyInfo
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import android.Manifest
+import android.content.pm.PackageManager
 import android.security.keystore.KeyProperties
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.*
@@ -72,6 +77,12 @@ fun EnrollmentScreen(
     val alias = "abx_mcp_device_key"
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { /* No-op either way — TunnelService already handles a missing
+           grant gracefully; this launcher only exists to trigger the
+           system permission dialog. */ }
     
     // Core Services
     val sessionManager = remember { SessionManagerProvider.get(context) }
@@ -382,6 +393,15 @@ fun EnrollmentScreen(
                             ttlRemaining = ttlRemaining,
                             onStartSession = {
                                 try {
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                        if (ContextCompat.checkSelfPermission(
+                                                context,
+                                                Manifest.permission.POST_NOTIFICATIONS
+                                            ) != PackageManager.PERMISSION_GRANTED
+                                        ) {
+                                            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                                        }
+                                    }
                                     sessionManager.startSession(UserGesture.LocalButtonPress)
                                     com.inscopelabs.abx.server.core.tunnel.TunnelService.start(context)
                                 } catch (e: Exception) {
