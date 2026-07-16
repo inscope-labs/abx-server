@@ -221,6 +221,29 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add "$LOGFILE" version.properties
-          git commit -m "ci: bump version to (versionDebug $NEW_VERSION_DEBUG) versionCode=$NEW_VERSION_CODE" || echo "Nothing to commit"
-          git pull --rebase origin main
-          git push
+          git commit -m "ci: bump version to versionCode=$NEW_VERSION_CODE (versionDebug $NEW_VERSION_DEBUG)" || echo "Nothing to commit"
+
+          MAX_ATTEMPTS=5
+          ATTEMPT=1
+          until git push origin HEAD:main; do
+            if [ "$ATTEMPT" -ge "$MAX_ATTEMPTS" ]; then
+              echo "::error::Failed to push version bump after $MAX_ATTEMPTS attempts — version.properties was NOT updated on main. Re-run this workflow."
+              exit 1
+            fi
+            echo "Push rejected (attempt $ATTEMPT/$MAX_ATTEMPTS) — likely a concurrent run updated version.properties first. Retrying with fresh rebase..."
+            git fetch origin main
+            if ! git rebase origin/main; then
+              echo "::error::Rebase conflict on version.properties — resolving by taking the higher versionCode/versionDebug values."
+              git checkout --theirs version.properties 2>/dev/null || true
+              REMOTE_CODE=$(grep -m1 'versionCode' version.properties | cut -d'=' -f2 | tr -d ' ')
+              if [ "$REMOTE_CODE" -ge "$NEW_VERSION_CODE" ]; then
+                echo "Remote already has versionCode $REMOTE_CODE >= our $NEW_VERSION_CODE — skipping our bump, keeping remote's."
+                git rebase --skip || git rebase --abort
+              else
+                git add version.properties
+                git rebase --continue
+              fi
+            fi
+            ATTEMPT=$((ATTEMPT + 1))
+          done
+          echo "Version bump pushed successfully: versionCode=$NEW_VERSION_CODE"
