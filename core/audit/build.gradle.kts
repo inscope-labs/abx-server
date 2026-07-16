@@ -18,5 +18,5 @@ android {
 
 dependencies {
   implementation(libs.androidx.core.ktx)
-  implementation(project(":core:keystore"))
+  implementation(this.project(":core:keystore"))
 }

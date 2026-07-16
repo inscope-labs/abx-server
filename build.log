@@ -1,0 +1,358 @@
+Calculating task graph as configuration cache cannot be reused because file 'app/build.gradle.kts' has changed.
+> Task :core:keystore:preBuild UP-TO-DATE
+> Task :core:keystore:generateDebugAssets UP-TO-DATE
+> Task :core:keystore:preDebugBuild UP-TO-DATE
+> Task :core:audit:preBuild UP-TO-DATE
+> Task :core:audit:generateDebugAssets UP-TO-DATE
+> Task :core:keystore:generateDebugResources UP-TO-DATE
+> Task :core:keystore:prepareLintJarForPublish UP-TO-DATE
+> Task :core:keystore:mergeDebugJniLibFolders UP-TO-DATE
+> Task :core:keystore:mergeDebugNativeLibs NO-SOURCE
+> Task :core:keystore:processDebugNavigationResources UP-TO-DATE
+> Task :core:keystore:stripDebugDebugSymbols NO-SOURCE
+> Task :core:keystore:extractDeepLinksForAarDebug UP-TO-DATE
+> Task :core:keystore:copyDebugJniLibsProjectAndLocalJars UP-TO-DATE
+> Task :core:keystore:javaPreCompileDebug UP-TO-DATE
+> Task :core:keystore:mergeDebugAssets UP-TO-DATE
+> Task :core:keystore:packageDebugResources UP-TO-DATE
+> Task :core:keystore:prepareDebugArtProfile UP-TO-DATE
+> Task :core:keystore:writeDebugAarMetadata UP-TO-DATE
+> Task :core:keystore:parseDebugLocalResources UP-TO-DATE
+> Task :core:audit:preDebugBuild UP-TO-DATE
+> Task :core:keystore:generateDebugRFile UP-TO-DATE
+> Task :core:keystore:processDebugManifest UP-TO-DATE
+> Task :core:keystore:extractDebugAnnotations UP-TO-DATE
+> Task :core:audit:checkDebugAarMetadata UP-TO-DATE
+> Task :core:keystore:checkDebugAarMetadata UP-TO-DATE
+> Task :core:audit:mergeDebugJniLibFolders UP-TO-DATE
+> Task :core:audit:generateDebugResources UP-TO-DATE
+> Task :core:audit:processDebugNavigationResources UP-TO-DATE
+> Task :core:audit:mergeDebugNativeLibs NO-SOURCE
+> Task :core:audit:stripDebugDebugSymbols NO-SOURCE
+> Task :core:audit:extractDeepLinksForAarDebug UP-TO-DATE
+> Task :core:audit:copyDebugJniLibsProjectAndLocalJars UP-TO-DATE
+> Task :core:audit:mergeDebugAssets UP-TO-DATE
+> Task :core:audit:javaPreCompileDebug UP-TO-DATE
+> Task :core:audit:packageDebugResources UP-TO-DATE
+> Task :core:audit:prepareLintJarForPublish UP-TO-DATE
+> Task :core:audit:prepareDebugArtProfile UP-TO-DATE
+> Task :core:audit:parseDebugLocalResources UP-TO-DATE
+> Task :core:audit:writeDebugAarMetadata UP-TO-DATE
+> Task :core:session:preBuild UP-TO-DATE
+> Task :core:audit:generateDebugRFile UP-TO-DATE
+> Task :core:audit:processDebugManifest UP-TO-DATE
+> Task :core:session:preDebugBuild UP-TO-DATE
+> Task :core:session:generateDebugAssets UP-TO-DATE
+> Task :core:session:generateDebugResources UP-TO-DATE
+> Task :core:session:checkDebugAarMetadata UP-TO-DATE
+> Task :core:session:mergeDebugJniLibFolders UP-TO-DATE
+> Task :core:session:processDebugNavigationResources UP-TO-DATE
+> Task :core:session:mergeDebugNativeLibs NO-SOURCE
+> Task :core:session:stripDebugDebugSymbols NO-SOURCE
+> Task :core:session:packageDebugResources UP-TO-DATE
+> Task :core:session:copyDebugJniLibsProjectAndLocalJars UP-TO-DATE
+> Task :core:session:extractDeepLinksForAarDebug UP-TO-DATE
+> Task :core:session:parseDebugLocalResources UP-TO-DATE
+> Task :core:keystore:compileDebugKotlin UP-TO-DATE
+> Task :core:session:mergeDebugAssets UP-TO-DATE
+> Task :core:session:javaPreCompileDebug UP-TO-DATE
+> Task :core:keystore:compileDebugJavaWithJavac NO-SOURCE
+> Task :core:session:prepareDebugArtProfile UP-TO-DATE
+> Task :core:keystore:mergeDebugGeneratedProguardFiles UP-TO-DATE
+> Task :core:session:generateDebugRFile UP-TO-DATE
+> Task :core:keystore:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :core:keystore:mergeDebugConsumerProguardFiles UP-TO-DATE
+> Task :core:keystore:processDebugJavaRes UP-TO-DATE
+> Task :core:session:prepareLintJarForPublish UP-TO-DATE
+> Task :core:keystore:mergeDebugJavaResource UP-TO-DATE
+> Task :core:session:processDebugManifest UP-TO-DATE
+> Task :core:audit:extractDebugAnnotations UP-TO-DATE
+> Task :core:session:writeDebugAarMetadata UP-TO-DATE
+> Task :core:keystore:syncDebugLibJars UP-TO-DATE
+> Task :core:tunnel:generateDebugAssets UP-TO-DATE
+> Task :core:keystore:bundleDebugLocalLintAar UP-TO-DATE
+> Task :core:tunnel:prepareLintJarForPublish UP-TO-DATE
+> Task :core:tunnel:preBuild UP-TO-DATE
+> Task :core:policy:preBuild UP-TO-DATE
+> Task :core:tunnel:preDebugBuild UP-TO-DATE
+> Task :core:tunnel:mergeDebugJniLibFolders UP-TO-DATE
+> Task :core:tunnel:mergeDebugNativeLibs NO-SOURCE
+> Task :core:tunnel:stripDebugDebugSymbols NO-SOURCE
+> Task :core:tunnel:copyDebugJniLibsProjectAndLocalJars UP-TO-DATE
+> Task :core:tunnel:generateDebugResources UP-TO-DATE
+> Task :core:tunnel:processDebugNavigationResources UP-TO-DATE
+> Task :core:tunnel:extractDeepLinksForAarDebug UP-TO-DATE
+> Task :core:audit:compileDebugKotlin UP-TO-DATE
+> Task :core:audit:compileDebugJavaWithJavac NO-SOURCE
+> Task :core:tunnel:mergeDebugAssets UP-TO-DATE
+> Task :core:tunnel:packageDebugResources UP-TO-DATE
+> Task :core:audit:mergeDebugGeneratedProguardFiles UP-TO-DATE
+> Task :core:audit:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :core:audit:mergeDebugConsumerProguardFiles UP-TO-DATE
+> Task :core:audit:processDebugJavaRes UP-TO-DATE
+> Task :core:audit:mergeDebugJavaResource UP-TO-DATE
+> Task :core:tunnel:checkDebugAarMetadata UP-TO-DATE
+> Task :core:session:extractDebugAnnotations UP-TO-DATE
+> Task :core:audit:syncDebugLibJars UP-TO-DATE
+> Task :core:tunnel:javaPreCompileDebug UP-TO-DATE
+> Task :core:audit:bundleDebugLocalLintAar UP-TO-DATE
+> Task :core:tunnel:parseDebugLocalResources UP-TO-DATE
+> Task :core:tunnel:prepareDebugArtProfile UP-TO-DATE
+> Task :core:tunnel:generateDebugRFile UP-TO-DATE
+> Task :core:policy:preDebugBuild UP-TO-DATE
+> Task :core:tunnel:writeDebugAarMetadata UP-TO-DATE
+> Task :core:policy:mergeDebugJniLibFolders UP-TO-DATE
+> Task :core:policy:mergeDebugNativeLibs NO-SOURCE
+> Task :core:tunnel:processDebugManifest UP-TO-DATE
+> Task :core:policy:checkDebugAarMetadata UP-TO-DATE
+> Task :core:policy:stripDebugDebugSymbols NO-SOURCE
+> Task :core:policy:generateDebugResources UP-TO-DATE
+> Task :core:policy:processDebugNavigationResources UP-TO-DATE
+> Task :core:policy:extractDeepLinksForAarDebug UP-TO-DATE
+> Task :core:policy:generateDebugAssets UP-TO-DATE
+> Task :core:policy:copyDebugJniLibsProjectAndLocalJars UP-TO-DATE
+> Task :core:policy:javaPreCompileDebug UP-TO-DATE
+> Task :core:policy:packageDebugResources UP-TO-DATE
+> Task :core:policy:mergeDebugAssets UP-TO-DATE
+> Task :core:policy:prepareDebugArtProfile UP-TO-DATE
+> Task :core:policy:parseDebugLocalResources UP-TO-DATE
+> Task :core:policy:prepareLintJarForPublish UP-TO-DATE
+> Task :core:policy:writeDebugAarMetadata UP-TO-DATE
+> Task :core:filesystem:preBuild UP-TO-DATE
+> Task :core:filesystem:preDebugBuild UP-TO-DATE
+> Task :core:session:compileDebugKotlin UP-TO-DATE
+> Task :core:policy:generateDebugRFile UP-TO-DATE
+> Task :core:policy:processDebugManifest UP-TO-DATE
+> Task :core:filesystem:checkDebugAarMetadata UP-TO-DATE
+> Task :core:filesystem:mergeDebugJniLibFolders UP-TO-DATE
+> Task :core:session:compileDebugJavaWithJavac NO-SOURCE
+> Task :core:filesystem:generateDebugResources UP-TO-DATE
+> Task :core:session:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :core:session:processDebugJavaRes UP-TO-DATE
+> Task :core:filesystem:mergeDebugNativeLibs NO-SOURCE
+> Task :core:session:mergeDebugGeneratedProguardFiles UP-TO-DATE
+> Task :core:session:mergeDebugJavaResource UP-TO-DATE
+> Task :core:session:mergeDebugConsumerProguardFiles UP-TO-DATE
+> Task :core:session:syncDebugLibJars UP-TO-DATE
+> Task :core:session:bundleDebugLocalLintAar UP-TO-DATE
+> Task :core:tunnel:extractDebugAnnotations UP-TO-DATE
+> Task :core:policy:extractDebugAnnotations UP-TO-DATE
+> Task :core:filesystem:stripDebugDebugSymbols NO-SOURCE
+> Task :core:filesystem:copyDebugJniLibsProjectAndLocalJars UP-TO-DATE
+> Task :core:filesystem:processDebugNavigationResources UP-TO-DATE
+> Task :core:filesystem:extractDeepLinksForAarDebug UP-TO-DATE
+> Task :core:filesystem:generateDebugAssets UP-TO-DATE
+> Task :core:filesystem:packageDebugResources UP-TO-DATE
+> Task :core:filesystem:mergeDebugAssets UP-TO-DATE
+> Task :core:filesystem:parseDebugLocalResources UP-TO-DATE
+> Task :core:filesystem:javaPreCompileDebug UP-TO-DATE
+> Task :core:filesystem:generateDebugRFile UP-TO-DATE
+> Task :core:filesystem:prepareDebugArtProfile UP-TO-DATE
+> Task :core:filesystem:extractDebugAnnotations UP-TO-DATE
+> Task :core:filesystem:compileDebugKotlin NO-SOURCE
+> Task :core:filesystem:prepareLintJarForPublish UP-TO-DATE
+> Task :core:filesystem:compileDebugJavaWithJavac NO-SOURCE
+> Task :core:tunnel:compileDebugKotlin UP-TO-DATE
+> Task :core:filesystem:mergeDebugGeneratedProguardFiles UP-TO-DATE
+> Task :core:filesystem:processDebugManifest UP-TO-DATE
+> Task :core:tunnel:compileDebugJavaWithJavac NO-SOURCE
+> Task :core:policy:compileDebugKotlin UP-TO-DATE
+> Task :core:filesystem:mergeDebugConsumerProguardFiles UP-TO-DATE
+> Task :core:tunnel:mergeDebugGeneratedProguardFiles UP-TO-DATE
+> Task :core:policy:compileDebugJavaWithJavac NO-SOURCE
+> Task :core:tunnel:mergeDebugConsumerProguardFiles UP-TO-DATE
+> Task :core:policy:mergeDebugGeneratedProguardFiles UP-TO-DATE
+> Task :core:tunnel:processDebugJavaRes UP-TO-DATE
+> Task :core:policy:processDebugJavaRes UP-TO-DATE
+> Task :core:policy:mergeDebugConsumerProguardFiles UP-TO-DATE
+> Task :core:filesystem:processDebugJavaRes NO-SOURCE
+> Task :core:filesystem:writeDebugAarMetadata UP-TO-DATE
+> Task :core:tunnel:mergeDebugJavaResource UP-TO-DATE
+> Task :core:policy:mergeDebugJavaResource UP-TO-DATE
+> Task :core:mcp:preBuild UP-TO-DATE
+> Task :core:mcp:preDebugBuild UP-TO-DATE
+> Task :core:filesystem:mergeDebugJavaResource UP-TO-DATE
+> Task :core:tunnel:syncDebugLibJars UP-TO-DATE
+> Task :core:mcp:checkDebugAarMetadata UP-TO-DATE
+> Task :core:policy:syncDebugLibJars UP-TO-DATE
+> Task :core:filesystem:syncDebugLibJars UP-TO-DATE
+> Task :core:tunnel:bundleDebugLocalLintAar UP-TO-DATE
+> Task :core:mcp:mergeDebugJniLibFolders UP-TO-DATE
+> Task :core:filesystem:bundleDebugLocalLintAar UP-TO-DATE
+> Task :core:policy:bundleDebugLocalLintAar UP-TO-DATE
+> Task :core:mcp:mergeDebugNativeLibs NO-SOURCE
+> Task :core:mcp:stripDebugDebugSymbols NO-SOURCE
+> Task :core:mcp:copyDebugJniLibsProjectAndLocalJars UP-TO-DATE
+> Task :core:mcp:processDebugNavigationResources UP-TO-DATE
+> Task :core:mcp:generateDebugResources UP-TO-DATE
+> Task :core:policy:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :core:mcp:generateDebugAssets UP-TO-DATE
+> Task :core:mcp:javaPreCompileDebug UP-TO-DATE
+> Task :core:mcp:extractDeepLinksForAarDebug UP-TO-DATE
+> Task :core:mcp:mergeDebugAssets UP-TO-DATE
+> Task :core:mcp:prepareDebugArtProfile UP-TO-DATE
+> Task :core:mcp:prepareLintJarForPublish UP-TO-DATE
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :core:mcp:writeDebugAarMetadata UP-TO-DATE
+> Task :core:mcp:processDebugManifest UP-TO-DATE
+> Task :app:generateDebugBuildConfig UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :core:mcp:packageDebugResources UP-TO-DATE
+> Task :core:filesystem:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :app:processDebugGoogleServices UP-TO-DATE
+> Task :core:tunnel:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :core:mcp:parseDebugLocalResources UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths UP-TO-DATE
+> Task :core:mcp:generateDebugRFile UP-TO-DATE
+> Task :core:mcp:extractDebugAnnotations UP-TO-DATE
+> Task :core:mcp:compileDebugKotlin UP-TO-DATE
+> Task :core:mcp:compileDebugJavaWithJavac NO-SOURCE
+> Task :core:mcp:mergeDebugGeneratedProguardFiles UP-TO-DATE
+> Task :core:mcp:mergeDebugConsumerProguardFiles UP-TO-DATE
+> Task :core:mcp:processDebugJavaRes UP-TO-DATE
+> Task :core:mcp:mergeDebugJavaResource UP-TO-DATE
+> Task :core:mcp:syncDebugLibJars UP-TO-DATE
+> Task :core:mcp:bundleDebugLocalLintAar UP-TO-DATE
+> Task :core:mcp:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :app:kspDebugKotlin SKIPPED
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :core:audit:extractDeepLinksDebug UP-TO-DATE
+> Task :core:filesystem:extractDeepLinksDebug UP-TO-DATE
+> Task :core:keystore:extractDeepLinksDebug UP-TO-DATE
+> Task :core:mcp:extractDeepLinksDebug UP-TO-DATE
+> Task :core:policy:extractDeepLinksDebug UP-TO-DATE
+> Task :core:session:extractDeepLinksDebug UP-TO-DATE
+> Task :core:tunnel:extractDeepLinksDebug UP-TO-DATE
+> Task :app:checkDebugAarMetadata UP-TO-DATE
+> Task :app:mergeDebugResources UP-TO-DATE
+> Task :app:processDebugMainManifest UP-TO-DATE
+> Task :core:audit:mapDebugSourceSetPaths UP-TO-DATE
+> Task :core:filesystem:mapDebugSourceSetPaths UP-TO-DATE
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :core:audit:compileDebugLibraryResources UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :core:filesystem:compileDebugLibraryResources UP-TO-DATE
+> Task :core:keystore:mapDebugSourceSetPaths UP-TO-DATE
+> Task :core:mcp:mapDebugSourceSetPaths UP-TO-DATE
+> Task :core:policy:mapDebugSourceSetPaths UP-TO-DATE
+> Task :core:keystore:compileDebugLibraryResources UP-TO-DATE
+> Task :core:mcp:compileDebugLibraryResources UP-TO-DATE
+> Task :core:session:mapDebugSourceSetPaths UP-TO-DATE
+> Task :core:policy:compileDebugLibraryResources UP-TO-DATE
+> Task :app:preDebugAndroidTestBuild SKIPPED
+> Task :core:tunnel:mapDebugSourceSetPaths UP-TO-DATE
+> Task :core:session:compileDebugLibraryResources UP-TO-DATE
+> Task :core:audit:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :core:tunnel:compileDebugLibraryResources UP-TO-DATE
+> Task :core:audit:writeDebugLintModelMetadata UP-TO-DATE
+> Task :core:audit:createFullJarDebug UP-TO-DATE
+> Task :core:filesystem:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :core:filesystem:writeDebugLintModelMetadata UP-TO-DATE
+> Task :core:keystore:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :core:filesystem:createFullJarDebug UP-TO-DATE
+> Task :core:keystore:writeDebugLintModelMetadata UP-TO-DATE
+> Task :core:keystore:createFullJarDebug UP-TO-DATE
+> Task :core:mcp:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :core:mcp:writeDebugLintModelMetadata UP-TO-DATE
+> Task :core:policy:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :core:mcp:createFullJarDebug UP-TO-DATE
+> Task :core:policy:writeDebugLintModelMetadata UP-TO-DATE
+> Task :core:session:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :core:policy:createFullJarDebug UP-TO-DATE
+> Task :core:session:writeDebugLintModelMetadata UP-TO-DATE
+> Task :core:session:createFullJarDebug UP-TO-DATE
+> Task :core:tunnel:writeDebugLintModelMetadata UP-TO-DATE
+> Task :core:tunnel:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :app:extractProguardFiles UP-TO-DATE
+> Task :core:audit:extractProguardFiles UP-TO-DATE
+> Task :core:tunnel:createFullJarDebug UP-TO-DATE
+> Task :core:keystore:extractProguardFiles UP-TO-DATE
+> Task :core:filesystem:extractProguardFiles UP-TO-DATE
+> Task :core:mcp:extractProguardFiles UP-TO-DATE
+> Task :core:policy:extractProguardFiles UP-TO-DATE
+> Task :core:session:extractProguardFiles UP-TO-DATE
+> Task :app:processDebugNavigationResources UP-TO-DATE
+> Task :core:tunnel:extractProguardFiles UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:compileDebugNavigationResources UP-TO-DATE
+> Task :app:generateDebugRFile UP-TO-DATE
+> Task :core:keystore:generateDebugLintModel UP-TO-DATE
+> Task :app:compileDebugKotlin UP-TO-DATE
+> Task :core:filesystem:generateDebugLintModel UP-TO-DATE
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:compileDebugJavaWithJavac UP-TO-DATE
+> Task :app:processDebugResources UP-TO-DATE
+> Task :app:bundleDebugClassesToCompileJar UP-TO-DATE
+> Task :core:audit:generateDebugLintModel
+> Task :core:session:generateDebugLintModel
+> Task :core:policy:generateDebugLintModel
+> Task :app:generateDebugAndroidTestLintModel
+> Task :core:mcp:generateDebugLintModel
+> Task :core:tunnel:generateDebugLintModel
+> Task :app:generateDebugUnitTestLintModel
+> Task :app:generateDebugLintReportModel
+> Task :app:lintAnalyzeDebugUnitTest
+> Task :core:audit:preDebugAndroidTestBuild UP-TO-DATE
+> Task :core:audit:generateDebugAndroidTestLintModel
+> Task :app:lintAnalyzeDebugAndroidTest
+> Task :core:audit:preDebugUnitTestBuild UP-TO-DATE
+> Task :core:audit:generateDebugUnitTestLintModel
+> Task :core:filesystem:lintAnalyzeDebug
+> Task :core:filesystem:preDebugAndroidTestBuild UP-TO-DATE
+> Task :core:audit:lintAnalyzeDebugUnitTest
+> Task :core:filesystem:preDebugUnitTestBuild UP-TO-DATE
+> Task :core:filesystem:generateDebugAndroidTestLintModel UP-TO-DATE
+> Task :core:filesystem:generateDebugUnitTestLintModel UP-TO-DATE
+> Task :core:audit:lintAnalyzeDebugAndroidTest
+> Task :core:keystore:preDebugAndroidTestBuild UP-TO-DATE
+> Task :core:keystore:generateDebugAndroidTestLintModel UP-TO-DATE
+> Task :core:keystore:preDebugUnitTestBuild UP-TO-DATE
+> Task :core:keystore:generateDebugUnitTestLintModel UP-TO-DATE
+> Task :core:filesystem:lintAnalyzeDebugUnitTest
+> Task :core:filesystem:lintAnalyzeDebugAndroidTest
+> Task :core:mcp:preDebugAndroidTestBuild UP-TO-DATE
+> Task :core:mcp:generateDebugAndroidTestLintModel
+> Task :core:mcp:preDebugUnitTestBuild UP-TO-DATE
+> Task :core:keystore:lintAnalyzeDebugAndroidTest
+> Task :core:mcp:generateDebugUnitTestLintModel
+> Task :core:keystore:lintAnalyzeDebugUnitTest
+> Task :core:policy:preDebugAndroidTestBuild UP-TO-DATE
+> Task :core:policy:generateDebugAndroidTestLintModel
+> Task :core:policy:preDebugUnitTestBuild UP-TO-DATE
+> Task :core:policy:generateDebugUnitTestLintModel
+> Task :core:mcp:lintAnalyzeDebugAndroidTest
+> Task :core:mcp:lintAnalyzeDebugUnitTest
+> Task :core:session:preDebugAndroidTestBuild UP-TO-DATE
+> Task :core:session:generateDebugAndroidTestLintModel
+> Task :core:session:preDebugUnitTestBuild UP-TO-DATE
+> Task :core:session:generateDebugUnitTestLintModel
+> Task :core:policy:lintAnalyzeDebugAndroidTest
+> Task :core:policy:lintAnalyzeDebugUnitTest
+> Task :core:tunnel:preDebugAndroidTestBuild UP-TO-DATE
+> Task :core:tunnel:generateDebugAndroidTestLintModel
+> Task :core:tunnel:preDebugUnitTestBuild UP-TO-DATE
+> Task :core:tunnel:generateDebugUnitTestLintModel
+> Task :core:session:lintAnalyzeDebugAndroidTest
+> Task :core:session:lintAnalyzeDebugUnitTest
+> Task :core:tunnel:lintAnalyzeDebugAndroidTest
+> Task :core:tunnel:lintAnalyzeDebugUnitTest
+> Task :core:keystore:lintAnalyzeDebug
+> Task :core:audit:lintAnalyzeDebug
+> Task :core:session:lintAnalyzeDebug
+> Task :core:policy:lintAnalyzeDebug
+> Task :core:tunnel:lintAnalyzeDebug
+> Task :core:mcp:lintAnalyzeDebug
+> Task :app:lintAnalyzeDebug
+
+> Task :app:lintReportDebug
+Wrote HTML report to file:///app/applet/app/build/reports/lint-results-debug.html
+
+> Task :app:lintDebug
+
+BUILD SUCCESSFUL in 28s
+287 actionable tasks: 44 executed, 243 up-to-date
+Configuration cache entry stored.

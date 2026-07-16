@@ -15,6 +15,6 @@ dependencies {
   implementation(libs.androidx.work.runtime)
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.okhttp)
-  implementation(project(":core:session"))
-  implementation(project(":core:audit"))
+  implementation(this.project(":core:session"))
+  implementation(this.project(":core:audit"))
 }

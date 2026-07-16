@@ -14,7 +14,7 @@ dependencies {
   implementation(libs.androidx.core.ktx)
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.androidx.documentfile)
-  implementation(project(":core:policy"))
-  implementation(project(":core:session"))
-  implementation(project(":core:audit"))
+  implementation(this.project(":core:policy"))
+  implementation(this.project(":core:session"))
+  implementation(this.project(":core:audit"))
 }

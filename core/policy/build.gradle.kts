@@ -13,6 +13,6 @@ android {
 dependencies {
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.documentfile)
-  implementation(project(":core:session"))
-  implementation(project(":core:audit"))
+  implementation(this.project(":core:session"))
+  implementation(this.project(":core:audit"))
 }

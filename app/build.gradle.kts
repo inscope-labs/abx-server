@@ -78,13 +78,13 @@ android {
 }
 
 dependencies {
-  implementation(project(":core:keystore"))
-  implementation(project(":core:audit"))
-  implementation(project(":core:session"))
-  implementation(project(":core:tunnel"))
-  implementation(project(":core:policy"))
-  implementation(project(":core:filesystem"))
-  implementation(project(":core:mcp"))
+  implementation(this.project(":core:keystore"))
+  implementation(this.project(":core:audit"))
+  implementation(this.project(":core:session"))
+  implementation(this.project(":core:tunnel"))
+  implementation(this.project(":core:policy"))
+  implementation(this.project(":core:filesystem"))
+  implementation(this.project(":core:mcp"))
   implementation("com.google.zxing:core:3.5.3")
   implementation(libs.retrofit)
   implementation(libs.converter.moshi)
