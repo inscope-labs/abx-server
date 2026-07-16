@@ -46,8 +46,8 @@ jobs:
           mkdir -p build-logs/debug diagnostics/manifest diagnostics/apk diagnostics/reports
           LOGFILE="build-logs/debug/debug-$(date -u +%Y-%m-%dT%H-%M-%SZ)-run${{ github.run_id }}.log"
           echo "LOGFILE=$LOGFILE" >> "$GITHUB_ENV"
-          VERSION_CODE=$(grep -m1 'versionCode' app/build.gradle.kts | grep -oE '[0-9]+')
-          VERSION_NAME=$(grep -m1 'versionName' app/build.gradle.kts | grep -oE '"[^"]+"' | tr -d '"')
+          VERSION_CODE=$(grep -m1 'versionCode' version.properties | cut -d'=' -f2 | tr -d ' ')
+          VERSION_NAME="$(grep -m1 'versionMajor' version.properties | cut -d'=' -f2 | tr -d ' ').$(grep -m1 'versionMinor' version.properties | cut -d'=' -f2 | tr -d ' ').$(grep -m1 'versionDebug' version.properties | cut -d'=' -f2 | tr -d ' ')"
           {
             echo "===== BUILD INFO ====="
             echo "Run ID:       ${{ github.run_id }}"
