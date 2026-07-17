@@ -64,6 +64,7 @@ import com.inscopelabs.abx.server.core.policy.PolicyEngineImpl
 import com.inscopelabs.abx.server.core.policy.Capability
 import androidx.compose.ui.res.stringResource
 import com.inscopelabs.abx.server.BuildConfig
+import com.inscopelabs.abx.server.ui.DashboardScreenContent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -104,7 +105,7 @@ fun EnrollmentScreen(
     }
 
     // Navigation and UX State
-    var selectedTab by remember { mutableStateOf(0) } // 0: Connect, 1: Access, 2: Activity, 3: Remove
+    var selectedTab by remember { mutableStateOf(0) } // 0: Dashboard, 1: Connect, 2: Access, 3: Activity, 4: Remove
     var advancedToggleAccess by remember { mutableStateOf(false) }
     var advancedToggleActivity by remember { mutableStateOf(false) }
     var showAboutDialog by remember { mutableStateOf(false) }
@@ -276,27 +277,34 @@ fun EnrollmentScreen(
                         NavigationBarItem(
                             selected = selectedTab == 0,
                             onClick = { selectedTab = 0 },
+                            icon = { Icon(Icons.Default.Home, contentDescription = null) },
+                            label = { Text(stringResource(R.string.tab_dashboard)) },
+                            modifier = Modifier.testTag("nav_tab_dashboard")
+                        )
+                        NavigationBarItem(
+                            selected = selectedTab == 1,
+                            onClick = { selectedTab = 1 },
                             icon = { Icon(Icons.Default.QrCodeScanner, contentDescription = null) },
                             label = { Text(stringResource(R.string.tab_connect)) },
                             modifier = Modifier.testTag("nav_tab_connect")
                         )
                         NavigationBarItem(
-                            selected = selectedTab == 1,
-                            onClick = { selectedTab = 1 },
+                            selected = selectedTab == 2,
+                            onClick = { selectedTab = 2 },
                             icon = { Icon(Icons.Default.VpnKey, contentDescription = null) },
                             label = { Text(stringResource(R.string.tab_access)) },
                             modifier = Modifier.testTag("nav_tab_access")
                         )
                         NavigationBarItem(
-                            selected = selectedTab == 2,
-                            onClick = { selectedTab = 2 },
+                            selected = selectedTab == 3,
+                            onClick = { selectedTab = 3 },
                             icon = { Icon(Icons.Default.History, contentDescription = null) },
                             label = { Text(stringResource(R.string.tab_activity)) },
                             modifier = Modifier.testTag("nav_tab_activity")
                         )
                         NavigationBarItem(
-                            selected = selectedTab == 3,
-                            onClick = { selectedTab = 3 },
+                            selected = selectedTab == 4,
+                            onClick = { selectedTab = 4 },
                             icon = { Icon(Icons.Default.Delete, contentDescription = null) },
                             label = { Text(stringResource(R.string.tab_remove)) },
                             modifier = Modifier.testTag("nav_tab_remove")
@@ -330,30 +338,38 @@ fun EnrollmentScreen(
                         NavigationRailItem(
                             selected = selectedTab == 0,
                             onClick = { selectedTab = 0 },
+                            icon = { Icon(Icons.Default.Home, contentDescription = stringResource(R.string.tab_dashboard)) },
+                            label = { Text(stringResource(R.string.tab_dashboard)) },
+                            modifier = Modifier.testTag("nav_tab_dashboard_rail")
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        NavigationRailItem(
+                            selected = selectedTab == 1,
+                            onClick = { selectedTab = 1 },
                             icon = { Icon(Icons.Default.QrCodeScanner, contentDescription = stringResource(R.string.tab_connect)) },
                             label = { Text(stringResource(R.string.tab_connect)) },
                             modifier = Modifier.testTag("nav_tab_connect_rail")
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         NavigationRailItem(
-                            selected = selectedTab == 1,
-                            onClick = { selectedTab = 1 },
+                            selected = selectedTab == 2,
+                            onClick = { selectedTab = 2 },
                             icon = { Icon(Icons.Default.VpnKey, contentDescription = stringResource(R.string.tab_access)) },
                             label = { Text(stringResource(R.string.tab_access)) },
                             modifier = Modifier.testTag("nav_tab_access_rail")
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         NavigationRailItem(
-                            selected = selectedTab == 2,
-                            onClick = { selectedTab = 2 },
+                            selected = selectedTab == 3,
+                            onClick = { selectedTab = 3 },
                             icon = { Icon(Icons.Default.History, contentDescription = stringResource(R.string.tab_activity)) },
                             label = { Text(stringResource(R.string.tab_activity)) },
                             modifier = Modifier.testTag("nav_tab_activity_rail")
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         NavigationRailItem(
-                            selected = selectedTab == 3,
-                            onClick = { selectedTab = 3 },
+                            selected = selectedTab == 4,
+                            onClick = { selectedTab = 4 },
                             icon = { Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.tab_remove)) },
                             label = { Text(stringResource(R.string.tab_remove)) },
                             modifier = Modifier.testTag("nav_tab_remove_rail")
@@ -369,7 +385,51 @@ fun EnrollmentScreen(
                         .background(MaterialTheme.colorScheme.background)
                 ) {
                     when (selectedTab) {
-                        0 -> ConnectScreenContent(
+                        0 -> DashboardScreenContent(
+                            sessionState = sessionState,
+                            ttlRemaining = ttlRemaining,
+                            isHardwareBacked = isHardwareBacked,
+                            isStrongBoxBacked = isStrongBoxBacked,
+                            gatewayPairedStatus = gatewayPairedStatus,
+                            fingerprint = fingerprint,
+                            onStartSession = {
+                                try {
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                        if (ContextCompat.checkSelfPermission(
+                                                context,
+                                                Manifest.permission.POST_NOTIFICATIONS
+                                            ) != PackageManager.PERMISSION_GRANTED
+                                        ) {
+                                            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                                        }
+                                    }
+                                    sessionManager.startSession(UserGesture.LocalButtonPress)
+                                    com.inscopelabs.abx.server.core.tunnel.TunnelService.start(context)
+                                } catch (e: Exception) {
+                                    coroutineScope.launch {
+                                        snackbarHostState.showSnackbar("Cannot start session: ${e.message}")
+                                    }
+                                }
+                            },
+                            onStopSession = {
+                                try {
+                                    sessionManager.stopSession()
+                                } catch (e: Exception) {
+                                    coroutineScope.launch {
+                                        snackbarHostState.showSnackbar("Cannot stop session: ${e.message}")
+                                    }
+                                }
+                            },
+                            onRotateKey = { loadOrEnrollKey(forceRegenerate = true) },
+                            onShowPairing = { showPairingDialog = true },
+                            onOpenLocalBridge = { showLocalBridgeDialog = true },
+                            onNavigateToTab = { index -> selectedTab = index },
+                            onAddSimulatedEvent = { code ->
+                                AuditLog.recordRejection(code, "session_mock", "Simulated security event validation")
+                                auditRefreshTrigger++
+                            }
+                        )
+                        1 -> ConnectScreenContent(
                             keyPair = keyPair,
                             fingerprint = fingerprint,
                             formattedFingerprint = formattedFingerprint,
@@ -388,7 +448,7 @@ fun EnrollmentScreen(
                             snackbarHostState = snackbarHostState,
                             coroutineScope = coroutineScope
                         )
-                        1 -> AccessScreenContent(
+                        2 -> AccessScreenContent(
                             sessionState = sessionState,
                             ttlRemaining = ttlRemaining,
                             onStartSession = {
@@ -424,7 +484,7 @@ fun EnrollmentScreen(
                             fingerprint = fingerprint,
                             onOpenLocalBridge = { showLocalBridgeDialog = true }
                         )
-                        2 -> ActivityScreenContent(
+                        3 -> ActivityScreenContent(
                             advancedToggle = advancedToggleActivity,
                             onToggleAdvanced = { advancedToggleActivity = !advancedToggleActivity },
                             refreshTrigger = auditRefreshTrigger,
@@ -433,7 +493,7 @@ fun EnrollmentScreen(
                                 auditRefreshTrigger++
                             }
                         )
-                        3 -> RemoveScreenContent(
+                        4 -> RemoveScreenContent(
                             onWipeData = { clearCredentials() }
                         )
                     }

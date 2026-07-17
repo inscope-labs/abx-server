@@ -56,6 +56,7 @@
     <string name="error_state_title">Secure Identity Initialization Failed</string>
     <string name="error_state_desc">The application was unable to establish a secure, hardware-backed identity key pair. This might occur if hardware cryptography is restricted or the secure enclave is temporarily locked.</string>
     <string name="btn_retry_initialization">Retry Initialization</string>
+    <string name="tab_dashboard">Dashboard</string>
     <string name="tab_connect">Connect</string>
     <string name="tab_access">Access</string>
     <string name="tab_activity">Activity</string>
