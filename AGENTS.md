@@ -29,6 +29,35 @@ Protected paths:
 
 Never assume the local workspace reflects the current state of `main`.
 
+## 1a. CI-Owned Paths — Never Edit, Never Stage, Never Delete
+
+The following paths are exclusively written by GitHub Actions
+workflows, never by this agent, regardless of what a task asks for:
+
+- version.properties
+- build-logs/**
+
+Never open, edit, or stage these paths for any reason, even
+incidentally. Your local workspace copy of these paths (if any) is
+guaranteed to be stale — GitHub Actions updates them on every workflow
+run in ways this workspace never observes, since it cannot pull.
+
+## 1b. Never Stage or Commit the Entire Working Tree
+
+NEVER use `git add -A`, `git add .`, `git add --all`, or any
+equivalent blanket-staging command. Every commit must stage ONLY the
+exact files the current task explicitly asked you to create or
+modify — nothing else, added by explicit path, one at a time or as an
+explicit list.
+
+Before every commit, run `git status` and verify the staged file list
+contains ONLY the files this task was asked to touch. If
+version.properties, anything under build-logs/, or any other
+unexpected file appears as staged (whether as a modification or a
+deletion), unstage it immediately (`git restore --staged <path>`)
+before committing. A commit that would delete or modify a file outside
+the current task's explicit scope must never be pushed.
+
 ## 2. Mandatory Process Report on Every Task
 
 This environment provides no way to copy, save, or download your
