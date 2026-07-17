@@ -1,3 +1,9 @@
+# Diagnostic output — inspect build/outputs/mapping/release/ after
+# each build to see exactly what R8 kept, removed, and why.
+-printconfiguration build/outputs/mapping/release/full-r8-config.txt
+-printseeds build/outputs/mapping/release/seeds.txt
+-printusage build/outputs/mapping/release/usage.txt
+
 # Add project specific ProGuard rules here.
 # You can control the set of applied configuration files using the
 # proguardFiles setting in build.gradle.
@@ -71,4 +77,53 @@
     public *;
 }
 -dontwarn androidx.work.**
+
+# ===== Anti-silent-killer hardening pass =====
+# AAPT2/R8 already auto-keep real manifest components (Activity,
+# Service, Receiver, Provider declared via android:name on a
+# component tag) — do NOT add manual rules for those, it's
+# redundant. The rules below target genuine reflection paths that
+# are NOT auto-protected.
+
+# androidx.startup: Initializer classes are discovered via
+# <meta-data android:name="..."> STRING values inside
+# InitializationProvider's manifest entry, not as a component tag
+# — this reflection path is NOT covered by AAPT2's auto-keep.
+-keep class * extends androidx.startup.Initializer {
+    public <init>();
+}
+-keep class androidx.startup.InitializationProvider { *; }
+
+# WorkManager: Configuration.Provider is discovered via an
+# `application is Configuration.Provider` check — safe under R8
+# on its own — but WorkManager's internal Room-backed work
+# database and its own Worker-class-by-name lookup (used when
+# resuming persisted work after process death) both rely on
+# reflection separate from the app's own Room rules above.
+-keep class * extends androidx.work.ListenableWorker {
+    public <init>(android.content.Context, androidx.work.WorkerParameters);
+}
+-keep class androidx.work.impl.** { *; }
+-dontwarn androidx.work.**
+
+# Kotlin coroutines: Continuation/suspend-function machinery and
+# CoroutineExceptionHandler service-loader discovery.
+-keepclassmembernames class kotlinx.coroutines.** {
+    volatile <fields>;
+}
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler
+-dontwarn kotlinx.coroutines.**
+
+# Compose: bundled consumer rules normally handle this, but keep
+# Compose runtime's reflection-based slot-table/snapshot classes
+# explicitly to rule this out as a variable.
+-dontwarn androidx.compose.**
+-keep class androidx.compose.runtime.** { *; }
+
+# zxing: pure-Java, no reflection, but the MultiFormatWriter's
+# internal encoder lookup uses a switch-on-enum pattern R8 can
+# sometimes miscompile in older versions — keep defensively.
+-keep class com.google.zxing.** { *; }
+-dontwarn com.google.zxing.**
 
