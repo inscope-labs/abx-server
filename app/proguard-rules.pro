@@ -55,3 +55,20 @@
 -keep interface com.inscopelabs.abx.server.** { *; }
 -keep enum com.inscopelabs.abx.server.** { *; }
 -keep class com.inscopelabs.abx.server.boot.** { *; }
+
+# WorkManager / AndroidX Startup Rules
+# WorkManager and androidx.startup use reflection to discover their
+# own Configuration.Provider / Initializer classes; without these
+# rules R8 can strip or rename internals they depend on by exact
+# name, causing an immediate, stacktrace-less crash at process
+# startup (before Application.onCreate()).
+-keep class androidx.work.** { *; }
+-keep class androidx.startup.** { *; }
+-keep class * extends androidx.startup.Initializer {
+    public <init>();
+}
+-keepclassmembers class * implements androidx.work.Configuration$Provider {
+    public *;
+}
+-dontwarn androidx.work.**
+
