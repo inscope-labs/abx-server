@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ABX</string>
 
@@ -39,6 +40,8 @@
     <string name="val_hardware_backed_no">NO (TEE fallback unavailable)</string>
     <string name="val_strongbox_yes">YES (Discrete Hardware Security Module)</string>
     <string name="btn_rotate_key">Rotate Secure Keypair</string>
+    <string name="btn_pairing">Gateway Pairing</string>
+    <string name="btn_local_bridge">Local Bridge</string>
     <string name="btn_clear_credentials">Clear Credentials &amp; Deconstruct Identity</string>
     <string name="msg_keys_cleared">Secure keys successfully cleared and deconstructed.</string>
     <string name="msg_rotated_success">New EC-256 device credential keypair rotated successfully.</string>

@@ -65,6 +65,8 @@ import com.inscopelabs.abx.server.core.policy.Capability
 import androidx.compose.ui.res.stringResource
 import com.inscopelabs.abx.server.BuildConfig
 import com.inscopelabs.abx.server.ui.DashboardScreenContent
+import com.inscopelabs.abx.server.ui.CompactTopBar
+import com.inscopelabs.abx.server.ui.ContextToolbar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -232,39 +234,20 @@ fun EnrollmentScreen(
     Box(modifier = modifier.fillMaxSize()) {
         Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.Security,
-                            contentDescription = "ABC Security Shield Logo",
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(end = 8.dp)
-                        )
-                        Text(
-                            text = stringResource(R.string.app_name),
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(
-                        onClick = { showAboutDialog = true },
-                        modifier = Modifier
-                            .minimumInteractiveComponentSize()
-                            .size(48.dp)
-                            .testTag("top_bar_about_button")
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Info,
-                            contentDescription = stringResource(R.string.btn_about_info)
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+            Column {
+                CompactTopBar(
+                    appName = stringResource(R.string.app_name),
+                    onOverflowClick = { showAboutDialog = true },
+                    isSessionActive = sessionState is SessionState.ACTIVE
                 )
-            )
+                ContextToolbar(
+                    onRotateKey = { loadOrEnrollKey(forceRegenerate = true) },
+                    onShowPairing = { showPairingDialog = true },
+                    onOpenLocalBridge = { showLocalBridgeDialog = true },
+                    onNavigateToAccess = { selectedTab = 2 },
+                    onNavigateToRemove = { selectedTab = 4 }
+                )
+            }
         },
         bottomBar = {
             // Display Bottom Navigation Bar ONLY on Compact layout (Phone)
@@ -289,26 +272,15 @@ fun EnrollmentScreen(
                             modifier = Modifier.testTag("nav_tab_connect")
                         )
                         NavigationBarItem(
-                            selected = selectedTab == 2,
-                            onClick = { selectedTab = 2 },
-                            icon = { Icon(Icons.Default.VpnKey, contentDescription = null) },
-                            label = { Text(stringResource(R.string.tab_access)) },
-                            modifier = Modifier.testTag("nav_tab_access")
-                        )
-                        NavigationBarItem(
                             selected = selectedTab == 3,
                             onClick = { selectedTab = 3 },
                             icon = { Icon(Icons.Default.History, contentDescription = null) },
                             label = { Text(stringResource(R.string.tab_activity)) },
                             modifier = Modifier.testTag("nav_tab_activity")
                         )
-                        NavigationBarItem(
-                            selected = selectedTab == 4,
-                            onClick = { selectedTab = 4 },
-                            icon = { Icon(Icons.Default.Delete, contentDescription = null) },
-                            label = { Text(stringResource(R.string.tab_remove)) },
-                            modifier = Modifier.testTag("nav_tab_remove")
-                        )
+                        // Access (tab 2) and Remove (tab 4) are still valid
+                        // destinations — reached via ContextToolbar in the
+                        // top bar now instead of competing for space here.
                     }
                 }
             }

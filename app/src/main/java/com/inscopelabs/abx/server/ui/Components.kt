@@ -4,12 +4,14 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Inbox
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,6 +21,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
+import com.inscopelabs.abx.server.R
+import com.inscopelabs.abx.server.ui.theme.abxStatusColors
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -436,4 +441,165 @@ fun ABXConfirmationDialog(
         },
         shape = RoundedCornerShape(24.dp)
     )
+}
+
+/**
+ * Compact top bar: fixed 48dp height (vs. Material3's default 64dp TopAppBar).
+ * Branding uses a circular avatar-style mark rather than a full title lockup,
+ * and secondary actions collapse into a single overflow menu instead of a
+ * row of icon buttons — mirrors the reference layout: mark + name, one
+ * overflow affordance, done.
+ */
+@Composable
+fun CompactTopBar(
+    appName: String,
+    onOverflowClick: () -> Unit,
+    isSessionActive: Boolean,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(48.dp)
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(horizontal = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                modifier = Modifier
+                    .size(28.dp)
+                    .clip(RoundedCornerShape(50))
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(16.dp)
+                )
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = appName,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            if (isSessionActive) {
+                Spacer(modifier = Modifier.width(8.dp))
+                Box(
+                    modifier = Modifier
+                        .size(6.dp)
+                        .clip(RoundedCornerShape(50))
+                        .background(MaterialTheme.abxStatusColors.success)
+                )
+            }
+        }
+
+        IconButton(
+            onClick = onOverflowClick,
+            modifier = Modifier
+                .size(32.dp)
+                .testTag("top_bar_about_button")
+        ) {
+            Icon(
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = stringResource(R.string.btn_about_info),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(18.dp)
+            )
+        }
+    }
+}
+
+/**
+ * Secondary contextual toolbar. Holds the actions that don't deserve a
+ * permanent slot in the bottom nav (rotate key, pairing, local bridge) plus
+ * quick jumps to Access and Remove — the two destinations dropped from the
+ * bottom bar when it was trimmed to three items. This is what "takes the
+ * load off" the top bar and the dashboard's own quick-action clutter.
+ */
+@Composable
+fun ContextToolbar(
+    onRotateKey: () -> Unit,
+    onShowPairing: () -> Unit,
+    onOpenLocalBridge: () -> Unit,
+    onNavigateToAccess: () -> Unit,
+    onNavigateToRemove: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(40.dp)
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .horizontalScroll(rememberScrollState())
+            .padding(horizontal = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        ToolbarAction(
+            icon = Icons.Default.VpnKey,
+            label = stringResource(R.string.tab_access),
+            onClick = onNavigateToAccess,
+            testTag = "toolbar_access"
+        )
+        ToolbarAction(
+            icon = Icons.Default.QrCodeScanner,
+            label = stringResource(R.string.btn_pairing),
+            onClick = onShowPairing,
+            testTag = "toolbar_pairing"
+        )
+        ToolbarAction(
+            icon = Icons.Default.Refresh,
+            label = stringResource(R.string.btn_rotate_key),
+            onClick = onRotateKey,
+            testTag = "toolbar_rotate_key"
+        )
+        ToolbarAction(
+            icon = Icons.Default.Link,
+            label = stringResource(R.string.btn_local_bridge),
+            onClick = onOpenLocalBridge,
+            testTag = "toolbar_local_bridge"
+        )
+        ToolbarAction(
+            icon = Icons.Default.Delete,
+            label = stringResource(R.string.tab_remove),
+            onClick = onNavigateToRemove,
+            testTag = "toolbar_remove"
+        )
+    }
+}
+
+@Composable
+private fun ToolbarAction(
+    icon: ImageVector,
+    label: String,
+    onClick: () -> Unit,
+    testTag: String
+) {
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .clickable(onClick = onClick)
+            .padding(horizontal = 10.dp, vertical = 6.dp)
+            .testTag(testTag),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = label,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(16.dp)
+        )
+        Spacer(modifier = Modifier.width(6.dp))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
 }
