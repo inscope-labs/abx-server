@@ -11,6 +11,12 @@ class HelloApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        
+        // Install global crash handler FIRST.
+        Thread.setDefaultUncaughtExceptionHandler(
+            com.inscopelabs.abx.server.core.diagnostics.GlobalExceptionHandler(this)
+        )
+
         try {
             BootGuard.stageStart("KeyStoreManager")
             val km = KeyStoreManager(this)
