@@ -453,10 +453,14 @@ fun ABXConfirmationDialog(
 @Composable
 fun CompactTopBar(
     appName: String,
-    onOverflowClick: () -> Unit,
     isSessionActive: Boolean,
+    onUtilitiesClick: () -> Unit,
+    onAboutClick: () -> Unit,
+    onPrivacyPolicyClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var overflowExpanded by remember { mutableStateOf(false) }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -499,18 +503,50 @@ fun CompactTopBar(
             }
         }
 
-        IconButton(
-            onClick = onOverflowClick,
-            modifier = Modifier
-                .size(32.dp)
-                .testTag("top_bar_about_button")
-        ) {
-            Icon(
-                imageVector = Icons.Default.MoreVert,
-                contentDescription = stringResource(R.string.btn_about_info),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(18.dp)
-            )
+        Box {
+            IconButton(
+                onClick = { overflowExpanded = true },
+                modifier = Modifier
+                    .size(32.dp)
+                    .testTag("top_bar_about_button")
+            ) {
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = stringResource(R.string.btn_about_info),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+
+            DropdownMenu(
+                expanded = overflowExpanded,
+                onDismissRequest = { overflowExpanded = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.menu_utilities)) },
+                    onClick = {
+                        overflowExpanded = false
+                        onUtilitiesClick()
+                    },
+                    modifier = Modifier.testTag("overflow_menu_utilities")
+                )
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.menu_about)) },
+                    onClick = {
+                        overflowExpanded = false
+                        onAboutClick()
+                    },
+                    modifier = Modifier.testTag("overflow_menu_about")
+                )
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.menu_privacy_policy)) },
+                    onClick = {
+                        overflowExpanded = false
+                        onPrivacyPolicyClick()
+                    },
+                    modifier = Modifier.testTag("overflow_menu_privacy_policy")
+                )
+            }
         }
     }
 }

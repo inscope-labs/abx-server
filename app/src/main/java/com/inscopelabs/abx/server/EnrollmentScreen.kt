@@ -71,6 +71,7 @@ import com.inscopelabs.abx.server.toolbox.ToolCatalog
 import com.inscopelabs.abx.server.toolbox.ToolDefinition
 import com.inscopelabs.abx.server.toolbox.ToolboxScreenContent
 import com.inscopelabs.abx.server.toolbox.ToolRunnerScreen
+import android.widget.Toast
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -115,7 +116,6 @@ fun EnrollmentScreen(
     var activeTool by remember { mutableStateOf<ToolDefinition?>(null) }
     var advancedToggleAccess by remember { mutableStateOf(false) }
     var advancedToggleActivity by remember { mutableStateOf(false) }
-    var showAboutDialog by remember { mutableStateOf(false) }
     var showPairingDialog by remember { mutableStateOf(false) }
     var pairingCodeInput by remember { mutableStateOf("") }
     var gatewayPairedStatus by remember { mutableStateOf("Not paired with any gateway") }
@@ -242,16 +242,19 @@ fun EnrollmentScreen(
             Column {
                 CompactTopBar(
                     appName = stringResource(R.string.app_name),
-                    onOverflowClick = {
-                        val activity = context as? androidx.appcompat.app.AppCompatActivity
-                        val rootView = activity?.findViewById<android.view.View>(android.R.id.content)
-                        if (activity != null && rootView != null) {
-                            val popup = androidx.appcompat.widget.PopupMenu(context, rootView)
-                            popup.menuInflater.inflate(R.menu.options_menu, popup.menu)
-                            popup.setOnMenuItemClickListener { menuItem ->
-                                activity.onOptionsItemSelected(menuItem)
-                            }
-                            popup.show()
+                    onUtilitiesClick = {
+                        Toast.makeText(context, context.getString(R.string.menu_utilities_toast), Toast.LENGTH_SHORT).show()
+                    },
+                    onAboutClick = {
+                        (context as? androidx.fragment.app.FragmentActivity)?.let { activity ->
+                            com.inscopelabs.abx.server.compliance.AboutBottomSheet()
+                                .show(activity.supportFragmentManager, "AboutBottomSheet")
+                        }
+                    },
+                    onPrivacyPolicyClick = {
+                        (context as? androidx.fragment.app.FragmentActivity)?.let { activity ->
+                            com.inscopelabs.abx.server.compliance.PrivacyPolicyBottomSheet()
+                                .show(activity.supportFragmentManager, "PrivacyPolicyBottomSheet")
                         }
                     },
                     isSessionActive = sessionState is SessionState.ACTIVE
@@ -514,103 +517,6 @@ fun EnrollmentScreen(
             initialInput = bridgeInputText,
             onRecordActivityEvent = {
                 auditRefreshTrigger++
-            }
-        )
-    }
-
-    // About / Help Dialog as custom overlay modal to ensure 100% platform-agnostic rendering and testability
-    if (showAboutDialog) {
-        CustomModalDialog(
-            onDismissRequest = { showAboutDialog = false },
-            icon = {
-                Icon(
-                    imageVector = Icons.Default.Help,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(32.dp)
-                )
-            },
-            title = {
-                Text(
-                    text = stringResource(R.string.dialog_about_title),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            },
-            text = {
-                Column(
-                    modifier = Modifier
-                        .verticalScroll(rememberScrollState())
-                        .padding(vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Column {
-                        Text(
-                            text = "Version ${BuildConfig.VERSION_NAME}",
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = stringResource(R.string.dialog_about_spec),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = stringResource(R.string.dialog_about_support),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text(
-                            text = stringResource(R.string.dialog_about_privacy_title),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                        Text(
-                            text = stringResource(R.string.dialog_about_privacy_text),
-                            style = MaterialTheme.typography.bodyMedium,
-                            lineHeight = 20.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text(
-                            text = stringResource(R.string.dialog_about_terms_title),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                        Text(
-                            text = stringResource(R.string.dialog_about_terms_text),
-                            style = MaterialTheme.typography.bodyMedium,
-                            lineHeight = 20.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = { showAboutDialog = false },
-                    modifier = Modifier.heightIn(min = 48.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.btn_close),
-                        fontWeight = FontWeight.Bold
-                    )
-                }
             }
         )
     }

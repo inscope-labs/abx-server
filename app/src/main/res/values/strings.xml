@@ -60,13 +60,6 @@
     <string name="msg_secure_active">Secure keypair active.</string>
     <string name="msg_init_failed">Credential initialization failed: %1$s</string>
     <string name="btn_about_info">About &amp; Privacy Policy</string>
-    <string name="dialog_about_title">About ABX</string>
-    <string name="dialog_about_spec">Architecture: Specification v3.0</string>
-    <string name="dialog_about_support">Support Email: afterdawn.service@gmail.com</string>
-    <string name="dialog_about_privacy_title">Privacy Policy</string>
-    <string name="dialog_about_privacy_text">ABX operates offline and locally on your device. It does NOT collect, harvest, or transmit any user-identifiable information, usage statistics, or location data. All generated cryptographic keys are isolated and secured inside the device\'s Hardware Security Module (HSM) / Secure Enclave and cannot be exported or accessed by external applications.</string>
-    <string name="dialog_about_terms_title">Terms of Service</string>
-    <string name="dialog_about_terms_text">This utility is provided \"as is\" to facilitate secure, hardware-attested authentication. You are responsible for ensuring your physical device security.</string>
     <string name="btn_close">Close</string>
     <string name="error_state_title">Secure Identity Initialization Failed</string>
     <string name="error_state_desc">The application was unable to establish a secure, hardware-backed identity key pair. This might occur if hardware cryptography is restricted or the secure enclave is temporarily locked.</string>
@@ -100,6 +93,12 @@
     <string name="mock_pairing_prompt">Enter gateway pairing token or click Enroll:</string>
     <string name="dialog_enroll_success">Device enrolled and paired successfully!</string>
 
+    <!-- Options Menu Strings -->
+    <string name="menu_utilities">Utilities</string>
+    <string name="menu_utilities_toast">Utilities clicked</string>
+    <string name="menu_about">About</string>
+    <string name="menu_privacy_policy">Privacy Policy</string>
+
     <string name="error_title">Something went wrong</string>
     <string name="error_message">The app ran into an unexpected problem and needs to restart. Your data is safe.</string>
     <string name="error_reference_format">Reference: %1$s</string>
@@ -112,9 +111,4 @@
     <string name="error_share_chooser_title">Send report via</string>
     <string name="error_share_failed">Failed to share diagnostic report</string>
     <string name="error_fallback_toast">An error occurred displaying this screen. Please restart the app.</string>
-
-    <!-- Options Menu Strings -->
-    <string name="menu_utilities">Utilities</string>
-    <string name="menu_about">About</string>
-    <string name="menu_privacy_policy">Privacy Policy</string>
 </resources>
