@@ -18,9 +18,11 @@ import com.inscopelabs.abx.server.core.mcp.McpExecutor
 import com.inscopelabs.abx.server.core.session.SessionManager
 
 /**
- * Hosts a single Toolbox tool in a sandboxed WebView. Origin is locked to
- * file:///android_asset/ — tools are bundled assets, not remote pages, so
- * there is no network-loaded content in scope here.
+ * Hosts a single Toolbox tool in a sandboxed WebView. Tools are bundled
+ * assets served through WebViewAssetLoader under the virtual origin
+ * https://appassets.androidplatform.net — not loaded as raw file:// URLs,
+ * which Chromium rejects as an invalid origin rule for addWebMessageListener.
+ * There is no network-loaded content in scope here.
  */
 @Composable
 fun ToolRunnerScreen(
@@ -61,10 +63,10 @@ fun ToolRunnerScreen(
                     val bridgeManager = JsBridgeManager(
                         webView = this,
                         actionHandler = handler,
-                        allowedOrigins = setOf("file:///android_asset/")
+                        context = context
                     )
                     tag = bridgeManager
-                    loadUrl("file:///android_asset/tools/${tool.assetDir}/index.html")
+                    bridgeManager.loadTool(tool.assetDir)
                 }
             }
         )
