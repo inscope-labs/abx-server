@@ -39,6 +39,10 @@
             android:name=".core.diagnostics.CrashActivity"
             android:exported="false"
             android:launchMode="singleTask" />
+        <activity
+            android:name=".core.diagnostics.UserFacingErrorActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
     </application>
 
 </manifest>

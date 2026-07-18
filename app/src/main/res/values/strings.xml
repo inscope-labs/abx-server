@@ -100,6 +100,19 @@
     <string name="mock_pairing_prompt">Enter gateway pairing token or click Enroll:</string>
     <string name="dialog_enroll_success">Device enrolled and paired successfully!</string>
 
+    <string name="error_title">Something went wrong</string>
+    <string name="error_message">The app ran into an unexpected problem and needs to restart. Your data is safe.</string>
+    <string name="error_reference_format">Reference: %1$s</string>
+    <string name="error_unknown_reference">unavailable</string>
+    <string name="error_restart_button">Restart App</string>
+    <string name="error_restart_failed">Failed to restart application</string>
+    <string name="error_share_button">Send Diagnostic Report</string>
+    <string name="error_share_subject">ABX Server error report (%1$s)</string>
+    <string name="error_share_body">Reference code: %1$s\n\nFull diagnostic details:\n\n%2$s</string>
+    <string name="error_share_chooser_title">Send report via</string>
+    <string name="error_share_failed">Failed to share diagnostic report</string>
+    <string name="error_fallback_toast">An error occurred displaying this screen. Please restart the app.</string>
+
     <!-- Options Menu Strings -->
     <string name="menu_utilities">Utilities</string>
     <string name="menu_about">About</string>

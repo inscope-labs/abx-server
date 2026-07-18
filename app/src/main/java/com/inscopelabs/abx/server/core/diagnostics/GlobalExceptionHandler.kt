@@ -43,13 +43,14 @@ class GlobalExceptionHandler(
         throwable: Throwable
     ) {
         try {
-            val crashReport = buildCrashReport(thread, throwable)
+            val referenceCode = generateReferenceCode()
+            val crashReport = buildCrashReport(thread, throwable, referenceCode)
 
             writeCrashLog(crashReport)
 
             sendToCrashlytics(thread, throwable)
 
-            launchCrashActivity(throwable, crashReport)
+            launchErrorActivity(throwable, crashReport, referenceCode)
         } catch (e: Exception) {
             // Never allow diagnostics / crash handling to crash the app or recurse.
             try {
@@ -58,10 +59,10 @@ class GlobalExceptionHandler(
         }
 
         // Deliberately NOT chaining to the platform default handler here.
-        // launchCrashActivity() already starts a FLAG_ACTIVITY_NEW_TASK intent,
+        // launchErrorActivity() already starts a FLAG_ACTIVITY_NEW_TASK intent,
         // which Android will honor even after this process dies — the app
-        // effectively respawns straight into CrashActivity instead of the
-        // bare OS "App has stopped" dialog. If launchCrashActivity() itself
+        // effectively respawns straight into the error screen instead of the
+        // bare OS "App has stopped" dialog. If launchErrorActivity() itself
         // failed above, fall through to the default handler so the user
         // still sees *something* rather than a silent hang.
         val startedCrashActivity = crashActivityLaunched
@@ -77,30 +78,49 @@ class GlobalExceptionHandler(
     private var crashActivityLaunched = false
 
     /**
-     * Starts CrashActivity in a new task so it survives this process being
-     * killed immediately afterward. Mirrors the classic
-     * TopExceptionHandler/DisplayExceptionDataActivity pattern: Android
-     * queues the launch via the intent before the process dies, then
-     * respawns the app fresh to host it.
+     * Short opaque code correlating the on-screen error with its full entry
+     * in crash_logs.txt, without exposing exception internals on the
+     * release-build screen. Not a security token — just a human-quotable
+     * lookup key for support.
      */
-    private fun launchCrashActivity(throwable: Throwable, fullReport: String) {
-        val metadata = buildString {
-            appendLine("Manufacturer: ${Build.MANUFACTURER}")
-            appendLine("Model: ${Build.MODEL}")
-            appendLine("Android: ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-            append("App Version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
-        }
+    private fun generateReferenceCode(): String =
+        "ABX-" + java.lang.Long.toString(System.currentTimeMillis(), 36).uppercase(Locale.US)
 
-        val stackWriter = StringWriter()
-        throwable.printStackTrace(PrintWriter(stackWriter))
+    /**
+     * Starts the appropriate error screen in a new task so it survives this
+     * process being killed immediately afterward. Debug builds get
+     * CrashActivity's full developer detail (exception type, stack trace);
+     * release builds get UserFacingErrorActivity's calm, detail-free screen
+     * with just the reference code — the full report stays in
+     * crash_logs.txt and is only attached to a share Intent if the user
+     * explicitly asks. Mirrors the classic TopExceptionHandler/
+     * DisplayExceptionDataActivity pattern either way.
+     */
+    private fun launchErrorActivity(throwable: Throwable, fullReport: String, referenceCode: String) {
+        val intent = if (BuildConfig.DEBUG) {
+            val metadata = buildString {
+                appendLine("Manufacturer: ${Build.MANUFACTURER}")
+                appendLine("Model: ${Build.MODEL}")
+                appendLine("Android: ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
+                append("App Version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
+            }
+            val stackWriter = StringWriter()
+            throwable.printStackTrace(PrintWriter(stackWriter))
 
-        val intent = Intent(appContext, CrashActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            putExtra("extra_exception_type", throwable.javaClass.name)
-            putExtra("extra_message", throwable.message ?: "No message")
-            putExtra("extra_metadata", metadata)
-            putExtra("extra_stack_trace", stackWriter.toString())
-            putExtra("extra_full_report", fullReport)
+            Intent(appContext, CrashActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                putExtra("extra_exception_type", throwable.javaClass.name)
+                putExtra("extra_message", throwable.message ?: "No message")
+                putExtra("extra_metadata", metadata)
+                putExtra("extra_stack_trace", stackWriter.toString())
+                putExtra("extra_full_report", fullReport)
+            }
+        } else {
+            Intent(appContext, UserFacingErrorActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                putExtra("extra_reference_code", referenceCode)
+                putExtra("extra_full_report", fullReport)
+            }
         }
         appContext.startActivity(intent)
         crashActivityLaunched = true
@@ -111,7 +131,8 @@ class GlobalExceptionHandler(
      */
     private fun buildCrashReport(
         thread: Thread,
-        throwable: Throwable
+        throwable: Throwable,
+        referenceCode: String
     ): String {
         val writer = StringWriter()
         throwable.printStackTrace(PrintWriter(writer))
@@ -121,6 +142,7 @@ class GlobalExceptionHandler(
             appendLine("ABX GLOBAL CRASH REPORT")
             appendLine("====================================================")
 
+            appendLine("Reference Code : $referenceCode")
             appendLine("Timestamp      : ${
                 SimpleDateFormat(
                     "yyyy-MM-dd HH:mm:ss.SSS",

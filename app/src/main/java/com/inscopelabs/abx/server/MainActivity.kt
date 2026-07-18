@@ -80,8 +80,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_utilities -> {
-                Toast.makeText(this, "Utilities clicked", Toast.LENGTH_SHORT).show()
-                true
+                throw RuntimeException("Test Uncaught Exception for Diagnostics Verification")
             }
             R.id.menu_about -> {
                 AboutBottomSheet().show(supportFragmentManager, "AboutBottomSheet")
