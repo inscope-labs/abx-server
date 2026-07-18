@@ -1,6 +1,7 @@
 package com.inscopelabs.abx.server.core.diagnostics
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.util.Log
 import com.inscopelabs.abx.server.BuildConfig
@@ -47,20 +48,62 @@ class GlobalExceptionHandler(
             writeCrashLog(crashReport)
 
             sendToCrashlytics(thread, throwable)
+
+            launchCrashActivity(throwable, crashReport)
         } catch (e: Exception) {
             // Never allow diagnostics / crash handling to crash the app or recurse.
             try {
                 Log.e("ABX_CRASH", "Exception inside exception handler", e)
             } catch (ignored: Throwable) {}
-        } finally {
-            // Guarantee that the default Android uncaught exception handler is always invoked
-            defaultHandler?.uncaughtException(thread, throwable)
-                ?: run {
-                    // Fallback termination to prevent deadlock or hanging state
-                    android.os.Process.killProcess(android.os.Process.myPid())
-                    exitProcess()
-                }
         }
+
+        // Deliberately NOT chaining to the platform default handler here.
+        // launchCrashActivity() already starts a FLAG_ACTIVITY_NEW_TASK intent,
+        // which Android will honor even after this process dies — the app
+        // effectively respawns straight into CrashActivity instead of the
+        // bare OS "App has stopped" dialog. If launchCrashActivity() itself
+        // failed above, fall through to the default handler so the user
+        // still sees *something* rather than a silent hang.
+        val startedCrashActivity = crashActivityLaunched
+        if (!startedCrashActivity) {
+            defaultHandler?.uncaughtException(thread, throwable)
+        }
+
+        android.os.Process.killProcess(android.os.Process.myPid())
+        exitProcess()
+    }
+
+    @Volatile
+    private var crashActivityLaunched = false
+
+    /**
+     * Starts CrashActivity in a new task so it survives this process being
+     * killed immediately afterward. Mirrors the classic
+     * TopExceptionHandler/DisplayExceptionDataActivity pattern: Android
+     * queues the launch via the intent before the process dies, then
+     * respawns the app fresh to host it.
+     */
+    private fun launchCrashActivity(throwable: Throwable, fullReport: String) {
+        val metadata = buildString {
+            appendLine("Manufacturer: ${Build.MANUFACTURER}")
+            appendLine("Model: ${Build.MODEL}")
+            appendLine("Android: ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
+            append("App Version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
+        }
+
+        val stackWriter = StringWriter()
+        throwable.printStackTrace(PrintWriter(stackWriter))
+
+        val intent = Intent(appContext, CrashActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            putExtra("extra_exception_type", throwable.javaClass.name)
+            putExtra("extra_message", throwable.message ?: "No message")
+            putExtra("extra_metadata", metadata)
+            putExtra("extra_stack_trace", stackWriter.toString())
+            putExtra("extra_full_report", fullReport)
+        }
+        appContext.startActivity(intent)
+        crashActivityLaunched = true
     }
 
     /**

@@ -15,6 +15,18 @@
     <string name="recovery_unknown_message">No message was specified in the failure.</string>
     <string name="recovery_copied">Diagnostic report copied to clipboard</string>
 
+    <string name="crash_title">Something Went Wrong</string>
+    <string name="crash_subtitle">The app hit an unexpected error and had to close that screen. Your data is safe. Please copy this report and share it with support.</string>
+    <string name="crash_type_label">Exception Type</string>
+    <string name="crash_message_label">Error Message</string>
+    <string name="crash_device_label">Device Metadata</string>
+    <string name="crash_stack_label">Stack Trace</string>
+    <string name="crash_copy_button">Copy Report</string>
+    <string name="crash_restart_button">Restart App</string>
+    <string name="crash_unknown_type">Unknown Exception</string>
+    <string name="crash_unknown_message">No message was provided with this error.</string>
+    <string name="crash_copied">Crash report copied to clipboard</string>
+
     <!-- ABX Enrollment Strings -->
     <string name="title_enrollment">ABX Enrollment</string>
     <string name="section_device_identity">Device Identity</string>

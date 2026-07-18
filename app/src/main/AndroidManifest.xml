@@ -35,6 +35,10 @@
         <activity
             android:name=".boot.RecoveryActivity"
             android:exported="false" />
+        <activity
+            android:name=".core.diagnostics.CrashActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
     </application>
 
 </manifest>
