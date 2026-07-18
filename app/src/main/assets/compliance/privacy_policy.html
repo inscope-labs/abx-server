@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 16px;
+        }
+        @media (prefers-color-scheme: dark) {
+            body {
+                color: #e0e0e0;
+                background-color: #121212;
+            }
+        }
+        h1 {
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+            color: #d93025;
+        }
+        @media (prefers-color-scheme: dark) {
+            h1 {
+                color: #f28b82;
+            }
+        }
+        h2 {
+            font-size: 1.2rem;
+            margin-top: 24px;
+            margin-bottom: 8px;
+            color: #d93025;
+        }
+        @media (prefers-color-scheme: dark) {
+            h2 {
+                color: #f28b82;
+            }
+        }
+        p {
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 1rem;
+        }
+        ul {
+            margin-top: 0;
+            margin-bottom: 16px;
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        .footer {
+            margin-top: 32px;
+            font-size: 0.85rem;
+            color: #777777;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 12px;
+        }
+        @media (prefers-color-scheme: dark) {
+            .footer {
+                color: #999999;
+                border-top-color: #333333;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Privacy Policy</h1>
+    <p>Last updated: July 18, 2026</p>
+    
+    <p>This Privacy Policy describes how we handle information in connection with the ABX Server application. We are committed to protecting user privacy and maintaining transparency.</p>
+
+    <h2>1. Data Collection</h2>
+    <p><strong>Offline-First Principle:</strong> This application operates fully offline on your physical device. We do NOT collect, harvest, transmit, or store any personal data, usage statistics, user-identifiable information, or hardware tracking metrics. All sensitive credentials, device fingerprints, and local audit logs are kept strictly in localized application memory or inside isolated system databases.</p>
+
+    <h2>2. Key Materials & Security Enclaves</h2>
+    <p>All cryptographic keys (such as the EC-256 device credential keypair) are isolated securely using Android's hardware-backed Keystore system. The private key material is non-exportable, locked securely in the device's physical Hardware Security Module (HSM) / Trusted Execution Environment (TEE), and cannot be accessed or transferred off-device.</p>
+
+    <h2>3. Third-Party Sharing</h2>
+    <p>Because we do not collect any information, we do not—and cannot—share, sell, rent, or distribute any user data to third-party companies, advertising networks, or analytics providers.</p>
+
+    <h2>4. App Permissions</h2>
+    <p>To enable offline security monitoring, the application might request localized platform permissions such as:
+        <ul>
+            <li><strong>POST_NOTIFICATIONS:</strong> Required to keep active background tunnels visible to the user via status indicators.</li>
+            <li><strong>LOCAL_STORAGE / SANDBOX READ-WRITE:</strong> Scoped exclusively to designated folders to enforce local security validation policy guidelines.</li>
+        </ul>
+    </p>
+
+    <h2>5. Compliance</h2>
+    <p>This policy complies fully with standard Google Play developer policies. The policy is accessible directly without requiring user login or registration.</p>
+
+    <div class="footer">
+        © 2026 ABX. Standard Legal Privacy Template. Clearly labeled as placeholder content for final modification by the developer.
+    </div>
+</body>
+</html>

@@ -99,4 +99,9 @@
     <string name="mock_pairing_title">Mock Gateway Enrollment</string>
     <string name="mock_pairing_prompt">Enter gateway pairing token or click Enroll:</string>
     <string name="dialog_enroll_success">Device enrolled and paired successfully!</string>
+
+    <!-- Options Menu Strings -->
+    <string name="menu_utilities">Utilities</string>
+    <string name="menu_about">About</string>
+    <string name="menu_privacy_policy">Privacy Policy</string>
 </resources>

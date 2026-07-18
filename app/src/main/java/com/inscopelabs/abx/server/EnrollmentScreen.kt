@@ -242,7 +242,18 @@ fun EnrollmentScreen(
             Column {
                 CompactTopBar(
                     appName = stringResource(R.string.app_name),
-                    onOverflowClick = { showAboutDialog = true },
+                    onOverflowClick = {
+                        val activity = context as? androidx.appcompat.app.AppCompatActivity
+                        val rootView = activity?.findViewById<android.view.View>(android.R.id.content)
+                        if (activity != null && rootView != null) {
+                            val popup = androidx.appcompat.widget.PopupMenu(context, rootView)
+                            popup.menuInflater.inflate(R.menu.options_menu, popup.menu)
+                            popup.setOnMenuItemClickListener { menuItem ->
+                                activity.onOptionsItemSelected(menuItem)
+                            }
+                            popup.show()
+                        }
+                    },
                     isSessionActive = sessionState is SessionState.ACTIVE
                 )
                 ContextToolbar(

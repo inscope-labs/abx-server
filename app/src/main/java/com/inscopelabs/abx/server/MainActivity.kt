@@ -2,9 +2,12 @@ package com.inscopelabs.abx.server
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -15,8 +18,10 @@ import androidx.compose.ui.Modifier
 import com.inscopelabs.abx.server.core.keystore.KeyStoreManager
 import com.inscopelabs.abx.server.ui.theme.MyApplicationTheme
 import com.inscopelabs.abx.server.boot.BootRoute
+import com.inscopelabs.abx.server.compliance.AboutBottomSheet
+import com.inscopelabs.abx.server.compliance.PrivacyPolicyBottomSheet
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     private var sharedTextState by mutableStateOf<String?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +69,29 @@ class MainActivity : ComponentActivity() {
             if (!sharedText.isNullOrBlank()) {
                 sharedTextState = sharedText
             }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.options_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_utilities -> {
+                Toast.makeText(this, "Utilities clicked", Toast.LENGTH_SHORT).show()
+                true
+            }
+            R.id.menu_about -> {
+                AboutBottomSheet().show(supportFragmentManager, "AboutBottomSheet")
+                true
+            }
+            R.id.menu_privacy_policy -> {
+                PrivacyPolicyBottomSheet().show(supportFragmentManager, "PrivacyPolicyBottomSheet")
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 }
