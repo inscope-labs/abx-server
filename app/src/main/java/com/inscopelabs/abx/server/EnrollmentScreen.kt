@@ -67,6 +67,10 @@ import com.inscopelabs.abx.server.BuildConfig
 import com.inscopelabs.abx.server.ui.DashboardScreenContent
 import com.inscopelabs.abx.server.ui.CompactTopBar
 import com.inscopelabs.abx.server.ui.ContextToolbar
+import com.inscopelabs.abx.server.toolbox.ToolCatalog
+import com.inscopelabs.abx.server.toolbox.ToolDefinition
+import com.inscopelabs.abx.server.toolbox.ToolboxScreenContent
+import com.inscopelabs.abx.server.toolbox.ToolRunnerScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -107,7 +111,8 @@ fun EnrollmentScreen(
     }
 
     // Navigation and UX State
-    var selectedTab by remember { mutableStateOf(0) } // 0: Dashboard, 1: Connect, 2: Access, 3: Activity, 4: Remove
+    var selectedTab by remember { mutableStateOf(0) } // 0: Dashboard, 1: Connect, 2: Access, 3: Toolbox, 4: Remove, 5: Activity
+    var activeTool by remember { mutableStateOf<ToolDefinition?>(null) }
     var advancedToggleAccess by remember { mutableStateOf(false) }
     var advancedToggleActivity by remember { mutableStateOf(false) }
     var showAboutDialog by remember { mutableStateOf(false) }
@@ -244,8 +249,9 @@ fun EnrollmentScreen(
                     onRotateKey = { loadOrEnrollKey(forceRegenerate = true) },
                     onShowPairing = { showPairingDialog = true },
                     onOpenLocalBridge = { showLocalBridgeDialog = true },
-                    onNavigateToAccess = { selectedTab = 2 },
-                    onNavigateToRemove = { selectedTab = 4 }
+                    onNavigateToAccess = { selectedTab = 2; activeTool = null },
+                    onNavigateToRemove = { selectedTab = 4; activeTool = null },
+                    onNavigateToActivity = { selectedTab = 5; activeTool = null }
                 )
             }
         },
@@ -259,28 +265,29 @@ fun EnrollmentScreen(
                     ) {
                         NavigationBarItem(
                             selected = selectedTab == 0,
-                            onClick = { selectedTab = 0 },
+                            onClick = { selectedTab = 0; activeTool = null },
                             icon = { Icon(Icons.Default.Home, contentDescription = null) },
                             label = { Text(stringResource(R.string.tab_dashboard)) },
                             modifier = Modifier.testTag("nav_tab_dashboard")
                         )
                         NavigationBarItem(
                             selected = selectedTab == 1,
-                            onClick = { selectedTab = 1 },
+                            onClick = { selectedTab = 1; activeTool = null },
                             icon = { Icon(Icons.Default.QrCodeScanner, contentDescription = null) },
                             label = { Text(stringResource(R.string.tab_connect)) },
                             modifier = Modifier.testTag("nav_tab_connect")
                         )
                         NavigationBarItem(
                             selected = selectedTab == 3,
-                            onClick = { selectedTab = 3 },
-                            icon = { Icon(Icons.Default.History, contentDescription = null) },
-                            label = { Text(stringResource(R.string.tab_activity)) },
-                            modifier = Modifier.testTag("nav_tab_activity")
+                            onClick = { selectedTab = 3; activeTool = null },
+                            icon = { Icon(Icons.Default.Build, contentDescription = null) },
+                            label = { Text(stringResource(R.string.tab_toolbox)) },
+                            modifier = Modifier.testTag("nav_tab_toolbox")
                         )
-                        // Access (tab 2) and Remove (tab 4) are still valid
-                        // destinations — reached via ContextToolbar in the
-                        // top bar now instead of competing for space here.
+                        // Access (tab 2), Remove (tab 4) and Activity (tab 5)
+                        // are still valid destinations — reached via
+                        // ContextToolbar in the top bar instead of competing
+                        // for space here.
                     }
                 }
             }
@@ -309,7 +316,7 @@ fun EnrollmentScreen(
                         Spacer(modifier = Modifier.height(16.dp))
                         NavigationRailItem(
                             selected = selectedTab == 0,
-                            onClick = { selectedTab = 0 },
+                            onClick = { selectedTab = 0; activeTool = null },
                             icon = { Icon(Icons.Default.Home, contentDescription = stringResource(R.string.tab_dashboard)) },
                             label = { Text(stringResource(R.string.tab_dashboard)) },
                             modifier = Modifier.testTag("nav_tab_dashboard_rail")
@@ -317,7 +324,7 @@ fun EnrollmentScreen(
                         Spacer(modifier = Modifier.height(12.dp))
                         NavigationRailItem(
                             selected = selectedTab == 1,
-                            onClick = { selectedTab = 1 },
+                            onClick = { selectedTab = 1; activeTool = null },
                             icon = { Icon(Icons.Default.QrCodeScanner, contentDescription = stringResource(R.string.tab_connect)) },
                             label = { Text(stringResource(R.string.tab_connect)) },
                             modifier = Modifier.testTag("nav_tab_connect_rail")
@@ -325,7 +332,7 @@ fun EnrollmentScreen(
                         Spacer(modifier = Modifier.height(12.dp))
                         NavigationRailItem(
                             selected = selectedTab == 2,
-                            onClick = { selectedTab = 2 },
+                            onClick = { selectedTab = 2; activeTool = null },
                             icon = { Icon(Icons.Default.VpnKey, contentDescription = stringResource(R.string.tab_access)) },
                             label = { Text(stringResource(R.string.tab_access)) },
                             modifier = Modifier.testTag("nav_tab_access_rail")
@@ -333,15 +340,15 @@ fun EnrollmentScreen(
                         Spacer(modifier = Modifier.height(12.dp))
                         NavigationRailItem(
                             selected = selectedTab == 3,
-                            onClick = { selectedTab = 3 },
-                            icon = { Icon(Icons.Default.History, contentDescription = stringResource(R.string.tab_activity)) },
-                            label = { Text(stringResource(R.string.tab_activity)) },
-                            modifier = Modifier.testTag("nav_tab_activity_rail")
+                            onClick = { selectedTab = 3; activeTool = null },
+                            icon = { Icon(Icons.Default.Build, contentDescription = stringResource(R.string.tab_toolbox)) },
+                            label = { Text(stringResource(R.string.tab_toolbox)) },
+                            modifier = Modifier.testTag("nav_tab_toolbox_rail")
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         NavigationRailItem(
                             selected = selectedTab == 4,
-                            onClick = { selectedTab = 4 },
+                            onClick = { selectedTab = 4; activeTool = null },
                             icon = { Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.tab_remove)) },
                             label = { Text(stringResource(R.string.tab_remove)) },
                             modifier = Modifier.testTag("nav_tab_remove_rail")
@@ -356,6 +363,14 @@ fun EnrollmentScreen(
                         .fillMaxHeight()
                         .background(MaterialTheme.colorScheme.background)
                 ) {
+                    if (activeTool != null) {
+                        ToolRunnerScreen(
+                            tool = activeTool!!,
+                            sessionManager = sessionManager,
+                            mcpExecutor = mcpExecutor,
+                            onBack = { activeTool = null }
+                        )
+                    } else {
                     when (selectedTab) {
                         0 -> DashboardScreenContent(
                             sessionState = sessionState,
@@ -395,7 +410,7 @@ fun EnrollmentScreen(
                             onRotateKey = { loadOrEnrollKey(forceRegenerate = true) },
                             onShowPairing = { showPairingDialog = true },
                             onOpenLocalBridge = { showLocalBridgeDialog = true },
-                            onNavigateToTab = { index -> selectedTab = index },
+                            onNavigateToTab = { index -> selectedTab = index; activeTool = null },
                             onAddSimulatedEvent = { code ->
                                 AuditLog.recordRejection(code, "session_mock", "Simulated security event validation")
                                 auditRefreshTrigger++
@@ -456,7 +471,14 @@ fun EnrollmentScreen(
                             fingerprint = fingerprint,
                             onOpenLocalBridge = { showLocalBridgeDialog = true }
                         )
-                        3 -> ActivityScreenContent(
+                        3 -> ToolboxScreenContent(
+                            isSessionActive = sessionState is SessionState.ACTIVE,
+                            onToolSelected = { tool -> activeTool = tool }
+                        )
+                        4 -> RemoveScreenContent(
+                            onWipeData = { clearCredentials() }
+                        )
+                        5 -> ActivityScreenContent(
                             advancedToggle = advancedToggleActivity,
                             onToggleAdvanced = { advancedToggleActivity = !advancedToggleActivity },
                             refreshTrigger = auditRefreshTrigger,
@@ -465,9 +487,7 @@ fun EnrollmentScreen(
                                 auditRefreshTrigger++
                             }
                         )
-                        4 -> RemoveScreenContent(
-                            onWipeData = { clearCredentials() }
-                        )
+                    }
                     }
                 }
             }

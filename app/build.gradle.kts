@@ -94,6 +94,7 @@ dependencies {
   implementation(libs.kotlinx.coroutines.android)
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.androidx.core.ktx)
+  implementation(libs.androidx.webkit)
   implementation(libs.androidx.appcompat)
   implementation(libs.androidx.activity.compose)
   implementation(platform(libs.androidx.compose.bom))

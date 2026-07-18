@@ -63,6 +63,7 @@
     <string name="tab_connect">Connect</string>
     <string name="tab_access">Access</string>
     <string name="tab_activity">Activity</string>
+    <string name="tab_toolbox">Toolbox</string>
     <string name="tab_remove">Remove</string>
     <string name="btn_start_session">Start Session</string>
     <string name="btn_stop_session">Stop Session</string>

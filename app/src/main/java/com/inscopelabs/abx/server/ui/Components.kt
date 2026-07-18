@@ -529,6 +529,7 @@ fun ContextToolbar(
     onOpenLocalBridge: () -> Unit,
     onNavigateToAccess: () -> Unit,
     onNavigateToRemove: () -> Unit,
+    onNavigateToActivity: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -546,6 +547,12 @@ fun ContextToolbar(
             label = stringResource(R.string.tab_access),
             onClick = onNavigateToAccess,
             testTag = "toolbar_access"
+        )
+        ToolbarAction(
+            icon = Icons.Default.History,
+            label = stringResource(R.string.tab_activity),
+            onClick = onNavigateToActivity,
+            testTag = "toolbar_activity"
         )
         ToolbarAction(
             icon = Icons.Default.QrCodeScanner,

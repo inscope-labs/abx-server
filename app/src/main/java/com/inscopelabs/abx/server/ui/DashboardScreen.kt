@@ -466,7 +466,7 @@ fun DashboardScreenContent(
                     fontWeight = FontWeight.Bold
                 )
                 TextButton(
-                    onClick = { onNavigateToTab(3) } // Navigate to Activity Log Tab
+                    onClick = { onNavigateToTab(5) } // Navigate to Activity Log Tab (moved from 3 to 5 when Toolbox took over index 3)
                 ) {
                     Text("VIEW ALL", style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
                 }
