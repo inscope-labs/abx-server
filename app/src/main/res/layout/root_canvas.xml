@@ -1,10 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootCanvas"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/canvas_medium_gray">
 
-    <!-- Intentionally empty. This is the boot canvas only. -->
+    <!--
+        Root canvas. Always visible — the gray background must remain visible
+        around every element below via the 32dp minimum margin rule. This
+        margin rule applies to all content in this layout EXCEPT top menus
+        (none exist yet; when one is added it should span edge-to-edge and
+        mainContentContainer's top constraint should move to the menu's
+        bottom edge instead of parent's top, keeping 32dp from the menu).
+    -->
+
+    <!--
+        Single fragment host. Exactly one of LoadingFragment / ChatFragment /
+        FilesFragment occupies this container at any moment, via
+        FragmentTransaction.replace() — never more than one shown at once.
+        Chat and Files always render at these exact same coordinates, which
+        is what makes the toggle-swap visually verifiable.
+    -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/mainContentContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/chatFilesToggleRow"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp" />
+
+    <!--
+        Chat / Files toggle. Hidden (GONE) until the loading gate completes
+        and the default Files view is shown — see MainActivity.
+    -->
+    <LinearLayout
+        android:id="@+id/chatFilesToggleRow"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp">
+
+        <TextView
+            android:id="@+id/toggleLabelFiles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Files"
+            android:textColor="@color/black"
+            android:layout_marginEnd="8dp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/chatFilesToggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/toggleLabelChat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chat"
+            android:textColor="@color/black"
+            android:layout_marginStart="8dp" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

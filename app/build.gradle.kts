@@ -97,6 +97,7 @@ dependencies {
   implementation(libs.androidx.webkit)
   implementation(libs.androidx.appcompat)
   implementation(libs.androidx.constraintlayout)
+  implementation(libs.androidx.fragment.ktx)
   implementation(libs.androidx.activity.compose)
   implementation(platform(libs.androidx.compose.bom))
   implementation(libs.androidx.compose.ui)

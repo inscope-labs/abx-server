@@ -8,4 +8,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="canvas_medium_gray">#FF9E9E9E</color>
+    <color name="chat_view_blue">#FF2B5DA8</color>
+    <color name="files_view_amber">#FFC9791A</color>
 </resources>
