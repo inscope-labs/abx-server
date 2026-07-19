@@ -94,6 +94,7 @@
     <string name="dialog_enroll_success">Device enrolled and paired successfully!</string>
 
     <!-- Options Menu Strings -->
+    <string name="menu_diagnostics">Diagnostics</string>
     <string name="menu_utilities">Utilities</string>
     <string name="menu_utilities_toast">Utilities clicked</string>
     <string name="menu_about">About</string>

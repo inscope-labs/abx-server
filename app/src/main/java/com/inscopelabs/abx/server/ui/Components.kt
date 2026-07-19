@@ -1,5 +1,12 @@
 package com.inscopelabs.abx.server.ui
 
+// DESIGN TOKEN DISCIPLINE — see AGENTS.md section 4 before editing.
+// Spacing/sizing: use Spacing.* and IconSize.* (ui/theme/Spacing.kt).
+// Never write a raw .dp literal for padding, gaps, or icon sizing.
+// Color: use MaterialTheme.colorScheme.* or MaterialTheme.abxStatusColors.*.
+// Never write a hardcoded Color(0xFF......) literal.
+// Primary/accent blue = active/selected/primary-action only, never decorative.
+
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -17,13 +24,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.inscopelabs.abx.server.R
+import com.inscopelabs.abx.server.BuildConfig
 import com.inscopelabs.abx.server.ui.theme.abxStatusColors
+import com.inscopelabs.abx.server.ui.theme.Spacing
+import com.inscopelabs.abx.server.ui.theme.IconSize
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -69,6 +78,13 @@ fun ABXCard(
     }
 }
 
+/**
+ * Status chip. Previously used hardcoded hex per severity (Color(0xFFE8F5E9)
+ * etc.) — now routes through MaterialTheme's error role and the app's own
+ * abxStatusColors (success/warning), so it adapts to dark mode and stays
+ * consistent with every other status indicator in the app instead of being
+ * its own disconnected palette.
+ */
 @Composable
 fun ABXStatusChip(
     status: String,
@@ -76,41 +92,51 @@ fun ABXStatusChip(
     severity: StatusSeverity = StatusSeverity.INFO
 ) {
     val containerColor = when (severity) {
-        StatusSeverity.SUCCESS -> Color(0xFFE8F5E9)
-        StatusSeverity.WARNING -> Color(0xFFFFF3E0)
-        StatusSeverity.ERROR -> Color(0xFFFFEBEE)
-        StatusSeverity.INFO -> Color(0xFFE3F2FD)
+        StatusSeverity.SUCCESS -> MaterialTheme.abxStatusColors.successContainer
+        StatusSeverity.WARNING -> MaterialTheme.abxStatusColors.warningContainer
+        StatusSeverity.ERROR -> MaterialTheme.colorScheme.errorContainer
+        StatusSeverity.INFO -> MaterialTheme.colorScheme.primaryContainer
     }
     val contentColor = when (severity) {
-        StatusSeverity.SUCCESS -> Color(0xFF2E7D32)
-        StatusSeverity.WARNING -> Color(0xFFE65100)
-        StatusSeverity.ERROR -> Color(0xFFC62828)
-        StatusSeverity.INFO -> Color(0xFF1565C0)
+        StatusSeverity.SUCCESS -> MaterialTheme.abxStatusColors.success
+        StatusSeverity.WARNING -> MaterialTheme.abxStatusColors.warning
+        StatusSeverity.ERROR -> MaterialTheme.colorScheme.error
+        StatusSeverity.INFO -> MaterialTheme.colorScheme.primary
     }
 
     Surface(
         color = containerColor,
         contentColor = contentColor,
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(Spacing.xs),
         modifier = modifier
     ) {
         Text(
             text = status.uppercase(),
             style = MaterialTheme.typography.labelSmall,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(horizontal = Spacing.sm, vertical = Spacing.xs)
         )
     }
 }
 
+/**
+ * Metric card. Icon container is neutral gray by default now, not always
+ * blue — a metric isn't "active" or "primary" just because it has a number
+ * next to it. Pass accentIcon = true for the rare case a specific metric
+ * genuinely represents an active/highlighted state.
+ */
 @Composable
 fun ABXMetricCard(
     title: String,
     value: String,
     subtitle: String? = null,
     icon: ImageVector? = null,
+    accentIcon: Boolean = false,
     modifier: Modifier = Modifier
 ) {
+    val iconContainerColor = if (accentIcon) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
+    val iconTint = if (accentIcon) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+
     ABXCard(
         modifier = modifier,
         border = CardDefaults.outlinedCardBorder()
@@ -118,7 +144,7 @@ fun ABXMetricCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(Spacing.lg),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -127,14 +153,14 @@ fun ABXMetricCard(
                     text = title,
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.Medium
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(Spacing.xs))
                 Text(
                     text = value,
                     style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Black,
-                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -150,16 +176,16 @@ fun ABXMetricCard(
             if (icon != null) {
                 Box(
                     modifier = Modifier
-                        .size(48.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)),
+                        .size(IconSize.xl)
+                        .clip(RoundedCornerShape(Spacing.md))
+                        .background(iconContainerColor),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = icon,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(24.dp)
+                        tint = iconTint,
+                        modifier = Modifier.size(IconSize.sm + Spacing.xs)
                     )
                 }
             }
@@ -177,7 +203,8 @@ fun ABXServiceTile(
     modifier: Modifier = Modifier
 ) {
     val statusColor by animateColorAsState(
-        targetValue = if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+        targetValue = if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+        label = "service_tile_status_color"
     )
 
     ABXCard(
@@ -187,19 +214,19 @@ fun ABXServiceTile(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(Spacing.lg),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalArrangement = Arrangement.spacedBy(Spacing.md),
                 modifier = Modifier.weight(1f)
             ) {
                 Box(
                     modifier = Modifier
-                        .size(40.dp)
-                        .clip(RoundedCornerShape(10.dp))
+                        .size(IconSize.lg)
+                        .clip(RoundedCornerShape(Spacing.sm + Spacing.xs))
                         .background(
                             if (isActive) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)
                             else MaterialTheme.colorScheme.surfaceVariant
@@ -210,14 +237,14 @@ fun ABXServiceTile(
                         imageVector = icon,
                         contentDescription = null,
                         tint = statusColor,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(IconSize.sm)
                     )
                 }
                 Column {
                     Text(
                         text = title,
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.SemiBold
                     )
                     Text(
                         text = status,
@@ -250,7 +277,7 @@ fun ABXQuickActionCard(
             containerColor = containerColor,
             contentColor = contentColor
         ),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(Spacing.md),
         modifier = modifier
             .width(130.dp)
             .height(100.dp)
@@ -258,23 +285,95 @@ fun ABXQuickActionCard(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(12.dp),
+                .padding(Spacing.md),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.Start
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(IconSize.sm + Spacing.xs)
             )
             Text(
                 text = title,
                 style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 lineHeight = 14.sp
             )
+        }
+    }
+}
+
+/**
+ * Shared row for any list of similar items — tools, connected clients,
+ * access entries. One row rhythm used everywhere instead of each screen
+ * building its own Row(icon, title, subtitle, trailing) from scratch.
+ */
+@Composable
+fun ABXListRow(
+    title: String,
+    subtitle: String? = null,
+    icon: ImageVector? = null,
+    trailing: @Composable (() -> Unit)? = null,
+    onClick: (() -> Unit)? = null,
+    modifier: Modifier = Modifier
+) {
+    ABXCard(
+        onClick = onClick,
+        modifier = modifier.padding(vertical = Spacing.xs)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(Spacing.md),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (icon != null) {
+                Box(
+                    modifier = Modifier
+                        .size(IconSize.lg)
+                        .clip(RoundedCornerShape(Spacing.sm + Spacing.xs))
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(IconSize.sm)
+                    )
+                }
+                Spacer(modifier = Modifier.width(Spacing.md))
+            }
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium
+                )
+                if (subtitle != null) {
+                    Text(
+                        text = subtitle,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+            if (trailing != null) {
+                Spacer(modifier = Modifier.width(Spacing.sm))
+                trailing()
+            } else if (onClick != null) {
+                Icon(
+                    imageVector = Icons.Default.ChevronRight,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.outline,
+                    modifier = Modifier.size(IconSize.sm)
+                )
+            }
         }
     }
 }
@@ -288,14 +387,14 @@ fun ABXEmptyState(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(32.dp),
+            .padding(Spacing.xxl),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(Spacing.md)
     ) {
         Box(
             modifier = Modifier
-                .size(64.dp)
-                .clip(RoundedCornerShape(32.dp))
+                .size(IconSize.xxl)
+                .clip(RoundedCornerShape(IconSize.xxl / 2))
                 .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
             contentAlignment = Alignment.Center
         ) {
@@ -303,7 +402,7 @@ fun ABXEmptyState(
                 imageVector = icon,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier.size(IconSize.sm + Spacing.md)
             )
         }
         Text(
@@ -316,6 +415,14 @@ fun ABXEmptyState(
     }
 }
 
+/**
+ * Log viewer. Previously a hardcoded dark terminal panel (Color(0xFF1E1E1E)
+ * + hardcoded green/red/gray) sitting inside an otherwise light Material
+ * app — its own disconnected visual language. Now uses the theme's own
+ * surface/error/success roles, still monospace (appropriate for log
+ * content) but no longer a jarring "hacker console inside a corporate
+ * card" clash, and it adapts correctly in dark mode.
+ */
 @Composable
 fun ABXLogViewer(
     logs: List<JSONObject>,
@@ -325,8 +432,8 @@ fun ABXLogViewer(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color(0xFF1E1E1E), shape = RoundedCornerShape(12.dp))
-            .padding(12.dp)
+            .background(MaterialTheme.colorScheme.surfaceVariant, shape = RoundedCornerShape(Spacing.md))
+            .padding(Spacing.md)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -334,37 +441,37 @@ fun ABXLogViewer(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "SYSTEM CONSOLE LOGS",
+                text = "System console logs",
                 style = MaterialTheme.typography.labelSmall,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF81C784)
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             if (onClear != null) {
                 TextButton(onClick = onClear) {
                     Text(
-                        text = "CLEAR",
+                        text = "Clear",
                         style = MaterialTheme.typography.labelSmall,
-                        color = Color(0xFFE57373),
-                        fontWeight = FontWeight.Bold
+                        color = MaterialTheme.colorScheme.error,
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
             }
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(Spacing.sm))
         if (logs.isEmpty()) {
             Text(
                 text = "No active logs recorded.",
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontFamily = FontFamily.Monospace,
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(Spacing.sm)
             )
         } else {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(max = 200.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(Spacing.xs)
             ) {
                 items(logs.reversed()) { log ->
                     val timestamp = log.optLong("timestamp", System.currentTimeMillis())
@@ -376,28 +483,29 @@ fun ABXLogViewer(
                     } catch (e: Exception) {
                         "00:00:00"
                     }
+                    val isAlert = reason.contains("EXPIRED") || reason.contains("REJECTION") || reason.contains("OUT_OF_BOUNDS")
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(Spacing.sm)
                     ) {
                         Text(
                             text = "[$dateStr]",
                             fontFamily = FontFamily.Monospace,
-                            color = Color.Gray,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             style = MaterialTheme.typography.bodySmall
                         )
                         Text(
                             text = "[$reason]",
                             fontFamily = FontFamily.Monospace,
-                            color = if (reason.contains("EXPIRED") || reason.contains("REJECTION") || reason.contains("OUT_OF_BOUNDS")) Color(0xFFEF5350) else Color(0xFF66BB6A),
+                            color = if (isAlert) MaterialTheme.colorScheme.error else MaterialTheme.abxStatusColors.success,
                             style = MaterialTheme.typography.bodySmall,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.SemiBold
                         )
                         Text(
                             text = details,
                             fontFamily = FontFamily.Monospace,
-                            color = Color.LightGray,
+                            color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodySmall,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
@@ -421,7 +529,7 @@ fun ABXConfirmationDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(text = title, fontWeight = FontWeight.Bold)
+            Text(text = title, fontWeight = FontWeight.SemiBold)
         },
         text = {
             Text(text = message)
@@ -439,7 +547,7 @@ fun ABXConfirmationDialog(
                 Text(text = dismissText)
             }
         },
-        shape = RoundedCornerShape(24.dp)
+        shape = RoundedCornerShape(Spacing.xl)
     )
 }
 
@@ -467,14 +575,14 @@ fun CompactTopBar(
             .fillMaxWidth()
             .height(48.dp)
             .background(MaterialTheme.colorScheme.surface)
-            .padding(horizontal = 12.dp),
+            .padding(horizontal = Spacing.md),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
                 modifier = Modifier
-                    .size(28.dp)
+                    .size(IconSize.md)
                     .clip(RoundedCornerShape(50))
                     .background(MaterialTheme.colorScheme.primaryContainer),
                 contentAlignment = Alignment.Center
@@ -483,10 +591,10 @@ fun CompactTopBar(
                     imageVector = Icons.Default.Person,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(16.dp)
+                    modifier = Modifier.size(IconSize.sm - Spacing.xs)
                 )
             }
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(Spacing.sm))
             Text(
                 text = appName,
                 style = MaterialTheme.typography.titleSmall,
@@ -494,7 +602,7 @@ fun CompactTopBar(
                 color = MaterialTheme.colorScheme.onSurface
             )
             if (isSessionActive) {
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(Spacing.sm))
                 Box(
                     modifier = Modifier
                         .size(6.dp)
@@ -515,7 +623,7 @@ fun CompactTopBar(
                     imageVector = Icons.Default.MoreVert,
                     contentDescription = stringResource(R.string.btn_about_info),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(18.dp)
+                    modifier = Modifier.size(IconSize.sm - Spacing.xs)
                 )
             }
 
@@ -547,14 +655,16 @@ fun CompactTopBar(
                     },
                     modifier = Modifier.testTag("overflow_menu_privacy_policy")
                 )
-                DropdownMenuItem(
-                    text = { Text("Diagnostics") },
-                    onClick = {
-                        overflowExpanded = false
-                        onDiagnosticsClick()
-                    },
-                    modifier = Modifier.testTag("overflow_menu_diagnostics")
-                )
+                if (BuildConfig.DEBUG) {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.menu_diagnostics)) },
+                        onClick = {
+                            overflowExpanded = false
+                            onDiagnosticsClick()
+                        },
+                        modifier = Modifier.testTag("overflow_menu_diagnostics")
+                    )
+                }
             }
         }
     }
@@ -583,9 +693,9 @@ fun ContextToolbar(
             .height(40.dp)
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .horizontalScroll(rememberScrollState())
-            .padding(horizontal = 8.dp),
+            .padding(horizontal = Spacing.sm),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        horizontalArrangement = Arrangement.spacedBy(Spacing.xs)
     ) {
         ToolbarAction(
             icon = Icons.Default.VpnKey,
@@ -635,9 +745,9 @@ private fun ToolbarAction(
 ) {
     Row(
         modifier = Modifier
-            .clip(RoundedCornerShape(8.dp))
+            .clip(RoundedCornerShape(Spacing.sm))
             .clickable(onClick = onClick)
-            .padding(horizontal = 10.dp, vertical = 6.dp)
+            .padding(horizontal = Spacing.md - Spacing.xs, vertical = Spacing.xs + 2.dp)
             .testTag(testTag),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -645,9 +755,9 @@ private fun ToolbarAction(
             imageVector = icon,
             contentDescription = label,
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(16.dp)
+            modifier = Modifier.size(IconSize.sm - Spacing.xs)
         )
-        Spacer(modifier = Modifier.width(6.dp))
+        Spacer(modifier = Modifier.width(Spacing.xs + 2.dp))
         Text(
             text = label,
             style = MaterialTheme.typography.labelSmall,

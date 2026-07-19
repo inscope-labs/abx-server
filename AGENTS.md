@@ -83,3 +83,39 @@ so it can be read outside this environment.
 Only make the changes explicitly requested in the current prompt. Do
 not regenerate, reformat, or "improve" files beyond what was asked,
 even if it seems in the spirit of the request.
+
+## 4. Design Token Discipline
+
+All spacing, padding, and gap values in Compose UI code must come from
+`Spacing` (app/src/main/java/com/inscopelabs/abx/server/ui/theme/Spacing.kt).
+All icon/avatar container sizes must come from `IconSize` in the same
+file. Never write a raw `.dp` literal for spacing or icon sizing in any
+Composable — if the value you need doesn't exist in Spacing/IconSize,
+stop and ask, don't invent one.
+
+Never write a hardcoded `Color(0xFF......)` literal for anything that
+represents status, state, or theme-dependent color. Use
+`MaterialTheme.colorScheme.*` or `MaterialTheme.abxStatusColors.*`
+(ui/theme/Theme.kt) instead — hardcoded hex breaks dark mode and drifts
+the UI away from the app's single palette over time.
+
+The primary/accent color (blue) is reserved for things that are
+genuinely active, selected, or the one primary action on a screen. Do
+not apply it decoratively to icon containers, cards, or chips by
+default — default to `MaterialTheme.colorScheme.surfaceVariant` /
+`onSurfaceVariant` for neutral elements. If in doubt, ask before adding
+a new use of the primary color.
+
+For any new list of similar items (rows with an icon, title, optional
+subtitle, and optional trailing content), use the existing
+`ABXListRow` composable (ui/Components.kt) rather than building a new
+bespoke Row from scratch. If ABXListRow genuinely doesn't fit a new
+use case, extend it rather than duplicating its structure elsewhere.
+
+This rule exists because a prior audit found 18 distinct ad-hoc dp
+values and multiple hardcoded hex colors accumulated across a single
+file, entirely from individually-reasonable changes made without a
+shared scale. Treat this section with the same weight as the
+CI-owned-paths and scope-discipline rules above it — this is not a
+style suggestion, it's a standing constraint.
+
