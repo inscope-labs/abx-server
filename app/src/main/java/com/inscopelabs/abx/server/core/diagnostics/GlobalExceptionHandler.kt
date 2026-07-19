@@ -67,6 +67,7 @@ class GlobalExceptionHandler(
             defaultHandler?.uncaughtException(thread, throwable)
         }
 
+        Thread.sleep(300) // give the startActivity() IPC time to land before we self-terminate
         android.os.Process.killProcess(android.os.Process.myPid())
         exitProcess()
     }
