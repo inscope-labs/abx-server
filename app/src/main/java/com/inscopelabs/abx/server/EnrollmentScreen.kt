@@ -72,6 +72,11 @@ import com.inscopelabs.abx.server.toolbox.ToolDefinition
 import com.inscopelabs.abx.server.toolbox.ToolboxScreenContent
 import com.inscopelabs.abx.server.toolbox.ToolRunnerScreen
 import android.widget.Toast
+import android.content.Intent
+import com.inscopelabs.abx.server.core.diagnostics.CrashReporterManager
+import com.inscopelabs.abx.server.core.diagnostics.DiagnosticBundle
+import com.inscopelabs.abx.server.core.diagnostics.DiagnosticExporter
+import com.inscopelabs.abx.server.core.diagnostics.LogViewerActivity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -117,6 +122,7 @@ fun EnrollmentScreen(
     var advancedToggleAccess by remember { mutableStateOf(false) }
     var advancedToggleActivity by remember { mutableStateOf(false) }
     var showPairingDialog by remember { mutableStateOf(false) }
+    var showDiagnosticsDialog by remember { mutableStateOf(false) }
     var pairingCodeInput by remember { mutableStateOf("") }
     var gatewayPairedStatus by remember { mutableStateOf("Not paired with any gateway") }
 
@@ -257,6 +263,7 @@ fun EnrollmentScreen(
                                 .show(activity.supportFragmentManager, "PrivacyPolicyBottomSheet")
                         }
                     },
+                    onDiagnosticsClick = { showDiagnosticsDialog = true },
                     isSessionActive = sessionState is SessionState.ACTIVE
                 )
                 ContextToolbar(
@@ -517,6 +524,120 @@ fun EnrollmentScreen(
             initialInput = bridgeInputText,
             onRecordActivityEvent = {
                 auditRefreshTrigger++
+            }
+        )
+    }
+
+    // Diagnostics & Remote Crash Reporting Settings Dialog
+    if (showDiagnosticsDialog) {
+        var isRemoteEnabled by remember { mutableStateOf(CrashReporterManager.isFirebaseEnabled()) }
+
+        AlertDialog(
+            onDismissRequest = { showDiagnosticsDialog = false },
+            title = {
+                Text(
+                    text = "Diagnostics & Health",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            text = {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        text = "Help us improve ABX Server by enabling optional crash and health reports. No personal data is ever collected.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+
+                    // Switch Row
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                val newValue = !isRemoteEnabled
+                                isRemoteEnabled = newValue
+                                CrashReporterManager.updateReportingPreference(context, newValue)
+                            }
+                            .padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "Share Remote Crash Reports",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(
+                                text = "Transmits anonymized crash dumps to help diagnose instability.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Switch(
+                            checked = isRemoteEnabled,
+                            onCheckedChange = { newValue ->
+                                isRemoteEnabled = newValue
+                                CrashReporterManager.updateReportingPreference(context, newValue)
+                            },
+                            modifier = Modifier.testTag("remote_reporting_switch")
+                        )
+                    }
+
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+
+                    // Export zip button
+                    Button(
+                        onClick = {
+                            try {
+                                val bundle = DiagnosticBundle.createBundle(context)
+                                DiagnosticExporter.shareDiagnosticBundle(context, bundle)
+                            } catch (e: Exception) {
+                                Toast.makeText(context, "Failed to generate bundle: ${e.message}", Toast.LENGTH_LONG).show()
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("generate_diagnostic_bundle_btn"),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    ) {
+                        Icon(Icons.Default.Download, contentDescription = null)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Export Diagnostic Bundle")
+                    }
+
+                    // Open log viewer button
+                    OutlinedButton(
+                        onClick = {
+                            val intent = Intent(context, LogViewerActivity::class.java)
+                            context.startActivity(intent)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("open_log_viewer_btn")
+                    ) {
+                        Icon(Icons.Default.Search, contentDescription = null)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("Open Log Viewer")
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = { showDiagnosticsDialog = false },
+                    modifier = Modifier.testTag("diagnostics_dialog_close_btn")
+                ) {
+                    Text("Close")
+                }
             }
         )
     }

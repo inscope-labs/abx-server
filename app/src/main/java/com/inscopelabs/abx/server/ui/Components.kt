@@ -457,6 +457,7 @@ fun CompactTopBar(
     onUtilitiesClick: () -> Unit,
     onAboutClick: () -> Unit,
     onPrivacyPolicyClick: () -> Unit,
+    onDiagnosticsClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var overflowExpanded by remember { mutableStateOf(false) }
@@ -545,6 +546,14 @@ fun CompactTopBar(
                         onPrivacyPolicyClick()
                     },
                     modifier = Modifier.testTag("overflow_menu_privacy_policy")
+                )
+                DropdownMenuItem(
+                    text = { Text("Diagnostics") },
+                    onClick = {
+                        overflowExpanded = false
+                        onDiagnosticsClick()
+                    },
+                    modifier = Modifier.testTag("overflow_menu_diagnostics")
                 )
             }
         }

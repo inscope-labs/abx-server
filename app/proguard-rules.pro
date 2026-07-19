@@ -127,3 +127,33 @@
 -keep class com.google.zxing.** { *; }
 -dontwarn com.google.zxing.**
 
+# Diagnostics Framework Rules
+-keep class com.inscopelabs.abx.server.core.diagnostics.Logger { *; }
+-keep class com.inscopelabs.abx.server.core.diagnostics.LogWriter { *; }
+-keep class com.inscopelabs.abx.server.core.diagnostics.LogFormatter { *; }
+-keep class com.inscopelabs.abx.server.core.diagnostics.LogRotationManager { *; }
+-keep class com.inscopelabs.abx.server.core.diagnostics.SessionManager { *; }
+-keep class com.inscopelabs.abx.server.core.diagnostics.StartupDiagnostics { *; }
+-keep class com.inscopelabs.abx.server.core.diagnostics.RuntimeDiagnostics { *; }
+-keep class com.inscopelabs.abx.server.core.diagnostics.CrashReporter { *; }
+-keep class com.inscopelabs.abx.server.core.diagnostics.FirebaseCrashReporter { *; }
+-keep class com.inscopelabs.abx.server.core.diagnostics.NoOpCrashReporter { *; }
+-keep class com.inscopelabs.abx.server.core.diagnostics.CrashReporterManager { *; }
+-keep class com.inscopelabs.abx.server.core.diagnostics.GlobalExceptionHandler { *; }
+-keep class com.inscopelabs.abx.server.core.diagnostics.AnrWatchdog { *; }
+-keep class com.inscopelabs.abx.server.core.diagnostics.DeviceInformation { *; }
+-keep class com.inscopelabs.abx.server.core.diagnostics.DiagnosticBundle { *; }
+-keep class com.inscopelabs.abx.server.core.diagnostics.DiagnosticExporter { *; }
+-keep class com.inscopelabs.abx.server.core.diagnostics.DiagnosticSettings { *; }
+-keep class com.inscopelabs.abx.server.core.diagnostics.DiagnosticPreferences { *; }
+-keep class com.inscopelabs.abx.server.core.diagnostics.LogSearchEngine { *; }
+-keep class com.inscopelabs.abx.server.core.diagnostics.DiagnosticService { *; }
+-keep class com.inscopelabs.abx.server.core.diagnostics.DiagnosticsInitializer { *; }
+
+# Allow stripping/shrinking of LogViewer debug-only components from release builds if not referenced
+-keep,allowshrinking class com.inscopelabs.abx.server.core.diagnostics.LogViewerActivity { *; }
+-keep,allowshrinking class com.inscopelabs.abx.server.core.diagnostics.LogViewerAdapter { *; }
+-dontwarn com.inscopelabs.abx.server.core.diagnostics.LogViewerActivity
+-dontwarn com.inscopelabs.abx.server.core.diagnostics.LogViewerAdapter
+
+

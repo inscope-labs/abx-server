@@ -43,6 +43,22 @@
             android:name=".core.diagnostics.UserFacingErrorActivity"
             android:exported="false"
             android:launchMode="singleTask" />
+        <activity
+            android:name=".core.diagnostics.LogViewerActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MyApplication" />
+        <service
+            android:name=".core.diagnostics.DiagnosticService"
+            android:exported="false" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.inscopelabs.abx.server.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>
