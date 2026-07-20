@@ -1,4 +1,4 @@
-package com.inscopelabs.abx.server.toolbox.tools
+package com.inscopelabs.abx.server.toolbox.tools.ctxpkg
 
 import android.content.Context
 import android.net.Uri
@@ -6,10 +6,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.ByteArrayOutputStream
 import java.util.zip.Deflater
-import com.inscopelabs.abx.server.toolbox.tools.SafUtils.readTextFromUri
-import com.inscopelabs.abx.server.toolbox.tools.SafUtils.writeTextToUri
-import com.inscopelabs.abx.server.toolbox.tools.SafUtils.getDocumentFile
-import com.inscopelabs.abx.server.toolbox.tools.SafUtils.listFiles
+import com.inscopelabs.abx.server.toolbox.tools.ctxpkg.SafUtils.readTextFromUri
+import com.inscopelabs.abx.server.toolbox.tools.ctxpkg.SafUtils.writeTextToUri
+import com.inscopelabs.abx.server.toolbox.tools.ctxpkg.SafUtils.getDocumentFile
+import com.inscopelabs.abx.server.toolbox.tools.ctxpkg.SafUtils.listFiles
 
 /**
  * The exact equivalent of Node.js buildPackage.

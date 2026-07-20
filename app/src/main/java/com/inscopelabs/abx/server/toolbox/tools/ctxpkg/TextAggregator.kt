@@ -1,10 +1,10 @@
-package com.inscopelabs.abx.server.toolbox.tools
+package com.inscopelabs.abx.server.toolbox.tools.ctxpkg
 
 import android.content.Context
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import com.inscopelabs.abx.server.toolbox.tools.SafUtils.readTextFromUri
+import com.inscopelabs.abx.server.toolbox.tools.ctxpkg.SafUtils.readTextFromUri
 
 /**
  * Handles reading all files, applying header/separator, and generating
