@@ -12,13 +12,26 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.fragment.app.Fragment
 
-class MainActivity : AppCompatActivity() {
+interface ToolboxNavigation {
+    fun returnFromToolbox()
+}
+
+class MainActivity : AppCompatActivity(), ToolboxNavigation {
     companion object {
         // Placeholder gate only. TODO: replace with the real deferred
         // startup sequence (KeyStoreManager / AuditLog init, etc.) once
         // that is wired back in — see Phase 1.4/1.5 discussion.
         private const val PLACEHOLDER_STARTUP_DELAY_MS = 2000L
     }
+
+    private enum class Workspace {
+        FILES,
+        CHAT,
+        TOOLBOX
+    }
+
+    private var currentWorkspace = Workspace.FILES
+    private var previousWorkspace = Workspace.FILES
 
     private var sharedTextState by mutableStateOf<String?>(null)
     private val startupGateHandler = Handler(Looper.getMainLooper())
@@ -46,7 +59,8 @@ class MainActivity : AppCompatActivity() {
      * default (visible) main view: Files is not shown until this runs.
      */
     private fun onStartupComplete() {
-        showFragment(FilesFragment())
+        showWorkspace(Workspace.FILES)
+        previousWorkspace = Workspace.FILES
 
         val toggleRow = findViewById<View>(R.id.chatFilesToggleRow)
         toggleRow.visibility = View.VISIBLE
@@ -54,7 +68,37 @@ class MainActivity : AppCompatActivity() {
         val toggle = findViewById<SwitchCompat>(R.id.chatFilesToggle)
         toggle.isChecked = false // unchecked = Files (the default just shown)
         toggle.setOnCheckedChangeListener { _, isChecked ->
-            showFragment(if (isChecked) ChatFragment() else FilesFragment())
+            val target = if (isChecked) Workspace.CHAT else Workspace.FILES
+            if (currentWorkspace == Workspace.TOOLBOX) {
+                previousWorkspace = target
+            } else {
+                showWorkspace(target)
+            }
+        }
+    }
+
+    private fun showWorkspace(workspace: Workspace) {
+        currentWorkspace = workspace
+        val fragment = when (workspace) {
+            Workspace.FILES -> FilesFragment()
+            Workspace.CHAT -> ChatFragment()
+            Workspace.TOOLBOX -> ToolboxFragment()
+        }
+        showFragment(fragment)
+    }
+
+    fun openToolbox() {
+        if (currentWorkspace != Workspace.TOOLBOX) {
+            previousWorkspace = currentWorkspace
+            showWorkspace(Workspace.TOOLBOX)
+        }
+    }
+
+    override fun returnFromToolbox() {
+        when (previousWorkspace) {
+            Workspace.FILES -> showWorkspace(Workspace.FILES)
+            Workspace.CHAT -> showWorkspace(Workspace.CHAT)
+            else -> showWorkspace(Workspace.FILES)
         }
     }
 
@@ -80,3 +124,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+
