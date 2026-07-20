@@ -6,51 +6,44 @@
     android:background="@color/canvas_medium_gray">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolboxToolbar"
+        android:id="@+id/contextPackageToolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:title="Toolbox"
+        app:title="Context Package"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
         android:gravity="center"
-        android:padding="32dp"
-        app:layout_constraintTop_toBottomOf="@id/toolboxToolbar"
+        app:layout_constraintTop_toBottomOf="@id/contextPackageToolbar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp">
 
-        <TextView
+        <Button
+            android:id="@+id/contextPackagePickFolderButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Toolbox"
-            android:textColor="@color/black"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:text="Pick Folder" />
 
         <TextView
+            android:id="@+id/contextPackageResultText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Future tools appear here..."
-            android:textColor="@color/black"
-            android:textSize="16sp" />
-
-        <Button
-            android:id="@+id/openContextPackageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Context Package" />
+            android:text="No folder selected"
+            android:textColor="@color/black" />
 
     </LinearLayout>
 

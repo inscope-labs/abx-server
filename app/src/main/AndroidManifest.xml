@@ -47,6 +47,10 @@
             android:name=".core.diagnostics.LogViewerActivity"
             android:exported="false"
             android:theme="@style/Theme.MyApplication" />
+        <activity
+            android:name=".toolbox.tools.ctxpkg.ContextPackageActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MyApplication" />
         <service
             android:name=".core.diagnostics.DiagnosticService"
             android:exported="false" />

@@ -1,10 +1,12 @@
 package com.inscopelabs.abx.server
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import com.inscopelabs.abx.server.toolbox.tools.ctxpkg.ContextPackageActivity
 
 class ToolboxFragment : Fragment(R.layout.fragment_toolbox) {
 
@@ -25,6 +27,10 @@ class ToolboxFragment : Fragment(R.layout.fragment_toolbox) {
         val toolbar = view.findViewById<Toolbar>(R.id.toolboxToolbar)
         toolbar?.setNavigationOnClickListener {
             navigationCallback?.returnFromToolbox()
+        }
+
+        view.findViewById<View>(R.id.openContextPackageButton)?.setOnClickListener {
+            startActivity(Intent(requireContext(), ContextPackageActivity::class.java))
         }
     }
 
