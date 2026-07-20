@@ -1,0 +1,20 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--
+        Both items are showAsAction="never" on purpose: neither should ever
+        render as a visible icon in the bar itself. This is what makes the
+        overflow (three-dot) icon appear automatically — Toolbar/MaterialToolbar
+        only shows it when there's at least one collapsed item to hold.
+        Utilities lives here per the nav spec (demoted out of primary tabs).
+    -->
+    <item
+        android:id="@+id/menu_utilities"
+        android:title="Utilities"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_about"
+        android:title="About"
+        app:showAsAction="never" />
+
+</menu>

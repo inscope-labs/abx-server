@@ -97,6 +97,7 @@ dependencies {
   implementation(libs.androidx.documentfile)
   implementation(libs.androidx.webkit)
   implementation(libs.androidx.appcompat)
+  implementation(libs.androidx.material)
   implementation(libs.androidx.constraintlayout)
   implementation(libs.androidx.fragment.ktx)
   implementation(libs.androidx.activity.compose)

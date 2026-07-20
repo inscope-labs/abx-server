@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
+import com.google.android.material.appbar.MaterialToolbar
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -47,6 +48,8 @@ class MainActivity : AppCompatActivity(), ToolboxNavigation {
 
         setContentView(R.layout.root_canvas)
 
+        setupRootToolbar()
+
         // Only a single fragment is ever shown in mainContentContainer.
         // Loading is first; the toggle row stays hidden until the gate
         // completes and the default Files view is shown.
@@ -54,6 +57,25 @@ class MainActivity : AppCompatActivity(), ToolboxNavigation {
         findViewById<View>(R.id.chatFilesToggleRow).visibility = View.GONE
 
         runStartupSequence()
+    }
+
+    /**
+     * Wires the permanent root toolbar (rootToolbar in root_canvas.xml).
+     * Hamburger and overflow items are stubbed — no drawer or destination
+     * screens exist yet to route to.
+     */
+    private fun setupRootToolbar() {
+        val toolbar = findViewById<MaterialToolbar>(R.id.rootToolbar)
+        toolbar.setNavigationOnClickListener {
+            // TODO: wire to drawer / primary nav destination picker once available
+        }
+        toolbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.menu_utilities -> true // TODO: navigate to Utilities
+                R.id.menu_about -> true // TODO: show About dialog
+                else -> false
+            }
+        }
     }
 
     /**
