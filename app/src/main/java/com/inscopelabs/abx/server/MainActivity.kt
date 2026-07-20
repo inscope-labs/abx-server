@@ -2,8 +2,6 @@ package com.inscopelabs.abx.server
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
@@ -11,6 +9,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.fragment.app.Fragment
+import com.inscopelabs.abx.server.boot.BootGuard
+import com.inscopelabs.abx.server.boot.BootRoute
+import com.inscopelabs.abx.server.core.audit.AuditLog
+import com.inscopelabs.abx.server.core.diagnostics.AnrWatchdog
+import com.inscopelabs.abx.server.core.diagnostics.Logger
+import com.inscopelabs.abx.server.core.keystore.KeyStoreManager
 
 interface ToolboxNavigation {
     fun returnFromToolbox()
@@ -18,10 +22,11 @@ interface ToolboxNavigation {
 
 class MainActivity : AppCompatActivity(), ToolboxNavigation {
     companion object {
-        // Placeholder gate only. TODO: replace with the real deferred
-        // startup sequence (KeyStoreManager / AuditLog init, etc.) once
-        // that is wired back in — see Phase 1.4/1.5 discussion.
-        private const val PLACEHOLDER_STARTUP_DELAY_MS = 2000L
+        // Process-lifetime guard: prevents re-running the startup sequence
+        // if MainActivity is recreated (e.g. config change) within the same
+        // process.
+        @Volatile
+        private var startupSequenceRan = false
     }
 
     private enum class Workspace {
@@ -34,10 +39,12 @@ class MainActivity : AppCompatActivity(), ToolboxNavigation {
     private var previousWorkspace = Workspace.FILES
 
     private var sharedTextState by mutableStateOf<String?>(null)
-    private val startupGateHandler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (BootRoute.redirectIfNeeded(this)) return
+
         setContentView(R.layout.root_canvas)
 
         // Only a single fragment is ever shown in mainContentContainer.
@@ -46,12 +53,46 @@ class MainActivity : AppCompatActivity(), ToolboxNavigation {
         showFragment(LoadingFragment())
         findViewById<View>(R.id.chatFilesToggleRow).visibility = View.GONE
 
-        startupGateHandler.postDelayed({ onStartupComplete() }, PLACEHOLDER_STARTUP_DELAY_MS)
+        runStartupSequence()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        startupGateHandler.removeCallbacksAndMessages(null)
+    /**
+     * Restored loading components: Logger, AnrWatchdog, KeyStoreManager,
+     * AuditLog. Runs synchronously, in dependency order: Logger before
+     * anything that logs; AnrWatchdog after Logger; KeyStoreManager before
+     * AuditLog, since AuditLog.initialize() requires it. Gates
+     * onStartupComplete() either way (success or failure).
+     */
+    private fun runStartupSequence() {
+        if (startupSequenceRan) {
+            onStartupComplete()
+            return
+        }
+
+        try {
+            BootGuard.stageStart("Logger")
+            Logger.initialize(applicationContext)
+            BootGuard.stageSuccess("Logger")
+
+            BootGuard.stageStart("AnrWatchdog")
+            AnrWatchdog().start()
+            BootGuard.stageSuccess("AnrWatchdog")
+
+            BootGuard.stageStart("KeyStoreManager")
+            val km = KeyStoreManager(applicationContext)
+            (application as MainApplication).keyStoreManager = km
+            BootGuard.stageSuccess("KeyStoreManager")
+
+            BootGuard.stageStart("AuditLog")
+            AuditLog.initialize(applicationContext, km)
+            BootGuard.stageSuccess("AuditLog")
+
+            startupSequenceRan = true
+        } catch (t: Throwable) {
+            BootGuard.recordFailure(applicationContext, "MainActivity.runStartupSequence", t)
+        }
+
+        onStartupComplete()
     }
 
     /**
