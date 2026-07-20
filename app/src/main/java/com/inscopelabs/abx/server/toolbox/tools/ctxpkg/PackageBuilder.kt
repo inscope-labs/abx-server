@@ -46,7 +46,7 @@ class PackageBuilder(
         val allContent = StringBuilder()
 
         // 1. Traverse items (flatten directories respecting limits)
-        val allUris = flattenSelection(selection, options.maxDirFiles, options.forceAll)
+        val allUris = SafUtils.flattenSelection(context, selection, options.maxDirFiles, options.forceAll, auditLogger)
             .also { all ->
                 all.forEach { (uri, relativePath, fileSize) ->
                     auditLogger.audit("file-considered", mapOf(
@@ -184,45 +184,6 @@ class PackageBuilder(
         ))
 
         emit(manifest)
-    }
-
-    // Flatten selection: handles directories with maxDirFiles guard
-    private fun flattenSelection(
-        selection: ContextSelection,
-        maxDirFiles: Int,
-        forceAll: Boolean
-    ): List<Triple<Uri, String, Long>> {
-        val result = mutableListOf<Triple<Uri, String, Long>>()
-
-        fun traverse(uri: Uri, currentPath: String) {
-            val doc = context.getDocumentFile(uri) ?: return
-            if (doc.isDirectory) {
-                val children = context.listFiles(uri)
-                if (!forceAll && children.size > maxDirFiles) {
-                    // Skip entire dir
-                    auditLogger.audit("dir-skipped", mapOf(
-                        "dir" to currentPath,
-                        "fileCount" to children.size,
-                        "limit" to maxDirFiles
-                    ))
-                    // NOTE: In Node.js skippedDirs is added to manifest, here we just log for brevity.
-                    // We would need to pass it back to the manifest builder.
-                    return
-                }
-                for (child in children) {
-                    val childPath = if (currentPath.isEmpty()) child.name!! else "$currentPath/${child.name}"
-                    traverse(child.uri, childPath)
-                }
-            } else {
-                result.add(Triple(uri, currentPath, doc.length()))
-            }
-        }
-
-        for (item in selection.items) {
-            val path = item.displayName
-            traverse(item.uri, path)
-        }
-        return result
     }
 
     private fun estimateTokens(text: String): Int = text.length / 4 // same as Node.js placeholder

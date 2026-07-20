@@ -125,8 +125,6 @@ class ContextPackage private constructor(private val context: Context) {
     fun clearAuditLog() = auditLogger.clearAuditLog()
 
     fun updateConfig(block: (SharedPreferences.Editor) -> Unit) {
-        val editor = context.getSharedPreferences("context_pkg_config", Context.MODE_PRIVATE).edit()
-        block(editor)
-        editor.apply()
+        Config.updateConfig(context, block)
     }
 }

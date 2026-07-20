@@ -27,15 +27,39 @@ object Config {
     private const val AUDIT_FILE_NAME = "context-pkg-audit.ndjson"
     private const val PREFS_NAME = "context_pkg_config"
 
-    private lateinit var prefs: SharedPreferences
+    @Volatile
+    private var prefs: SharedPreferences? = null
 
     fun initialize(context: Context) {
-        prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        if (prefs == null) {
+            synchronized(this) {
+                if (prefs == null) {
+                    prefs = context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                }
+            }
+        }
     }
 
-    fun getInt(key: String, default: Int): Int = prefs.getInt(key, default)
-    fun getLong(key: String, default: Long): Long = prefs.getLong(key, default)
-    fun getBoolean(key: String, default: Boolean): Boolean = prefs.getBoolean(key, default)
+    private fun getPrefs(): SharedPreferences {
+        val p = prefs
+        if (p != null) return p
+        synchronized(this) {
+            val p2 = prefs
+            if (p2 != null) return p2
+            throw IllegalStateException("Config must be initialized before use")
+        }
+    }
+
+    fun getInt(key: String, default: Int): Int = getPrefs().getInt(key, default)
+    fun getLong(key: String, default: Long): Long = getPrefs().getLong(key, default)
+    fun getBoolean(key: String, default: Boolean): Boolean = getPrefs().getBoolean(key, default)
+
+    fun updateConfig(context: Context, block: (SharedPreferences.Editor) -> Unit) {
+        initialize(context)
+        val editor = getPrefs().edit()
+        block(editor)
+        editor.apply()
+    }
 
     fun getAuditFile(context: Context): java.io.File =
         java.io.File(context.filesDir, AUDIT_FILE_NAME)

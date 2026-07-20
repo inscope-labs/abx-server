@@ -20,8 +20,14 @@ class TextAggregator(private val context: Context, private val auditLogger: Audi
         selection: ContextSelection,
         options: BuildOptions
     ): Flow<PreviewChunk> = flow {
-        val items = selection.items
-        val totalFiles = items.count { !it.isDirectory } // flat for now
+        val allUris = SafUtils.flattenSelection(
+            context = context,
+            selection = selection,
+            maxDirFiles = options.maxDirFiles,
+            forceAll = options.forceAll,
+            auditLogger = auditLogger
+        )
+        val totalFiles = allUris.size
         var fileIndex = 0
         var chunkIndex = 0
         val maxChunkSize = 4096 // characters
@@ -39,19 +45,22 @@ class TextAggregator(private val context: Context, private val auditLogger: Audi
             )
         }
 
-        for (item in items) {
-            if (item.isDirectory) continue // handled by PackageBuilder for full build
+        for ((uri, displayName, fileSize) in allUris) {
+            // Find the purpose/priority override from selection if present, else defaults
+            val item = selection.items.find { it.uri == uri }
+            val purpose = item?.purpose?.value ?: selection.defaultPurpose.value
+            val priority = item?.priority ?: selection.defaultPriority
 
             auditLogger.audit("preview-file", mapOf(
-                "file" to item.displayName,
-                "purpose" to item.purpose.value,
-                "priority" to item.priority
+                "file" to displayName,
+                "purpose" to purpose,
+                "priority" to priority
             ))
 
             val content = try {
-                context.readTextFromUri(item.uri)
+                context.readTextFromUri(uri)
             } catch (e: Exception) {
-                val errMsg = "[[ERROR reading ${item.displayName}: ${e.message}]]"
+                val errMsg = "[[ERROR reading $displayName: ${e.message}]]"
                 emit(PreviewChunk(
                     index = chunkIndex++,
                     text = errMsg,

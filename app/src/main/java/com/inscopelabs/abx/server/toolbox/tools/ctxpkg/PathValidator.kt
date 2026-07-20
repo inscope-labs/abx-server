@@ -25,8 +25,16 @@ object PathValidator {
         }
 
         // 3. Dot‑dot after naive decode
-        val decoded = name.replace(Regex("%[0-9a-f]{2}", RegexOption.IGNORE_CASE)) {
-            it.value.substring(1).toInt(16).toChar().toString()
+        val decoded = try {
+            name.replace(Regex("%[0-9a-f]{2}", RegexOption.IGNORE_CASE)) {
+                try {
+                    it.value.substring(1).toInt(16).toChar().toString()
+                } catch (e: NumberFormatException) {
+                    it.value
+                }
+            }
+        } catch (e: Exception) {
+            name
         }
         if (Regex("(?:^|[/\\\\])\\.\\.(?:[/\\\\]|$)").containsMatchIn(decoded)) {
             throw SecurityException("$label: path traversal (..) not allowed")

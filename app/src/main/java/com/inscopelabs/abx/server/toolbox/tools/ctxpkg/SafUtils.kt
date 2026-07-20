@@ -27,18 +27,29 @@ object SafUtils {
         throw SecurityException("Cannot write to URI: $uri")
     }
 
-    fun Context.getDocumentFile(uri: Uri): DocumentFile? =
-        DocumentFile.fromSingleUri(this, uri)
+    fun Context.getDocumentFile(uri: Uri): DocumentFile? {
+        return if (DocumentsContract.isTreeUri(uri)) {
+            DocumentFile.fromTreeUri(this, uri)
+        } else {
+            DocumentFile.fromSingleUri(this, uri)
+        }
+    }
 
     fun Context.listFiles(uri: Uri): List<DocumentFile> {
-        val doc = DocumentFile.fromTreeUri(this, uri) ?: return emptyList()
+        val doc = getDocumentFile(uri) ?: return emptyList()
         return doc.listFiles().toList()
     }
 
-    fun Context.getFileName(uri: Uri): String =
-        DocumentFile.fromSingleUri(this, uri)?.name ?: uri.lastPathSegment ?: "unknown"
+    fun Context.getFileName(uri: Uri): String {
+        val doc = getDocumentFile(uri)
+        return doc?.name ?: uri.lastPathSegment ?: "unknown"
+    }
 
     fun Context.getFileSize(uri: Uri): Long {
+        val doc = getDocumentFile(uri)
+        if (doc != null && doc.exists()) {
+            return doc.length()
+        }
         val cursor = contentResolver.query(uri, null, null, null, null)
         return cursor?.use {
             if (it.moveToFirst()) {
@@ -48,18 +59,25 @@ object SafUtils {
         } ?: 0L
     }
 
-    fun Context.getMimeType(uri: Uri): String? =
-        contentResolver.getType(uri) ?: MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+    fun Context.getMimeType(uri: Uri): String? {
+        val doc = getDocumentFile(uri)
+        if (doc != null && doc.exists()) {
+            return doc.type
+        }
+        return contentResolver.getType(uri) ?: MimeTypeMap.getSingleton().getMimeTypeFromExtension(
             uri.lastPathSegment?.substringAfterLast('.') ?: ""
         )
+    }
 
     fun Context.isDirectory(uri: Uri): Boolean {
-        val doc = DocumentFile.fromSingleUri(this, uri)
+        val doc = getDocumentFile(uri)
         return doc?.isDirectory ?: false
     }
 
-    fun Context.exists(uri: Uri): Boolean =
-        DocumentFile.fromSingleUri(this, uri)?.exists() ?: false
+    fun Context.exists(uri: Uri): Boolean {
+        val doc = getDocumentFile(uri)
+        return doc?.exists() ?: false
+    }
 
     // Normal methods to support SafUtils.createFileInTree(context, ...)
     fun createFileInTree(context: Context, treeUri: Uri, mimeType: String, fileName: String): Uri? {
@@ -72,5 +90,42 @@ object SafUtils {
         val doc = DocumentFile.fromTreeUri(context, treeUri) ?: return null
         val newDir = doc.createDirectory(dirName) ?: return null
         return newDir.uri
+    }
+
+    fun flattenSelection(
+        context: Context,
+        selection: ContextSelection,
+        maxDirFiles: Int,
+        forceAll: Boolean,
+        auditLogger: AuditLogger? = null
+    ): List<Triple<Uri, String, Long>> {
+        val result = mutableListOf<Triple<Uri, String, Long>>()
+
+        fun traverse(doc: DocumentFile, currentPath: String) {
+            if (doc.isDirectory) {
+                val children = doc.listFiles()
+                if (!forceAll && children.size > maxDirFiles) {
+                    auditLogger?.audit("dir-skipped", mapOf(
+                        "dir" to currentPath,
+                        "fileCount" to children.size,
+                        "limit" to maxDirFiles
+                    ))
+                    return
+                }
+                for (child in children) {
+                    val childPath = if (currentPath.isEmpty()) (child.name ?: "unknown") else "$currentPath/${child.name ?: "unknown"}"
+                    traverse(child, childPath)
+                }
+            } else {
+                result.add(Triple(doc.uri, currentPath, doc.length()))
+            }
+        }
+
+        for (item in selection.items) {
+            val path = item.displayName
+            val doc = with(context) { context.getDocumentFile(item.uri) } ?: continue
+            traverse(doc, path)
+        }
+        return result
     }
 }
