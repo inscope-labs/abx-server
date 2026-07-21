@@ -1,50 +1,174 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    DESIGN TOKEN DISCIPLINE — see design-tokens.md before editing.
+-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/canvas_medium_gray">
+    android:background="@color/color_background">
 
+    <!-- Top Toolbar with Back navigation and Add action -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/contextPackageToolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:title="Context Package"
-        app:navigationIcon="?attr/homeAsUpIndicator"
+        style="@style/Widget.Abx.TopBar"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:title="@string/context_package_title"
+        app:titleTextAppearance="@style/TextAppearance.Abx.TitleMedium"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Custom Add Action on the Toolbar -->
+        <ImageButton
+            android:id="@+id/addContextItemButton"
+            android:layout_width="@dimen/icon_size_lg"
+            android:layout_height="@dimen/icon_size_lg"
+            android:layout_gravity="end"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_add"
+            app:tint="@color/color_on_surface_variant"
+            android:contentDescription="@string/add_files" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <View
+        android:id="@+id/toolbarDivider"
+        style="@style/Widget.Abx.ListRow.Divider"
+        app:layout_constraintTop_toBottomOf="@id/contextPackageToolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <LinearLayout
+    <!-- Selection List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/selectedItemsRecyclerView"
         android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/spacing_lg"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/toolbarDivider"
+        app:layout_constraintBottom_toTopOf="@id/bottomSection"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Centered Empty State -->
+    <LinearLayout
+        android:id="@+id/emptyStateLayout"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
         android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/contextPackageToolbar"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp">
+        android:padding="@dimen/spacing_xxl"
+        app:layout_constraintTop_toBottomOf="@id/toolbarDivider"
+        app:layout_constraintBottom_toTopOf="@id/bottomSection">
 
-        <Button
-            android:id="@+id/contextPackagePickFolderButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pick Folder" />
+        <ImageView
+            android:layout_width="@dimen/icon_size_xxl"
+            android:layout_height="@dimen/icon_size_xxl"
+            android:src="@drawable/ic_inventory"
+            app:tint="@color/color_on_surface_variant"
+            android:contentDescription="@null" />
 
         <TextView
-            android:id="@+id/contextPackageResultText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="No folder selected"
-            android:textColor="@color/black" />
+            android:layout_marginTop="@dimen/spacing_md"
+            android:text="@string/empty_selection"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.Abx.BodyMedium"
+            android:textColor="@color/color_on_surface_variant" />
 
     </LinearLayout>
+
+    <!-- Bottom Action & Budget Panel -->
+    <LinearLayout
+        android:id="@+id/bottomSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_lg"
+        android:background="@color/color_surface"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <View
+            style="@style/Widget.Abx.ListRow.Divider"
+            android:layout_marginBottom="@dimen/spacing_md" />
+
+        <!-- Token budget summary bar -->
+        <LinearLayout
+            android:id="@+id/tokenBudgetBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="@dimen/spacing_md">
+
+            <TextView
+                android:id="@+id/tokenBudgetText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Estimated: 0 / 100,000 tokens"
+                android:textAppearance="@style/TextAppearance.Abx.LabelMedium"
+                android:textColor="@color/color_on_surface_variant"
+                android:layout_marginBottom="@dimen/spacing_xs" />
+
+            <ProgressBar
+                android:id="@+id/tokenBudgetProgress"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacing_xs"
+                android:max="100000"
+                android:progress="0"
+                android:progressTint="@color/color_primary" />
+
+        </LinearLayout>
+
+        <!-- Primary action Button -->
+        <Button
+            android:id="@+id/buildPackageButton"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/build_package"
+            android:enabled="false"
+            app:backgroundTint="@color/color_primary"
+            android:textColor="@color/color_on_primary" />
+
+    </LinearLayout>
+
+    <!-- Indeterminate build-progress overlay -->
+    <FrameLayout
+        android:id="@+id/progressOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#A0000000"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="@dimen/spacing_xl"
+            android:background="@drawable/bg_stat_tile">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminateTint="@color/color_primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
+                android:text="Compiling context package..."
+                android:textAppearance="@style/TextAppearance.Abx.BodyMedium"
+                android:textColor="@color/color_on_surface" />
+
+        </LinearLayout>
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

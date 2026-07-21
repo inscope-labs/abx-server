@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    DESIGN TOKEN DISCIPLINE — see design-tokens.md before editing.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.Abx.ListRow"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical">
+
+    <!-- Leading Icon Container -->
+    <FrameLayout
+        android:id="@+id/iconContainer"
+        style="@style/Widget.Abx.ListRow.IconContainer">
+
+        <ImageView
+            android:id="@+id/itemIcon"
+            style="@style/Widget.Abx.ListRow.Icon"
+            android:src="@drawable/ic_insert_drive_file"
+            android:contentDescription="@null" />
+    </FrameLayout>
+
+    <!-- Text info block -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="@dimen/spacing_md"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/itemName"
+            style="@style/Widget.Abx.ListRow.Title"
+            android:ellipsize="middle"
+            android:singleLine="true"
+            android:text="filename.kt" />
+
+        <TextView
+            android:id="@+id/itemInfo"
+            style="@style/Widget.Abx.ListRow.Subtitle"
+            android:text="452 tokens • 2.4 KB"
+            android:textColor="@color/color_on_surface_variant" />
+    </LinearLayout>
+
+</LinearLayout>

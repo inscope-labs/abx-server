@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    DESIGN TOKEN DISCIPLINE — see design-tokens.md before editing.
+    This file must stay in exact parity with ui/theme/Color.kt and
+    ui/theme/Theme.kt (Compose) for as long as both UI systems coexist
+    during the XML migration. If you change a hex value here, change it
+    there too, same commit — do not let the two systems drift.
+-->
 <resources>
+    <!-- Legacy/Stubs (Left untouched, out of scope, flagged for future cleanup) -->
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
@@ -10,4 +18,82 @@
     <color name="canvas_medium_gray">#FF9E9E9E</color>
     <color name="chat_view_blue">#FF2B5DA8</color>
     <color name="files_view_amber">#FFC9791A</color>
+
+    <!-- ================= BASE PALETTE ================= -->
+    <!-- Heroku-console inspired: white / gray / blue. Blue is reserved for
+         the one thing that matters (active state, primary action). Gray
+         carries all structure. Never reference these raw values directly
+         from a layout or a component style — always go through the
+         semantic roles below. -->
+
+    <color name="color_white">#FFFFFFFF</color>
+
+    <!-- Blue — accent / primary action / active session -->
+    <color name="blue_10">#FFEFF4FE</color>
+    <color name="blue_20">#FFDCE7FC</color>
+    <color name="blue_40">#FF3D6FE0</color>
+    <color name="blue_50">#FF2F5FD0</color>
+    <color name="blue_80">#FF9DBBFA</color>
+    <color name="blue_90">#FFCFDDFB</color>
+
+    <!-- Gray — structure, text, borders, inactive -->
+    <color name="gray_05">#FFFAFAFA</color>
+    <color name="gray_10">#FFF2F2F2</color>
+    <color name="gray_20">#FFE3E3E3</color>
+    <color name="gray_30">#FFC7C7C7</color>
+    <color name="gray_50">#FF8A8A8A</color>
+    <color name="gray_70">#FF4D4D4D</color>
+    <color name="gray_85">#FF2A2A2A</color>
+    <color name="gray_95">#FF171717</color>
+
+    <!-- Status roles — used instead of ad-hoc hex anywhere status is shown -->
+    <color name="success_green_40">#FF2E7D32</color>
+    <color name="success_green_90">#FFDCEFDD</color>
+    <color name="warning_amber_40">#FFB25E09</color>
+    <color name="warning_amber_90">#FFFBEBD9</color>
+    <color name="error_red_40">#FFC62828</color>
+    <color name="error_red_90">#FFFAE0E0</color>
+
+    <!-- ================= SEMANTIC ROLES (LIGHT) ================= -->
+    <!-- Every layout/style should reference ONLY these, never the raw
+         palette above and never a hardcoded #RRGGBB. This is what makes
+         dark mode work automatically via values-night/colors.xml, and
+         what keeps a hardcoded-hex bug (like the one previously found in
+         ABXStatusChip/ABXLogViewer in Compose) from happening in XML. -->
+
+    <color name="color_primary">@color/blue_50</color>
+    <color name="color_on_primary">@color/color_white</color>
+    <color name="color_primary_container">@color/blue_10</color>
+    <color name="color_on_primary_container">@color/blue_50</color>
+
+    <color name="color_secondary">@color/gray_70</color>
+    <color name="color_on_secondary">@color/color_white</color>
+    <color name="color_secondary_container">@color/gray_10</color>
+    <color name="color_on_secondary_container">@color/gray_85</color>
+
+    <color name="color_background">@color/color_white</color>
+    <color name="color_on_background">@color/gray_85</color>
+    <color name="color_surface">@color/color_white</color>
+    <color name="color_on_surface">@color/gray_85</color>
+    <color name="color_surface_variant">@color/gray_05</color>
+    <color name="color_on_surface_variant">@color/gray_70</color>
+
+    <!-- outline = hairline borders/dividers ONLY. Deliberately low
+         contrast — never use it for icon tints, chevrons, or any content
+         that needs to read as legible foreground. That exact mistake
+         (a chevron tinted with outline instead of on_surface_variant)
+         already happened once in the Compose version; see design-tokens.md
+         section "Chevron / trailing icon color" before using this token. -->
+    <color name="color_outline">@color/gray_30</color>
+    <color name="color_outline_variant">@color/gray_20</color>
+
+    <color name="color_error">@color/error_red_40</color>
+    <color name="color_on_error">@color/color_white</color>
+    <color name="color_error_container">@color/error_red_90</color>
+    <color name="color_on_error_container">@color/error_red_40</color>
+
+    <color name="color_success">@color/success_green_40</color>
+    <color name="color_success_container">@color/success_green_90</color>
+    <color name="color_warning">@color/warning_amber_40</color>
+    <color name="color_warning_container">@color/warning_amber_90</color>
 </resources>

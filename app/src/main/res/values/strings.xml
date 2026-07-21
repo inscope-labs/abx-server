@@ -112,4 +112,17 @@
     <string name="error_share_chooser_title">Send report via</string>
     <string name="error_share_failed">Failed to share diagnostic report</string>
     <string name="error_fallback_toast">An error occurred displaying this screen. Please restart the app.</string>
+
+    <!-- Context Package Strings -->
+    <string name="context_package_title">Context Package</string>
+    <string name="context_package_desc">Compile and package local files/folders as context for AI/MCP clients.</string>
+    <string name="add_files">Add Files</string>
+    <string name="add_folder">Add Folder</string>
+    <string name="empty_selection">No items selected. Add files or folders to compile a package.</string>
+    <string name="token_budget">Estimated: %1$s / %2$s tokens</string>
+    <string name="build_package">Build Package</string>
+    <string name="success_header">Context Package Compiled</string>
+    <string name="done">Done</string>
+    <string name="view_in_files">View in Files</string>
+    <string name="skipped_files_warning">Some files were skipped due to size limits, binary format, or security policies.</string>
 </resources>

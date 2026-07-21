@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    DESIGN TOKEN DISCIPLINE — see design-tokens.md before editing.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_background">
+
+    <!-- Scrollable results body -->
+    <ScrollView
+        android:id="@+id/resultScrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomActionsSection"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_lg">
+
+            <!-- Success Header -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/spacing_lg"
+                android:layout_marginBottom="@dimen/spacing_xl">
+
+                <ImageView
+                    android:layout_width="@dimen/icon_size_xxl"
+                    android:layout_height="@dimen/icon_size_xxl"
+                    android:src="@drawable/ic_check_circle"
+                    app:tint="@color/color_success"
+                    android:contentDescription="@null" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:text="@string/success_header"
+                    android:textAppearance="@style/TextAppearance.Abx.TitleMedium"
+                    android:textColor="@color/color_on_surface" />
+
+            </LinearLayout>
+
+            <!-- Stat Tiles Container -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="@dimen/spacing_lg">
+
+                <!-- File Count Tile -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="@dimen/spacing_md"
+                    android:background="@drawable/bg_stat_tile"
+                    android:layout_marginEnd="@dimen/spacing_xs">
+
+                    <TextView
+                        android:id="@+id/fileCountText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textAppearance="@style/TextAppearance.Abx.TitleSmall"
+                        android:textColor="@color/color_primary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xs"
+                        android:text="Files"
+                        android:textAppearance="@style/TextAppearance.Abx.LabelSmall" />
+                </LinearLayout>
+
+                <!-- Total Tokens Tile -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="@dimen/spacing_md"
+                    android:background="@drawable/bg_stat_tile"
+                    android:layout_marginHorizontal="@dimen/spacing_xs">
+
+                    <TextView
+                        android:id="@+id/totalTokensText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textAppearance="@style/TextAppearance.Abx.TitleSmall"
+                        android:textColor="@color/color_primary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xs"
+                        android:text="Tokens"
+                        android:textAppearance="@style/TextAppearance.Abx.LabelSmall" />
+                </LinearLayout>
+
+                <!-- Part Count Tile -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="@dimen/spacing_md"
+                    android:background="@drawable/bg_stat_tile"
+                    android:layout_marginStart="@dimen/spacing_xs">
+
+                    <TextView
+                        android:id="@+id/partCountText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textAppearance="@style/TextAppearance.Abx.TitleSmall"
+                        android:textColor="@color/color_primary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xs"
+                        android:text="Parts"
+                        android:textAppearance="@style/TextAppearance.Abx.LabelSmall" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Skipped Files Warning Card (Only visible if non-empty skipped list) -->
+            <LinearLayout
+                android:id="@+id/skippedWarningCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/spacing_md"
+                android:background="@drawable/bg_warning_card"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="@dimen/spacing_lg"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="@dimen/icon_size_sm"
+                    android:layout_height="@dimen/icon_size_sm"
+                    android:src="@drawable/ic_warning"
+                    app:tint="@color/color_warning"
+                    android:contentDescription="@null" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_sm"
+                    android:text="@string/skipped_files_warning"
+                    android:textAppearance="@style/TextAppearance.Abx.BodySmall"
+                    android:textColor="@color/color_warning" />
+
+            </LinearLayout>
+
+            <!-- Section Header -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Processed Files"
+                android:textAppearance="@style/TextAppearance.Abx.LabelMedium"
+                android:textColor="@color/color_on_surface_variant"
+                android:layout_marginBottom="@dimen/spacing_sm" />
+
+            <!-- Processed Files list -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/processedFilesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Bottom buttons panel -->
+    <LinearLayout
+        android:id="@+id/bottomActionsSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_lg"
+        android:background="@color/color_surface"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <View
+            style="@style/Widget.Abx.ListRow.Divider"
+            android:layout_marginBottom="@dimen/spacing_md" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/viewInFilesButton"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/view_in_files"
+                android:layout_marginEnd="@dimen/spacing_sm" />
+
+            <Button
+                android:id="@+id/doneButton"
+                style="@style/Widget.Material3.Button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/done"
+                app:backgroundTint="@color/color_primary"
+                android:textColor="@color/color_on_primary" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

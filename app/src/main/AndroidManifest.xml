@@ -50,7 +50,11 @@
         <activity
             android:name=".toolbox.tools.ctxpkg.ContextPackageActivity"
             android:exported="false"
-            android:theme="@style/Theme.MyApplication" />
+            android:theme="@style/Theme.AbxServer" />
+        <activity
+            android:name=".toolbox.tools.ctxpkg.ContextPackageResultActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AbxServer" />
         <service
             android:name=".core.diagnostics.DiagnosticService"
             android:exported="false" />

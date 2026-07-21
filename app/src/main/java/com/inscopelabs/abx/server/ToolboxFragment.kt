@@ -29,7 +29,7 @@ class ToolboxFragment : Fragment(R.layout.fragment_toolbox) {
             navigationCallback?.returnFromToolbox()
         }
 
-        view.findViewById<View>(R.id.openContextPackageButton)?.setOnClickListener {
+        view.findViewById<View>(R.id.openContextPackageRow)?.setOnClickListener {
             startActivity(Intent(requireContext(), ContextPackageActivity::class.java))
         }
     }

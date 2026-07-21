@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    DESIGN TOKEN DISCIPLINE — see design-tokens.md before editing.
+    Mirrors ui/theme/Spacing.kt exactly. Never write a raw dp value for
+    padding, margin, gap, or icon/avatar sizing directly in a layout XML —
+    reference these dimens instead. If the value you need isn't here, stop
+    and ask before inventing one; a previous audit found 18 distinct ad-hoc
+    dp values in a single Compose file before this scale existed. Do not
+    let that happen again in XML.
+-->
+<resources>
+
+    <!-- ===== Spacing scale — six values, nothing else ===== -->
+    <dimen name="spacing_xs">4dp</dimen>
+    <dimen name="spacing_sm">8dp</dimen>
+    <dimen name="spacing_md">12dp</dimen>
+    <dimen name="spacing_lg">16dp</dimen>
+    <dimen name="spacing_xl">24dp</dimen>
+    <dimen name="spacing_xxl">32dp</dimen>
+
+    <!-- ===== Icon / avatar container sizes ===== -->
+    <dimen name="icon_size_sm">20dp</dimen>   <!-- inline icon, no container -->
+    <dimen name="icon_size_md">28dp</dimen>   <!-- top bar avatar mark -->
+    <dimen name="icon_size_lg">40dp</dimen>   <!-- list row leading icon container -->
+    <dimen name="icon_size_xl">48dp</dimen>   <!-- metric card icon container -->
+    <dimen name="icon_size_xxl">64dp</dimen>  <!-- empty-state icon container -->
+
+    <!-- ===== Corner radius scale ===== -->
+    <!-- Small set, same discipline as spacing. Do not invent a one-off
+         radius value in a layout or drawable. -->
+    <dimen name="radius_sm">8dp</dimen>   <!-- list row icon containers -->
+    <dimen name="radius_md">12dp</dimen>  <!-- chips, small surfaces -->
+    <dimen name="radius_lg">16dp</dimen>  <!-- cards (used sparingly — see design-tokens.md) -->
+    <dimen name="radius_xl">24dp</dimen>  <!-- dialogs -->
+
+    <!-- ===== Structural component dimensions ===== -->
+    <dimen name="top_bar_height">48dp</dimen>       <!-- NOT the platform default 56-64dp — deliberately compact -->
+    <dimen name="context_toolbar_height">40dp</dimen>
+    <dimen name="divider_thickness">1dp</dimen>
+    <dimen name="session_dot_size">6dp</dimen>
+
+</resources>

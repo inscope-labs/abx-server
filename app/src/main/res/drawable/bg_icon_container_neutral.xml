@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    DESIGN TOKEN DISCIPLINE — see design-tokens.md before editing.
+    Default icon-container background for list rows. Neutral gray by
+    design — a row being listed isn't "active" or "primary" just because
+    it has an icon. Do NOT change this to color_primary_container as a
+    default; that exact decorative-blue mistake was found and fixed once
+    already in ABXMetricCard (Compose). If a specific row genuinely needs
+    to signal "active", use bg_icon_container_accent below instead of
+    editing this file.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/color_surface_variant" />
+    <corners android:radius="@dimen/radius_sm" />
+</shape>

@@ -53,13 +53,13 @@ data class BuildManifest(
     val files: List<ProcessedFile>,
     val skippedFiles: List<SkippedFile>? = null,
     val skippedDirs: List<SkippedDir>? = null
-)
+) : java.io.Serializable
 
 data class OutputPart(
     val file: String,               // file name
     val bytes: Long,
     val part: Int? = null           // part number if split
-)
+) : java.io.Serializable
 
 data class ProcessedFile(
     val path: String,               // original SAF path/name
@@ -67,10 +67,10 @@ data class ProcessedFile(
     val mode: String = "full",      // future use
     val tokens: Int,
     val bytes: Long
-)
+) : java.io.Serializable
 
-data class SkippedFile(val path: String, val bytes: Long, val limit: Int)
-data class SkippedDir(val dir: String, val fileCount: Int, val limit: Int)
+data class SkippedFile(val path: String, val bytes: Long, val limit: Int) : java.io.Serializable
+data class SkippedDir(val dir: String, val fileCount: Int, val limit: Int) : java.io.Serializable
 
 // UI Preview
 data class PreviewChunk(

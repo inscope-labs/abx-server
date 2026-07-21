@@ -1,57 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    DESIGN TOKEN DISCIPLINE — see design-tokens.md before editing.
+-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/canvas_medium_gray">
+    android:background="@color/color_background">
 
+    <!-- Compact Custom Top Bar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolboxToolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:title="Toolbox"
-        app:navigationIcon="?attr/homeAsUpIndicator"
+        style="@style/Widget.Abx.TopBar"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:title="@string/tab_toolbox"
+        app:titleTextAppearance="@style/TextAppearance.Abx.TitleMedium"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:padding="32dp"
+    <View
+        android:id="@+id/toolboxHeaderDivider"
+        style="@style/Widget.Abx.ListRow.Divider"
         app:layout_constraintTop_toBottomOf="@id/toolboxToolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/toolboxHeaderDivider"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Toolbox"
-            android:textColor="@color/black"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/spacing_lg"
+            android:paddingTop="@dimen/spacing_lg">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Future tools appear here..."
-            android:textColor="@color/black"
-            android:textSize="16sp" />
+            <!-- Section Label -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_sm"
+                android:text="@string/menu_utilities"
+                android:textAppearance="@style/TextAppearance.Abx.LabelMedium"
+                android:textColor="@color/color_primary" />
 
-        <Button
-            android:id="@+id/openContextPackageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Context Package" />
+            <!-- Flat list row for Context Package - NOT a card per row -->
+            <LinearLayout
+                android:id="@+id/openContextPackageRow"
+                style="@style/Widget.Abx.ListRow"
+                android:orientation="horizontal"
+                android:focusable="true"
+                android:clickable="true">
 
-    </LinearLayout>
+                <FrameLayout style="@style/Widget.Abx.ListRow.IconContainer">
+                    <ImageView
+                        style="@style/Widget.Abx.ListRow.Icon"
+                        android:src="@drawable/ic_inventory"
+                        android:contentDescription="@string/context_package_title" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/spacing_md"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/Widget.Abx.ListRow.Title"
+                        android:text="@string/context_package_title" />
+
+                    <TextView
+                        style="@style/Widget.Abx.ListRow.Subtitle"
+                        android:text="@string/context_package_desc" />
+                </LinearLayout>
+
+                <ImageView style="@style/Widget.Abx.ListRow.Chevron" />
+            </LinearLayout>
+
+            <View style="@style/Widget.Abx.ListRow.Divider" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

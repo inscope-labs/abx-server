@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    DESIGN TOKEN DISCIPLINE — see design-tokens.md before editing.
+    Reusable component styles — the XML equivalent of the shared Compose
+    composables in ui/Components.kt (ABXListRow, ABXCard, ABXStatusChip,
+    CompactTopBar). Use these via <include> / style="@style/..." instead
+    of building a new bespoke row/card/chip layout per screen. That
+    exact mistake (ToolboxScreen building its own Row instead of reusing
+    ABXListRow) already happened once in Compose; do not repeat it here.
+-->
+<resources>
+
+    <!-- Base Widget style for name-based inheritance -->
+    <style name="Widget.Abx" parent="android:Widget" />
+
+    <!-- ===== List row ===== -->
+    <!-- Flat row + hairline divider — NOT a card. This is the corrected
+         pattern (see design-tokens.md "List rows vs cards" section) after
+         an earlier version wrapped every row in its own bordered/rounded
+         box, which broke the approved reference design. Rows in a list
+         should sit flush against each other; the divider IS the
+         separation, not a gap plus a border. -->
+    <style name="Widget.Abx.ListRow">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">@dimen/spacing_md</item>
+        <item name="android:paddingBottom">@dimen/spacing_md</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="Widget.Abx.ListRow.Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/divider_thickness</item>
+        <item name="android:background">@color/color_outline_variant</item>
+    </style>
+
+    <style name="Widget.Abx.ListRow.IconContainer">
+        <item name="android:layout_width">@dimen/icon_size_lg</item>
+        <item name="android:layout_height">@dimen/icon_size_lg</item>
+        <item name="android:background">@drawable/bg_icon_container_neutral</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="Widget.Abx.ListRow.Icon">
+        <item name="android:layout_width">@dimen/icon_size_sm</item>
+        <item name="android:layout_height">@dimen/icon_size_sm</item>
+        <item name="android:tint">@color/color_on_surface_variant</item>
+    </style>
+
+    <style name="Widget.Abx.ListRow.Title">
+        <item name="android:textAppearance">@style/TextAppearance.Abx.BodyMedium</item>
+    </style>
+
+    <style name="Widget.Abx.ListRow.Subtitle">
+        <item name="android:textAppearance">@style/TextAppearance.Abx.BodySmall</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <!-- Trailing chevron. tint MUST be color_on_surface_variant, never
+         color_outline. This exact bug (chevron tinted with the hairline-
+         border token instead of the text token, making it read as too
+         light) was found and fixed once already — see design-tokens.md
+         "Chevron / trailing icon color" before changing this. -->
+    <style name="Widget.Abx.ListRow.Chevron">
+        <item name="android:layout_width">@dimen/icon_size_sm</item>
+        <item name="android:layout_height">@dimen/icon_size_sm</item>
+        <item name="android:tint">@color/color_on_surface_variant</item>
+        <item name="android:src">@drawable/ic_chevron_right</item>
+    </style>
+
+    <!-- ===== Card ===== -->
+    <!-- Reserve for content that is genuinely a distinct, self-contained
+         unit (a metric, a dialog, a standalone summary) — NOT for list
+         items. See design-tokens.md "List rows vs cards" before using
+         this for anything list-shaped. -->
+    <style name="Widget.Abx.Card" parent="Widget.Material3.CardView.Outlined">
+        <item name="cardBackgroundColor">@color/color_surface</item>
+        <item name="strokeColor">@color/color_outline</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="cardCornerRadius">@dimen/radius_lg</item>
+        <item name="cardElevation">0dp</item>
+        <item name="contentPadding">@dimen/spacing_lg</item>
+    </style>
+
+    <!-- ===== Status chip ===== -->
+    <!-- Base style; combine with .Success / .Warning / .Error / .Info
+         below rather than setting background/textColor ad hoc. -->
+    <style name="Widget.Abx.StatusChip">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingHorizontal">@dimen/spacing_sm</item>
+        <item name="android:paddingVertical">@dimen/spacing_xs</item>
+        <item name="android:textAppearance">@style/TextAppearance.Abx.LabelSmall</item>
+        <item name="cornerRadius">@dimen/spacing_xs</item>
+    </style>
+
+    <style name="Widget.Abx.StatusChip.Success">
+        <item name="backgroundTint">@color/color_success_container</item>
+        <item name="android:textColor">@color/color_success</item>
+    </style>
+
+    <style name="Widget.Abx.StatusChip.Warning">
+        <item name="backgroundTint">@color/color_warning_container</item>
+        <item name="android:textColor">@color/color_warning</item>
+    </style>
+
+    <style name="Widget.Abx.StatusChip.Error">
+        <item name="backgroundTint">@color/color_error_container</item>
+        <item name="android:textColor">@color/color_error</item>
+    </style>
+
+    <style name="Widget.Abx.StatusChip.Info">
+        <item name="backgroundTint">@color/color_primary_container</item>
+        <item name="android:textColor">@color/color_primary</item>
+    </style>
+
+    <!-- ===== Top bar ===== -->
+    <!-- Deliberately compact — top_bar_height is 48dp, not the platform
+         default 56-64dp Toolbar height. Do not use a stock
+         Widget.Material3.Toolbar without overriding its height; that
+         silently reverts this to the oversized default. -->
+    <style name="Widget.Abx.TopBar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/top_bar_height</item>
+        <item name="android:background">@color/color_surface</item>
+        <item name="android:paddingHorizontal">@dimen/spacing_md</item>
+        <item name="contentInsetStart">0dp</item>
+        <item name="elevation">0dp</item>
+    </style>
+
+</resources>

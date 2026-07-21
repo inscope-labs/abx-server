@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    DESIGN TOKEN DISCIPLINE — see design-tokens.md before editing.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.Abx.ListRow"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/spacing_lg"
+    android:gravity="center_vertical">
+
+    <!-- Leading Icon Container -->
+    <FrameLayout
+        android:id="@+id/iconContainer"
+        style="@style/Widget.Abx.ListRow.IconContainer">
+
+        <ImageView
+            android:id="@+id/itemIcon"
+            style="@style/Widget.Abx.ListRow.Icon"
+            android:src="@drawable/ic_insert_drive_file"
+            android:contentDescription="@null" />
+    </FrameLayout>
+
+    <!-- Main text info block -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="@dimen/spacing_md"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/itemName"
+            style="@style/Widget.Abx.ListRow.Title"
+            android:ellipsize="middle"
+            android:singleLine="true"
+            android:text="filename.kt" />
+
+        <TextView
+            android:id="@+id/itemSize"
+            style="@style/Widget.Abx.ListRow.Subtitle"
+            android:text="2.4 KB"
+            android:textColor="@color/color_on_surface_variant" />
+
+        <!-- Tap-to-cycle Purpose Chip and Priority Stepper Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_sm"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <!-- Purpose Chip -->
+            <TextView
+                android:id="@+id/purposeChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/spacing_sm"
+                android:paddingVertical="@dimen/spacing_xs"
+                android:background="@drawable/bg_chip_neutral"
+                android:text="SOURCE"
+                android:textAppearance="@style/TextAppearance.Abx.LabelSmall"
+                android:textColor="@color/color_primary"
+                android:clickable="true"
+                android:focusable="true"/>
+
+            <!-- Stepper Divider -->
+            <View
+                android:layout_width="@dimen/divider_thickness"
+                android:layout_height="@dimen/spacing_lg"
+                android:background="@color/color_outline_variant"
+                android:layout_marginStart="@dimen/spacing_md"
+                android:layout_marginEnd="@dimen/spacing_md"/>
+
+            <!-- Priority Stepper Container -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_chip_neutral"
+                android:paddingHorizontal="@dimen/spacing_xs">
+
+                <!-- Decrease button -->
+                <ImageButton
+                    android:id="@+id/decreasePriorityButton"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_remove"
+                    app:tint="@color/color_on_surface_variant"
+                    android:contentDescription="Decrease priority" />
+
+                <!-- Priority value -->
+                <TextView
+                    android:id="@+id/priorityValueText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/spacing_sm"
+                    android:text="5"
+                    android:textAppearance="@style/TextAppearance.Abx.LabelMedium"
+                    android:textColor="@color/color_on_surface" />
+
+                <!-- Increase button -->
+                <ImageButton
+                    android:id="@+id/increasePriorityButton"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_add"
+                    app:tint="@color/color_on_surface_variant"
+                    android:contentDescription="Increase priority" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Remove Item Button -->
+    <ImageButton
+        android:id="@+id/removeItemButton"
+        android:layout_width="@dimen/icon_size_lg"
+        android:layout_height="@dimen/icon_size_lg"
+        android:layout_marginStart="@dimen/spacing_sm"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_close"
+        app:tint="@color/color_on_surface_variant"
+        android:contentDescription="Remove item" />
+
+</LinearLayout>

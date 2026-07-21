@@ -1,5 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<!--
+    DESIGN TOKEN DISCIPLINE — see design-tokens.md before editing.
+    App-wide theme. Do NOT add a second theme, a screen-specific theme
+    override, or an activity-level style tweak without checking
+    design-tokens.md first — one theme, applied everywhere, is the whole
+    point of this system.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Theme.MyApplication" parent="Theme.AppCompat.DayNight.NoActionBar" />
+
+    <style name="Theme.AbxServer" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorOnPrimary">@color/color_on_primary</item>
+        <item name="colorPrimaryContainer">@color/color_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/color_on_primary_container</item>
+
+        <item name="colorSecondary">@color/color_secondary</item>
+        <item name="colorOnSecondary">@color/color_on_secondary</item>
+        <item name="colorSecondaryContainer">@color/color_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/color_on_secondary_container</item>
+
+        <item name="android:colorBackground">@color/color_background</item>
+        <item name="colorOnBackground">@color/color_on_background</item>
+        <item name="colorSurface">@color/color_surface</item>
+        <item name="colorOnSurface">@color/color_on_surface</item>
+        <item name="colorSurfaceVariant">@color/color_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/color_on_surface_variant</item>
+
+        <item name="colorOutline">@color/color_outline</item>
+        <item name="colorOutlineVariant">@color/color_outline_variant</item>
+
+        <item name="colorError">@color/color_error</item>
+        <item name="colorOnError">@color/color_on_error</item>
+        <item name="colorErrorContainer">@color/color_error_container</item>
+        <item name="colorOnErrorContainer">@color/color_on_error_container</item>
+
+        <!-- No Material You dynamic color — brand identity should not be
+             overridden by the user's wallpaper. This mirrors the explicit
+             removal of dynamicColor in the Compose Theme.kt; do not
+             reintroduce a dynamic-color path here either. -->
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+
+        <item name="android:statusBarColor">@color/color_surface</item>
+        <item name="android:windowLightStatusBar">true</item>
+
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.Abx.TitleSmall</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.Abx.TitleMedium</item>
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.Abx.TitleLarge</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.Abx.BodyMedium</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.Abx.BodySmall</item>
+        <item name="textAppearanceLabelSmall">@style/TextAppearance.Abx.LabelSmall</item>
+        <item name="textAppearanceLabelMedium">@style/TextAppearance.Abx.LabelMedium</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.Abx.LabelLarge</item>
+    </style>
+
+    <!-- ===== Text appearances ===== -->
+    <!-- FontWeight discipline: SemiBold/Medium only. Bold and Black are
+         reserved for a single hierarchy level app-wide (see
+         design-tokens.md) — do not apply android:textStyle="bold" or a
+         "black" font family ad hoc in a layout. A prior Compose audit
+         found FontWeight.Bold used 24 times and Black twice across ~900
+         lines; that's exactly the drift this list exists to prevent. -->
+
+    <style name="TextAppearance.Abx.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textColor">@color/color_on_surface</item>
+        <item name="fontWeight">600</item>
+    </style>
+
+    <style name="TextAppearance.Abx.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:textColor">@color/color_on_surface</item>
+        <item name="fontWeight">600</item>
+    </style>
+
+    <style name="TextAppearance.Abx.TitleSmall" parent="TextAppearance.Material3.TitleSmall">
+        <item name="android:textColor">@color/color_on_surface</item>
+        <item name="fontWeight">600</item>
+    </style>
+
+    <style name="TextAppearance.Abx.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textColor">@color/color_on_surface</item>
+        <item name="fontWeight">500</item>
+    </style>
+
+    <style name="TextAppearance.Abx.BodySmall" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:textColor">@color/color_on_surface_variant</item>
+    </style>
+
+    <style name="TextAppearance.Abx.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
+        <item name="android:textColor">@color/color_on_surface_variant</item>
+    </style>
+
+    <style name="TextAppearance.Abx.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
+        <item name="android:textColor">@color/color_on_surface_variant</item>
+        <item name="fontWeight">500</item>
+    </style>
+
+    <style name="TextAppearance.Abx.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:textColor">@color/color_on_surface_variant</item>
+        <item name="fontWeight">600</item>
+    </style>
+
+    <!-- Monospace variant — for anything technical: timestamps, session
+         IDs, tokens, file paths, log content. Reinforces "dev tool, not
+         toy" per the original branding direction. -->
+    <style name="TextAppearance.Abx.Monospace" parent="TextAppearance.Abx.BodySmall">
+        <item name="fontFamily">monospace</item>
+        <item name="android:fontFamily">monospace</item>
+    </style>
+
 </resources>

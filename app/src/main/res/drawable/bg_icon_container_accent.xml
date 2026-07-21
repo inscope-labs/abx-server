@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    DESIGN TOKEN DISCIPLINE — see design-tokens.md before editing.
+    Use ONLY for icon containers that represent a genuinely active/selected
+    state — not as a default decorative treatment. See design-tokens.md
+    "Where blue is allowed" before applying this anywhere.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/color_primary_container" />
+    <corners android:radius="@dimen/radius_sm" />
+</shape>
