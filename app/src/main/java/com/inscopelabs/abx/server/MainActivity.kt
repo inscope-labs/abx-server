@@ -12,6 +12,9 @@ import androidx.compose.runtime.setValue
 import androidx.fragment.app.Fragment
 import com.inscopelabs.abx.server.boot.BootGuard
 import com.inscopelabs.abx.server.boot.BootRoute
+import com.inscopelabs.abx.server.compliance.AboutBottomSheet
+import com.inscopelabs.abx.server.compliance.DeleteDataBottomSheet
+import com.inscopelabs.abx.server.compliance.PrivacyPolicyBottomSheet
 import com.inscopelabs.abx.server.core.audit.AuditLog
 import com.inscopelabs.abx.server.core.diagnostics.AnrWatchdog
 import com.inscopelabs.abx.server.core.diagnostics.Logger
@@ -71,8 +74,18 @@ class MainActivity : AppCompatActivity(), ToolboxNavigation {
         }
         toolbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.menu_utilities -> true // TODO: navigate to Utilities
-                R.id.menu_about -> true // TODO: show About dialog
+                R.id.menu_about -> {
+                    AboutBottomSheet().show(supportFragmentManager, "AboutBottomSheet")
+                    true
+                }
+                R.id.menu_privacy_policy -> {
+                    PrivacyPolicyBottomSheet().show(supportFragmentManager, "PrivacyPolicyBottomSheet")
+                    true
+                }
+                R.id.menu_delete_data -> {
+                    DeleteDataBottomSheet().show(supportFragmentManager, "DeleteDataBottomSheet")
+                    true
+                }
                 else -> false
             }
         }

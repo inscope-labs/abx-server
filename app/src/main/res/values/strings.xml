@@ -99,6 +99,7 @@
     <string name="menu_utilities_toast">Utilities clicked</string>
     <string name="menu_about">About</string>
     <string name="menu_privacy_policy">Privacy Policy</string>
+    <string name="menu_delete_data">Data Deletion</string>
 
     <string name="error_title">Something went wrong</string>
     <string name="error_message">The app ran into an unexpected problem and needs to restart. Your data is safe.</string>

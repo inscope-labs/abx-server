@@ -248,9 +248,6 @@ fun EnrollmentScreen(
             Column {
                 CompactTopBar(
                     appName = stringResource(R.string.app_name),
-                    onUtilitiesClick = {
-                        Toast.makeText(context, context.getString(R.string.menu_utilities_toast), Toast.LENGTH_SHORT).show()
-                    },
                     onAboutClick = {
                         (context as? androidx.fragment.app.FragmentActivity)?.let { activity ->
                             com.inscopelabs.abx.server.compliance.AboutBottomSheet()
@@ -261,6 +258,12 @@ fun EnrollmentScreen(
                         (context as? androidx.fragment.app.FragmentActivity)?.let { activity ->
                             com.inscopelabs.abx.server.compliance.PrivacyPolicyBottomSheet()
                                 .show(activity.supportFragmentManager, "PrivacyPolicyBottomSheet")
+                        }
+                    },
+                    onDeleteDataClick = {
+                        (context as? androidx.fragment.app.FragmentActivity)?.let { activity ->
+                            com.inscopelabs.abx.server.compliance.DeleteDataBottomSheet()
+                                .show(activity.supportFragmentManager, "DeleteDataBottomSheet")
                         }
                     },
                     onDiagnosticsClick = { showDiagnosticsDialog = true },

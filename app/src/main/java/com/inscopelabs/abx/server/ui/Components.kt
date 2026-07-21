@@ -562,9 +562,9 @@ fun ABXConfirmationDialog(
 fun CompactTopBar(
     appName: String,
     isSessionActive: Boolean,
-    onUtilitiesClick: () -> Unit,
     onAboutClick: () -> Unit,
     onPrivacyPolicyClick: () -> Unit,
+    onDeleteDataClick: () -> Unit,
     onDiagnosticsClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -632,14 +632,6 @@ fun CompactTopBar(
                 onDismissRequest = { overflowExpanded = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text(stringResource(R.string.menu_utilities)) },
-                    onClick = {
-                        overflowExpanded = false
-                        onUtilitiesClick()
-                    },
-                    modifier = Modifier.testTag("overflow_menu_utilities")
-                )
-                DropdownMenuItem(
                     text = { Text(stringResource(R.string.menu_about)) },
                     onClick = {
                         overflowExpanded = false
@@ -654,6 +646,14 @@ fun CompactTopBar(
                         onPrivacyPolicyClick()
                     },
                     modifier = Modifier.testTag("overflow_menu_privacy_policy")
+                )
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.menu_delete_data)) },
+                    onClick = {
+                        overflowExpanded = false
+                        onDeleteDataClick()
+                    },
+                    modifier = Modifier.testTag("overflow_menu_delete_data")
                 )
                 if (BuildConfig.DEBUG) {
                     DropdownMenuItem(
