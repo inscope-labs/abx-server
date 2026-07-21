@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 import java.util.UUID
+import java.util.concurrent.TimeoutException
 
 class ChatManager(
     private val repository: ChatRepository,
@@ -177,7 +178,7 @@ class ChatManager(
                         lastError = e
                         attempt++
                         if (attempt < settings.retryCount) {
-                            chatLogger.logError(session.provider, e)
+                            chatLogger.logProviderError(session.provider, e)
                             _events.emit(ChatEvent.StateChanged(sessionId, StreamingState.RETRYING))
                             // Exponential backoff
                             kotlinx.coroutines.delay(1000L * (1L shl attempt))
@@ -205,7 +206,7 @@ class ChatManager(
                 chatLogger.logResponse(session.provider, latency, assistantMsg.tokenCount)
 
             } catch (e: Exception) {
-                chatLogger.logError(session.provider, e)
+                chatLogger.logProviderError(session.provider, e)
                 _events.emit(ChatEvent.StateChanged(sessionId, StreamingState.ERROR))
                 _events.emit(ChatEvent.ErrorOccurred(sessionId, e))
             }

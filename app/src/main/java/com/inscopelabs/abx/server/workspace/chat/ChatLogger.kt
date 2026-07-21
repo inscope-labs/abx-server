@@ -15,7 +15,7 @@ class ChatLogger {
         Log.d(TAG, "Response <- Provider: $provider, Latency: ${latencyMs}ms, Tokens: $tokenCount")
     }
 
-    fun logError(provider: String, throwable: Throwable) {
+    fun logProviderError(provider: String, throwable: Throwable) {
         Log.e(TAG, "Error in Provider: $provider", throwable)
     }
 

@@ -2,6 +2,7 @@ package com.inscopelabs.abx.server.workspace.chat
 
 import androidx.room.Dao
 import androidx.room.Database
+import androidx.room.Delete
 import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -13,6 +14,7 @@ import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import android.content.Context
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 // Entities
 @Entity(tableName = "sessions")

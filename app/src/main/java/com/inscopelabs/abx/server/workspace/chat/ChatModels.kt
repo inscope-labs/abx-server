@@ -12,7 +12,9 @@ data class Attachment(
     val uri: String,
     val name: String,
     val sizeBytes: Long = 0
-)
+) {
+    companion object
+}
 
 data class Message(
     val id: String = UUID.randomUUID().toString(),
@@ -22,7 +24,9 @@ data class Message(
     val tokenCount: Int = 0,
     val timestamp: Long = System.currentTimeMillis(),
     val status: MessageStatus = MessageStatus.SENT
-)
+) {
+    companion object
+}
 
 data class ChatSession(
     val id: String = UUID.randomUUID().toString(),
@@ -72,7 +76,9 @@ data class ChatSettings(
 }
 
 // Extension functions for JSON (simplified, use a real JSON library in production)
+@JvmName("messagesToJson")
 fun List<Message>.toJson(): String = "" // implement with Gson
 fun Message.Companion.fromJsonArray(json: String): List<Message> = emptyList()
+@JvmName("attachmentsToJson")
 fun List<Attachment>.toJson(): String = ""
 fun Attachment.Companion.fromJsonArray(json: String): List<Attachment> = emptyList()

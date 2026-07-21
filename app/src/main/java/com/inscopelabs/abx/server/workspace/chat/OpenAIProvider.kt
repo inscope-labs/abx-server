@@ -7,7 +7,7 @@ import org.json.JSONObject
 
 class OpenAIProvider(apiKey: String) : BaseChatProvider(apiKey) {
 
-    override val providerName: String = "openai"
+    val providerName: String = "openai"
 
     private val baseUrl = "https://api.openai.com/v1/chat/completions"
 

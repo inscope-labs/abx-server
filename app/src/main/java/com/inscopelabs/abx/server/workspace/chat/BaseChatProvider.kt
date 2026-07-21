@@ -7,7 +7,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.sse.EventSource
 import okhttp3.sse.EventSources
-import okhttp3.sse.ServerSentEvent
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 

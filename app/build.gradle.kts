@@ -108,4 +108,15 @@ dependencies {
   implementation(libs.androidx.compose.material3)
   implementation(libs.androidx.compose.material.icons.extended)
   implementation(libs.androidx.lifecycle.runtime.ktx)
+  
+  // Room
+  implementation(libs.androidx.room.runtime)
+  implementation(libs.androidx.room.ktx)
+  ksp(libs.androidx.room.compiler)
+  
+  // OkHttp SSE
+  implementation("com.squareup.okhttp3:okhttp-sse:4.10.0")
+  
+  // Security Crypto
+  implementation("androidx.security:security-crypto:1.1.0-alpha06")
 }

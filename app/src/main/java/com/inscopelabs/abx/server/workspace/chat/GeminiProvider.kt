@@ -7,7 +7,7 @@ import org.json.JSONObject
 
 class GeminiProvider(apiKey: String) : BaseChatProvider(apiKey) {
 
-    override val providerName: String = "gemini"
+    val providerName: String = "gemini"
 
     private val baseUrl = "https://generativelanguage.googleapis.com/v1beta/models"
 
