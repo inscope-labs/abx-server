@@ -127,9 +127,11 @@
     <string name="view_in_files">View in Files</string>
     <string name="skipped_files_warning">Some files were skipped due to size limits, binary format, or security policies.</string>
 
-    <!-- Workspace Switcher Strings -->
+    <!-- Workspace Switcher & Tab Strings -->
     <string name="label_workspace">Workspace</string>
     <string name="label_server">Server</string>
+    <string name="tab_home">Home</string>
+    <string name="tab_chat">Chat</string>
 
     <!-- Chat -->
     <string name="chat_title">Chat</string>

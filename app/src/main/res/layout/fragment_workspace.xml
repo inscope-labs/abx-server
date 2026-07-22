@@ -2,7 +2,7 @@
 <!--
     DESIGN TOKEN DISCIPLINE — see design-tokens.md before editing.
 
-    Renders at the exact same coordinates as FilesFragment (both fill
+    Renders at the exact same coordinates as ServerFragment (both fill
     mainContentContainer) — toggled via the Workspace/Server switch.
 -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -41,7 +41,8 @@
                 android:contentDescription="@string/chat_new_session"
                 android:padding="@dimen/spacing_sm"
                 android:src="@drawable/ic_add"
-                android:tint="@color/color_on_surface_variant" />
+                android:tint="@color/color_on_surface_variant"
+                android:visibility="gone" />
 
             <ImageButton
                 android:id="@+id/chatSettingsButton"
@@ -51,188 +52,587 @@
                 android:contentDescription="@string/chat_settings"
                 android:padding="@dimen/spacing_sm"
                 android:src="@drawable/ic_settings"
-                android:tint="@color/color_on_surface_variant" />
+                android:tint="@color/color_on_surface_variant"
+                android:visibility="gone" />
 
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
 
-    <View
-        android:id="@+id/chatHeaderDivider"
-        style="@style/Widget.Abx.ListRow.Divider"
+    <!-- Top Tab Navigation (Home / Chat) -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/workspaceTabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_surface"
+        app:tabIndicatorColor="@color/color_primary"
+        app:tabIndicatorHeight="2dp"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="@color/color_primary"
+        app:tabTextAppearance="@style/TextAppearance.Abx.LabelMedium"
+        app:tabTextColor="@color/color_on_surface_variant"
         app:layout_constraintTop_toBottomOf="@id/chatToolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Shown only when the active provider has no API key stored yet. -->
-    <LinearLayout
-        android:id="@+id/chatApiKeyBanner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingHorizontal="@dimen/spacing_lg"
-        android:paddingVertical="@dimen/spacing_md"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/chatHeaderDivider"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:visibility="visible">
-
-        <TextView
-            android:id="@+id/chatApiKeyBannerText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/chat_api_key_missing"
-            android:textAppearance="@style/TextAppearance.Abx.LabelMedium"
-            android:textColor="@color/color_warning" />
-
-        <ImageView style="@style/Widget.Abx.ListRow.Chevron" />
-    </LinearLayout>
-
     <View
-        android:id="@+id/chatApiKeyBannerDivider"
+        android:id="@+id/chatHeaderDivider"
         style="@style/Widget.Abx.ListRow.Divider"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/chatApiKeyBanner"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:visibility="visible" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chatMessageList"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:paddingHorizontal="@dimen/spacing_lg"
-        android:paddingVertical="@dimen/spacing_md"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@id/chatApiKeyBannerDivider"
-        app:layout_constraintBottom_toTopOf="@id/chatTypingIndicator"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:listitem="@layout/item_chat_message_assistant" />
-
-    <!-- Centered over chatMessageList when there are no messages yet. -->
-    <LinearLayout
-        android:id="@+id/chatEmptyState"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:paddingHorizontal="@dimen/spacing_xxl"
-        app:layout_constraintBottom_toBottomOf="@id/chatMessageList"
-        app:layout_constraintEnd_toEndOf="@id/chatMessageList"
-        app:layout_constraintStart_toStartOf="@id/chatMessageList"
-        app:layout_constraintTop_toTopOf="@id/chatMessageList">
-
-        <FrameLayout
-            android:layout_width="@dimen/icon_size_xxl"
-            android:layout_height="@dimen/icon_size_xxl"
-            android:layout_gravity="center_horizontal"
-            style="@style/Widget.Abx.ListRow.IconContainer">
-            <ImageView
-                android:layout_width="@dimen/icon_size_lg"
-                android:layout_height="@dimen/icon_size_lg"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_smart_toy"
-                android:tint="@color/color_on_surface_variant"
-                android:contentDescription="@null" />
-        </FrameLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/spacing_lg"
-            android:gravity="center"
-            android:text="@string/chat_empty_state_title"
-            android:textAppearance="@style/TextAppearance.Abx.TitleSmall" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/spacing_xs"
-            android:gravity="center"
-            android:text="@string/chat_empty_state_subtitle"
-            android:textAppearance="@style/TextAppearance.Abx.BodySmall" />
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/chatTypingIndicator"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/spacing_lg"
-        android:paddingVertical="@dimen/spacing_xs"
-        android:text="@string/chat_typing_indicator"
-        android:textAppearance="@style/TextAppearance.Abx.LabelSmall"
-        android:textColor="@color/color_primary"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/chatInputDivider"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:visibility="visible" />
-
-    <View
-        android:id="@+id/chatInputDivider"
-        style="@style/Widget.Abx.ListRow.Divider"
-        app:layout_constraintBottom_toTopOf="@id/chatInputBar"
+        app:layout_constraintTop_toBottomOf="@id/workspaceTabLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/chatInputBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/color_surface"
-        android:gravity="bottom"
-        android:orientation="horizontal"
-        android:paddingHorizontal="@dimen/spacing_lg"
-        android:paddingTop="@dimen/spacing_sm"
-        android:paddingBottom="@dimen/spacing_md"
+    <!-- TAB 1: HOME (Dashboard) Container -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/containerHomeTab"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/chatHeaderDivider"
         app:layout_constraintBottom_toTopOf="@id/workspaceServerSwitch"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <EditText
-            android:id="@+id/chatInputEditText"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_lg">
+
+            <!-- 1. System Health Panel -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Abx.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_lg">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_lg">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="System Health &amp; Safety Posture"
+                        android:textAppearance="@style/TextAppearance.Abx.TitleMedium"
+                        android:textColor="@color/color_on_surface" />
+
+                    <View
+                        style="@style/Widget.Abx.ListRow.Divider"
+                        android:layout_marginTop="@dimen/spacing_sm"
+                        android:layout_marginBottom="@dimen/spacing_md" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@color/color_surface_variant"
+                            android:orientation="vertical"
+                            android:padding="@dimen/spacing_sm"
+                            android:layout_marginEnd="@dimen/spacing_xs">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Enclave Security"
+                                android:textAppearance="@style/TextAppearance.Abx.LabelSmall"
+                                android:textColor="@color/color_on_surface_variant" />
+
+                            <TextView
+                                android:id="@+id/txtDashEnclaveSecurity"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="TEE Secured"
+                                android:textAppearance="@style/TextAppearance.Abx.BodyMedium"
+                                android:textColor="@color/color_success" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@color/color_surface_variant"
+                            android:orientation="vertical"
+                            android:padding="@dimen/spacing_sm"
+                            android:layout_marginStart="@dimen/spacing_xs">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Audit Integrity"
+                                android:textAppearance="@style/TextAppearance.Abx.LabelSmall"
+                                android:textColor="@color/color_on_surface_variant" />
+
+                            <TextView
+                                android:id="@+id/txtDashAuditIntegrity"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="SECURE"
+                                android:textAppearance="@style/TextAppearance.Abx.BodyMedium"
+                                android:textColor="@color/color_success" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_md"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Gateway Pairing"
+                            android:textAppearance="@style/TextAppearance.Abx.BodyMedium"
+                            android:textColor="@color/color_on_surface_variant" />
+
+                        <TextView
+                            android:id="@+id/txtDashGatewayStatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Not Paired (Local Mode Only)"
+                            android:textAppearance="@style/TextAppearance.Abx.BodyMedium"
+                            android:textColor="@color/color_on_surface_variant" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 2. Session Metric & Fingerprint Cards Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="@dimen/spacing_lg">
+
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.Abx.Card"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="@dimen/spacing_xs">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_md">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Session Remaining"
+                            android:textAppearance="@style/TextAppearance.Abx.LabelSmall"
+                            android:textColor="@color/color_on_surface_variant" />
+
+                        <TextView
+                            android:id="@+id/txtDashTtl"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Inactive"
+                            android:textAppearance="@style/TextAppearance.Abx.TitleMedium"
+                            android:textColor="@color/color_on_surface"
+                            android:layout_marginTop="@dimen/spacing_xs" />
+
+                        <TextView
+                            android:id="@+id/txtDashSessionSub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Start session in Access tab"
+                            android:textAppearance="@style/TextAppearance.Abx.LabelSmall"
+                            android:textColor="@color/color_on_surface_variant"
+                            android:layout_marginTop="@dimen/spacing_xs" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.Abx.Card"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/spacing_xs">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_md">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Identity Verified"
+                            android:textAppearance="@style/TextAppearance.Abx.LabelSmall"
+                            android:textColor="@color/color_on_surface_variant" />
+
+                        <TextView
+                            android:id="@+id/txtDashIdentityStatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="READY"
+                            android:textAppearance="@style/TextAppearance.Abx.TitleMedium"
+                            android:textColor="@color/color_success"
+                            android:layout_marginTop="@dimen/spacing_xs" />
+
+                        <TextView
+                            android:id="@+id/txtDashFingerprintSnippet"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Keys active"
+                            android:textAppearance="@style/TextAppearance.Abx.Monospace"
+                            android:textColor="@color/color_on_surface_variant"
+                            android:layout_marginTop="@dimen/spacing_xs" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- 3. Quick Actions Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quick Actions &amp; Workflows"
+                android:textAppearance="@style/TextAppearance.Abx.TitleMedium"
+                android:textColor="@color/color_on_surface"
+                android:layout_marginBottom="@dimen/spacing_sm" />
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Abx.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_lg">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_md">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnDashToggleSession"
+                        style="@style/Widget.Material3.Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Start Session" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/spacing_sm">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnNavAccess"
+                            style="@style/Widget.Material3.Button.TonalButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Access Settings"
+                            android:layout_marginEnd="@dimen/spacing_xs" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnNavRemove"
+                            style="@style/Widget.Material3.Button.TonalButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Remove / Wipe"
+                            android:layout_marginStart="@dimen/spacing_xs" />
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnNavActivity"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_sm"
+                        android:text="View Activity Logs" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 4. AI Workspace Summary Card -->
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Widget.Abx.Card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_lg">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_lg">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="AI Secure MCP Workspace"
+                        android:textAppearance="@style/TextAppearance.Abx.TitleMedium"
+                        android:textColor="@color/color_on_surface" />
+
+                    <View
+                        style="@style/Widget.Abx.ListRow.Divider"
+                        android:layout_marginTop="@dimen/spacing_sm"
+                        android:layout_marginBottom="@dimen/spacing_md" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="@dimen/spacing_xs">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Primary Model Node"
+                            android:textAppearance="@style/TextAppearance.Abx.BodyMedium"
+                            android:textColor="@color/color_on_surface_variant" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Gemini Server Attested"
+                            android:textAppearance="@style/TextAppearance.Abx.BodyMedium"
+                            android:textColor="@color/color_on_surface" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="@dimen/spacing_xs">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Security Isolation"
+                            android:textAppearance="@style/TextAppearance.Abx.BodyMedium"
+                            android:textColor="@color/color_on_surface_variant" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="HSM Isolated Keystore"
+                            android:textAppearance="@style/TextAppearance.Abx.BodyMedium"
+                            android:textColor="@color/color_success" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Active MCP Policy"
+                            android:textAppearance="@style/TextAppearance.Abx.BodyMedium"
+                            android:textColor="@color/color_on_surface_variant" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Scoped Sandbox v1.1"
+                            android:textAppearance="@style/TextAppearance.Abx.BodyMedium"
+                            android:textColor="@color/color_on_surface" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- TAB 2: CHAT Container -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/containerChatTab"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/chatHeaderDivider"
+        app:layout_constraintBottom_toTopOf="@id/workspaceServerSwitch"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Shown only when the active provider has no API key stored yet. -->
+        <LinearLayout
+            android:id="@+id/chatApiKeyBanner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/spacing_lg"
+            android:paddingVertical="@dimen/spacing_md"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/chatApiKeyBannerText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/chat_api_key_missing"
+                android:textAppearance="@style/TextAppearance.Abx.LabelMedium"
+                android:textColor="@color/color_warning" />
+
+            <ImageView style="@style/Widget.Abx.ListRow.Chevron" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/chatApiKeyBannerDivider"
+            style="@style/Widget.Abx.ListRow.Divider"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/chatApiKeyBanner"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:visibility="visible" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chatMessageList"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:clipToPadding="false"
+            android:paddingHorizontal="@dimen/spacing_lg"
+            android:paddingVertical="@dimen/spacing_md"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@id/chatApiKeyBannerDivider"
+            app:layout_constraintBottom_toTopOf="@id/chatTypingIndicator"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:listitem="@layout/item_chat_message_assistant" />
+
+        <!-- Centered over chatMessageList when there are no messages yet. -->
+        <LinearLayout
+            android:id="@+id/chatEmptyState"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/spacing_xxl"
+            app:layout_constraintBottom_toBottomOf="@id/chatMessageList"
+            app:layout_constraintEnd_toEndOf="@id/chatMessageList"
+            app:layout_constraintStart_toStartOf="@id/chatMessageList"
+            app:layout_constraintTop_toTopOf="@id/chatMessageList">
+
+            <FrameLayout
+                android:layout_width="@dimen/icon_size_xxl"
+                android:layout_height="@dimen/icon_size_xxl"
+                android:layout_gravity="center_horizontal"
+                style="@style/Widget.Abx.ListRow.IconContainer">
+                <ImageView
+                    android:layout_width="@dimen/icon_size_lg"
+                    android:layout_height="@dimen/icon_size_lg"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_smart_toy"
+                    android:tint="@color/color_on_surface_variant"
+                    android:contentDescription="@null" />
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/spacing_lg"
+                android:gravity="center"
+                android:text="@string/chat_empty_state_title"
+                android:textAppearance="@style/TextAppearance.Abx.TitleSmall" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:gravity="center"
+                android:text="@string/chat_empty_state_subtitle"
+                android:textAppearance="@style/TextAppearance.Abx.BodySmall" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/chatTypingIndicator"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginEnd="@dimen/spacing_sm"
-            android:autofillHints=""
-            android:background="@drawable/bg_chat_input"
-            android:hint="@string/chat_input_hint"
-            android:inputType="textMultiLine|textCapSentences"
-            android:maxLines="5"
-            android:minHeight="@dimen/chat_input_min_height"
-            android:paddingHorizontal="@dimen/spacing_md"
-            android:paddingVertical="@dimen/spacing_sm"
-            android:textAppearance="@style/TextAppearance.Abx.BodyMedium"
-            android:textColorHint="@color/color_on_surface_variant" />
+            android:paddingHorizontal="@dimen/spacing_lg"
+            android:paddingVertical="@dimen/spacing_xs"
+            android:text="@string/chat_typing_indicator"
+            android:textAppearance="@style/TextAppearance.Abx.LabelSmall"
+            android:textColor="@color/color_primary"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/chatInputDivider"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:visibility="visible" />
 
-        <ImageButton
-            android:id="@+id/chatSendButton"
-            android:layout_width="@dimen/chat_send_button_size"
-            android:layout_height="@dimen/chat_send_button_size"
-            android:layout_gravity="bottom"
-            android:background="@drawable/bg_button_send"
-            android:contentDescription="@string/chat_send"
-            android:padding="@dimen/spacing_sm"
-            android:src="@drawable/ic_send"
-            android:tint="@color/color_on_primary" />
+        <View
+            android:id="@+id/chatInputDivider"
+            style="@style/Widget.Abx.ListRow.Divider"
+            app:layout_constraintBottom_toTopOf="@id/chatInputBar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/chatInputBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/color_surface"
+            android:gravity="bottom"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/spacing_lg"
+            android:paddingTop="@dimen/spacing_sm"
+            android:paddingBottom="@dimen/spacing_md"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <EditText
+                android:id="@+id/chatInputEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="@dimen/spacing_sm"
+                android:autofillHints=""
+                android:background="@drawable/bg_chat_input"
+                android:hint="@string/chat_input_hint"
+                android:inputType="textMultiLine|textCapSentences"
+                android:maxLines="5"
+                android:minHeight="@dimen/chat_input_min_height"
+                android:paddingHorizontal="@dimen/spacing_md"
+                android:paddingVertical="@dimen/spacing_sm"
+                android:textAppearance="@style/TextAppearance.Abx.BodyMedium"
+                android:textColorHint="@color/color_on_surface_variant" />
+
+            <ImageButton
+                android:id="@+id/chatSendButton"
+                android:layout_width="@dimen/chat_send_button_size"
+                android:layout_height="@dimen/chat_send_button_size"
+                android:layout_gravity="bottom"
+                android:background="@drawable/bg_button_send"
+                android:contentDescription="@string/chat_send"
+                android:padding="@dimen/spacing_sm"
+                android:src="@drawable/ic_send"
+                android:tint="@color/color_on_primary" />
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.inscopelabs.abx.server.workspace.widget.WorkspaceServerSwitch
         android:id="@+id/workspaceServerSwitch"
         android:layout_width="0dp"
-        android:layout_height="44dp"
+        android:layout_height="@dimen/switch_height"
         android:layout_marginStart="@dimen/spacing_lg"
         android:layout_marginEnd="@dimen/spacing_lg"
         android:layout_marginBottom="@dimen/spacing_lg"

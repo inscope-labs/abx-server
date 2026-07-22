@@ -102,11 +102,7 @@ class MainActivity : AppCompatActivity(), ToolboxNavigation, SecureNavigation {
     }
 
     fun switchTopLevelWorkspace(target: Workspace) {
-        if (currentWorkspace == Workspace.TOOLBOX) {
-            previousWorkspace = target
-        } else {
-            showWorkspace(target)
-        }
+        showWorkspace(target)
     }
 
     override fun openSecureTab(tab: SecureTab) {
