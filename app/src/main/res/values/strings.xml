@@ -131,4 +131,26 @@
     <string name="label_chat">Chat</string>
     <string name="label_dashboard">Dashboard</string>
     <string name="label_secure">Secure</string>
+
+    <!-- Chat -->
+    <string name="chat_title">Chat</string>
+    <string name="chat_new_session">New chat</string>
+    <string name="chat_settings">Chat settings</string>
+    <string name="chat_api_key_missing">No API key set for this provider — tap to add one</string>
+    <string name="chat_empty_state_title">Start a conversation</string>
+    <string name="chat_empty_state_subtitle">Ask a question to get going.</string>
+    <string name="chat_typing_indicator">Assistant is typing…</string>
+    <string name="chat_input_hint">Message</string>
+    <string name="chat_send">Send</string>
+    <string name="chat_cancel">Stop</string>
+    <string name="chat_assistant_label">Assistant</string>
+    <string name="chat_assistant_error_label">Assistant · error</string>
+    <string name="chat_settings_title">Chat settings</string>
+    <string name="chat_settings_provider_label">Provider</string>
+    <string name="chat_settings_model_label">Model</string>
+    <string name="chat_settings_api_key_label">API key</string>
+    <string name="chat_settings_api_key_hint">Paste API key</string>
+    <string name="chat_settings_key_stored">A key is already saved for this provider. Leave blank to keep it.</string>
+    <string name="chat_settings_cancel">Cancel</string>
+    <string name="chat_settings_save">Save</string>
 </resources>

@@ -42,7 +42,12 @@ abstract class BaseChatProvider(
             }
 
             override fun onEvent(eventSource: EventSource, id: String?, type: String?, data: String) {
-                val chunk = streamingParser.parseChunk(data)
+                // Route through the overridable parseChunk() so provider-specific
+                // JSON extraction (Gemini/OpenAI) actually runs. Previously this
+                // called streamingParser.parseChunk(data) directly, which skipped
+                // subclass overrides entirely and emitted raw SSE JSON payloads
+                // as if they were response text.
+                val chunk = parseChunk(data)
                 if (chunk.isNotEmpty()) {
                     // Use trySend to avoid blocking
                     channel.trySend(chunk)

@@ -1,31 +1,233 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+    DESIGN TOKEN DISCIPLINE — see design-tokens.md before editing.
+
+    Renders at the exact same coordinates as FilesFragment (both fill
+    mainContentContainer) — toggled via the Chat/Files switch, never shown
+    simultaneously with FilesFragment.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/chat_view_blue"
-    android:fillViewport="true">
+    android:background="@color/color_background">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/chatToolbar"
+        style="@style/Widget.Abx.TopBar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/chatTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/chat_title"
+                android:textAppearance="@style/TextAppearance.Abx.TitleMedium" />
+
+            <ImageButton
+                android:id="@+id/chatNewSessionButton"
+                android:layout_width="@dimen/icon_size_xl"
+                android:layout_height="@dimen/icon_size_xl"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/chat_new_session"
+                android:padding="@dimen/spacing_sm"
+                android:src="@drawable/ic_add"
+                android:tint="@color/color_on_surface_variant" />
+
+            <ImageButton
+                android:id="@+id/chatSettingsButton"
+                android:layout_width="@dimen/icon_size_xl"
+                android:layout_height="@dimen/icon_size_xl"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/chat_settings"
+                android:padding="@dimen/spacing_sm"
+                android:src="@drawable/ic_settings"
+                android:tint="@color/color_on_surface_variant" />
+
+        </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <View
+        android:id="@+id/chatHeaderDivider"
+        style="@style/Widget.Abx.ListRow.Divider"
+        app:layout_constraintTop_toBottomOf="@id/chatToolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Shown only when the active provider has no API key stored yet. -->
     <LinearLayout
+        android:id="@+id/chatApiKeyBanner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/spacing_lg"
+        android:paddingVertical="@dimen/spacing_md"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/chatHeaderDivider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/chatApiKeyBannerText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/chat_api_key_missing"
+            android:textAppearance="@style/TextAppearance.Abx.LabelMedium"
+            android:textColor="@color/color_warning" />
+
+        <ImageView style="@style/Widget.Abx.ListRow.Chevron" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/chatApiKeyBannerDivider"
+        style="@style/Widget.Abx.ListRow.Divider"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/chatApiKeyBanner"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chatMessageList"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingHorizontal="@dimen/spacing_lg"
+        android:paddingVertical="@dimen/spacing_md"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/chatApiKeyBannerDivider"
+        app:layout_constraintBottom_toTopOf="@id/chatTypingIndicator"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:listitem="@layout/item_chat_message_assistant" />
+
+    <!-- Centered over chatMessageList when there are no messages yet. -->
+    <LinearLayout
+        android:id="@+id/chatEmptyState"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:paddingHorizontal="@dimen/spacing_xxl"
+        app:layout_constraintBottom_toBottomOf="@id/chatMessageList"
+        app:layout_constraintEnd_toEndOf="@id/chatMessageList"
+        app:layout_constraintStart_toStartOf="@id/chatMessageList"
+        app:layout_constraintTop_toTopOf="@id/chatMessageList">
+
+        <FrameLayout
+            android:layout_width="@dimen/icon_size_xxl"
+            android:layout_height="@dimen/icon_size_xxl"
+            android:layout_gravity="center_horizontal"
+            style="@style/Widget.Abx.ListRow.IconContainer">
+            <ImageView
+                android:layout_width="@dimen/icon_size_lg"
+                android:layout_height="@dimen/icon_size_lg"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_smart_toy"
+                android:tint="@color/color_on_surface_variant"
+                android:contentDescription="@null" />
+        </FrameLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Chat"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/spacing_lg"
+            android:gravity="center"
+            android:text="@string/chat_empty_state_title"
+            android:textAppearance="@style/TextAppearance.Abx.TitleSmall" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Chat view placeholder. This fragment occupies the same coordinates as the Files fragment — toggle below to swap."
-            android:textColor="@color/white" />
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:gravity="center"
+            android:text="@string/chat_empty_state_subtitle"
+            android:textAppearance="@style/TextAppearance.Abx.BodySmall" />
 
     </LinearLayout>
 
-</ScrollView>
+    <TextView
+        android:id="@+id/chatTypingIndicator"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/spacing_lg"
+        android:paddingVertical="@dimen/spacing_xs"
+        android:text="@string/chat_typing_indicator"
+        android:textAppearance="@style/TextAppearance.Abx.LabelSmall"
+        android:textColor="@color/color_primary"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/chatInputDivider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible" />
+
+    <View
+        android:id="@+id/chatInputDivider"
+        style="@style/Widget.Abx.ListRow.Divider"
+        app:layout_constraintBottom_toTopOf="@id/chatInputBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/chatInputBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_surface"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/spacing_lg"
+        android:paddingTop="@dimen/spacing_sm"
+        android:paddingBottom="@dimen/spacing_md"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <EditText
+            android:id="@+id/chatInputEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="@dimen/spacing_sm"
+            android:autofillHints=""
+            android:background="@drawable/bg_chat_input"
+            android:hint="@string/chat_input_hint"
+            android:inputType="textMultiLine|textCapSentences"
+            android:maxLines="5"
+            android:minHeight="@dimen/chat_input_min_height"
+            android:paddingHorizontal="@dimen/spacing_md"
+            android:paddingVertical="@dimen/spacing_sm"
+            android:textAppearance="@style/TextAppearance.Abx.BodyMedium"
+            android:textColorHint="@color/color_on_surface_variant" />
+
+        <ImageButton
+            android:id="@+id/chatSendButton"
+            android:layout_width="@dimen/chat_send_button_size"
+            android:layout_height="@dimen/chat_send_button_size"
+            android:layout_gravity="bottom"
+            android:background="@drawable/bg_button_send"
+            android:contentDescription="@string/chat_send"
+            android:padding="@dimen/spacing_sm"
+            android:src="@drawable/ic_send"
+            android:tint="@color/color_on_primary" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,11 +5,17 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 
-class OpenAIProvider(apiKey: String) : BaseChatProvider(apiKey) {
+/**
+ * Handles OpenAI's chat/completions schema. Also used for Groq, DeepSeek,
+ * Mistral, and OpenRouter via ProviderFactory, since they all speak the
+ * OpenAI-compatible completions format; only the base URL differs.
+ */
+class OpenAIProvider(
+    apiKey: String,
+    private val baseUrl: String = "https://api.openai.com/v1/chat/completions"
+) : BaseChatProvider(apiKey) {
 
     val providerName: String = "openai"
-
-    private val baseUrl = "https://api.openai.com/v1/chat/completions"
 
     override fun buildRequest(prompt: String, settings: ChatSettings): Request {
         val json = JSONObject().apply {
@@ -32,6 +38,26 @@ class OpenAIProvider(apiKey: String) : BaseChatProvider(apiKey) {
             .addHeader("Authorization", "Bearer $apiKey")
             .addHeader("Content-Type", "application/json")
             .build()
+    }
+
+    /**
+     * Each SSE event's `data` field is either the literal string "[DONE]",
+     * or a JSON chunk like:
+     *   {"choices":[{"delta":{"content":"..."}}]}
+     * Extract just the incremental token text.
+     */
+    override fun parseChunk(raw: String): String {
+        val trimmed = raw.trim()
+        if (trimmed.isEmpty() || trimmed == "[DONE]") return ""
+        return try {
+            val obj = JSONObject(trimmed)
+            val choices = obj.optJSONArray("choices") ?: return ""
+            if (choices.length() == 0) return ""
+            val delta = choices.getJSONObject(0).optJSONObject("delta") ?: return ""
+            delta.optString("content", "")
+        } catch (e: Exception) {
+            ""
+        }
     }
 
     override fun capabilities(): List<String> = listOf(

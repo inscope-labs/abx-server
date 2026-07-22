@@ -1,5 +1,8 @@
 package com.inscopelabs.abx.server.workspace.chat
 
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import java.util.UUID
 
 enum class MessageRole { SYSTEM, USER, ASSISTANT, TOOL }
@@ -41,7 +44,10 @@ data class ChatSession(
 
 data class ChatSettings(
     val provider: String = "gemini",
-    val model: String = "gemini-1.5-pro",
+    // gemini-1.5-pro was fully retired; gemini-2.5-flash is the current
+    // supported low-latency default. Keep in sync with ChatManager's
+    // createSession() default and ProviderFactory's supported provider list.
+    val model: String = "gemini-2.5-flash",
     val temperature: Float = 0.7f,
     val topP: Float = 0.95f,
     val topK: Int = 40,
@@ -51,34 +57,64 @@ data class ChatSettings(
     val retryCount: Int = 3,
     val memoryLimit: Int = 10
 ) {
-    // Simple JSON serialization (for Room)
-    fun toJson(): String = """
-        {
-            "provider":"$provider",
-            "model":"$model",
-            "temperature":$temperature,
-            "topP":$topP,
-            "topK":$topK,
-            "maxTokens":$maxTokens,
-            "timeoutMillis":$timeoutMillis,
-            "stream":$stream,
-            "retryCount":$retryCount,
-            "memoryLimit":$memoryLimit
-        }
-    """.trimIndent()
+    fun toJson(): String = ChatJson.settingsAdapter.toJson(this)
 
     companion object {
         fun fromJson(json: String): ChatSettings {
-            // For simplicity, assume default; in production use Gson or Moshi
-            return ChatSettings()
+            if (json.isBlank()) return ChatSettings()
+            return try {
+                ChatJson.settingsAdapter.fromJson(json) ?: ChatSettings()
+            } catch (e: Exception) {
+                // Corrupt/legacy row (e.g. from the old stub serializer) — fall
+                // back to defaults rather than crashing session load.
+                ChatSettings()
+            }
         }
     }
 }
 
-// Extension functions for JSON (simplified, use a real JSON library in production)
+/**
+ * Shared Moshi instance + adapters used to persist chat domain objects as
+ * JSON strings via Room TypeConverters (see Converters in ChatRepository.kt).
+ *
+ * Replaces the previous stub implementation, which always wrote empty
+ * strings and always read back empty/default values — meaning every
+ * session reload silently discarded all messages and settings.
+ */
+internal object ChatJson {
+    val moshi: Moshi = Moshi.Builder()
+        .add(KotlinJsonAdapterFactory())
+        .build()
+
+    val settingsAdapter = moshi.adapter(ChatSettings::class.java)
+
+    private val messageListType = Types.newParameterizedType(List::class.java, Message::class.java)
+    val messageListAdapter = moshi.adapter<List<Message>>(messageListType)
+
+    private val attachmentListType = Types.newParameterizedType(List::class.java, Attachment::class.java)
+    val attachmentListAdapter = moshi.adapter<List<Attachment>>(attachmentListType)
+}
+
 @JvmName("messagesToJson")
-fun List<Message>.toJson(): String = "" // implement with Gson
-fun Message.Companion.fromJsonArray(json: String): List<Message> = emptyList()
+fun List<Message>.toJson(): String = ChatJson.messageListAdapter.toJson(this)
+
+fun Message.Companion.fromJsonArray(json: String): List<Message> {
+    if (json.isBlank()) return emptyList()
+    return try {
+        ChatJson.messageListAdapter.fromJson(json) ?: emptyList()
+    } catch (e: Exception) {
+        emptyList()
+    }
+}
+
 @JvmName("attachmentsToJson")
-fun List<Attachment>.toJson(): String = ""
-fun Attachment.Companion.fromJsonArray(json: String): List<Attachment> = emptyList()
+fun List<Attachment>.toJson(): String = ChatJson.attachmentListAdapter.toJson(this)
+
+fun Attachment.Companion.fromJsonArray(json: String): List<Attachment> {
+    if (json.isBlank()) return emptyList()
+    return try {
+        ChatJson.attachmentListAdapter.fromJson(json) ?: emptyList()
+    } catch (e: Exception) {
+        emptyList()
+    }
+}

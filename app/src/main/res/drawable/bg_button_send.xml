@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    DESIGN TOKEN DISCIPLINE — see design-tokens.md before editing.
+    The send button is the one genuinely primary call-to-action on the
+    chat screen, so — per Rule 3 — it's the one place this screen is
+    allowed to use color_primary as a solid fill rather than a container
+    tint. Disabled state (empty input / no session yet) falls back to
+    the neutral surface_variant token, never a raw gray hex.
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false">
+        <shape android:shape="oval">
+            <solid android:color="@color/color_surface_variant" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/color_primary" />
+        </shape>
+    </item>
+</selector>

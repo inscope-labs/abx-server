@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    DESIGN TOKEN DISCIPLINE — see design-tokens.md before editing.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/color_surface"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/spacing_lg"
+    android:paddingTop="@dimen/spacing_lg"
+    android:paddingBottom="@dimen/spacing_xl">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lg"
+        android:text="@string/chat_settings_title"
+        android:textAppearance="@style/TextAppearance.Abx.TitleMedium" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/chat_settings_provider_label"
+        android:textAppearance="@style/TextAppearance.Abx.LabelMedium" />
+
+    <Spinner
+        android:id="@+id/chatSettingsProviderSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_xs"
+        android:layout_marginBottom="@dimen/spacing_lg"
+        android:background="@drawable/bg_chat_input"
+        android:padding="@dimen/spacing_sm" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/chat_settings_model_label"
+        android:textAppearance="@style/TextAppearance.Abx.LabelMedium" />
+
+    <EditText
+        android:id="@+id/chatSettingsModelInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_xs"
+        android:layout_marginBottom="@dimen/spacing_lg"
+        android:autofillHints=""
+        android:background="@drawable/bg_chat_input"
+        android:inputType="text"
+        android:maxLines="1"
+        android:paddingHorizontal="@dimen/spacing_md"
+        android:paddingVertical="@dimen/spacing_sm"
+        android:textAppearance="@style/TextAppearance.Abx.BodyMedium" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/chat_settings_api_key_label"
+        android:textAppearance="@style/TextAppearance.Abx.LabelMedium" />
+
+    <EditText
+        android:id="@+id/chatSettingsApiKeyInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_xs"
+        android:autofillHints=""
+        android:background="@drawable/bg_chat_input"
+        android:hint="@string/chat_settings_api_key_hint"
+        android:inputType="textPassword"
+        android:maxLines="1"
+        android:paddingHorizontal="@dimen/spacing_md"
+        android:paddingVertical="@dimen/spacing_sm"
+        android:textAppearance="@style/TextAppearance.Abx.BodyMedium"
+        android:textColorHint="@color/color_on_surface_variant" />
+
+    <TextView
+        android:id="@+id/chatSettingsKeyStoredHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_xs"
+        android:text="@string/chat_settings_key_stored"
+        android:textAppearance="@style/TextAppearance.Abx.BodySmall"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_xl"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/chatSettingsCancelButton"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/chat_settings_cancel"
+            android:textColor="@color/color_on_surface_variant" />
+
+        <Button
+            android:id="@+id/chatSettingsSaveButton"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_sm"
+            android:text="@string/chat_settings_save"
+            android:textColor="@color/color_primary" />
+
+    </LinearLayout>
+
+</LinearLayout>

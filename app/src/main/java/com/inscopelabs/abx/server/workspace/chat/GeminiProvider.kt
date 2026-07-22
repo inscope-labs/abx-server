@@ -13,11 +13,17 @@ class GeminiProvider(apiKey: String) : BaseChatProvider(apiKey) {
 
     override fun buildRequest(prompt: String, settings: ChatSettings): Request {
         val model = settings.model
-        val url = "$baseUrl/$model:generateContent?key=$apiKey"
+        // Must be streamGenerateContent with alt=sse to get an SSE stream at
+        // all — the plain :generateContent endpoint returns one JSON object
+        // and never emits SSE "data:" events, so BaseChatProvider's
+        // EventSource-based consumer would just hang waiting for events
+        // that never arrive.
+        val url = "$baseUrl/$model:streamGenerateContent?alt=sse&key=$apiKey"
 
         val json = JSONObject().apply {
             put("contents", listOf(
                 JSONObject().apply {
+                    put("role", "user")
                     put("parts", listOf(
                         JSONObject().apply {
                             put("text", prompt)
@@ -40,6 +46,32 @@ class GeminiProvider(apiKey: String) : BaseChatProvider(apiKey) {
             .post(body)
             .addHeader("Content-Type", "application/json")
             .build()
+    }
+
+    /**
+     * Each Gemini SSE event's `data` field is a full GenerateContentResponse
+     * JSON object, e.g.
+     *   {"candidates":[{"content":{"parts":[{"text":"..."}],"role":"model"}}]}
+     * Extract just the incremental text. Responses that were blocked by
+     * safety filters, or a stray keep-alive with no candidates, yield "".
+     */
+    override fun parseChunk(raw: String): String {
+        val trimmed = raw.trim()
+        if (trimmed.isEmpty() || trimmed == "[DONE]") return ""
+        return try {
+            val obj = JSONObject(trimmed)
+            val candidates = obj.optJSONArray("candidates") ?: return ""
+            if (candidates.length() == 0) return ""
+            val content = candidates.getJSONObject(0).optJSONObject("content") ?: return ""
+            val parts = content.optJSONArray("parts") ?: return ""
+            val sb = StringBuilder()
+            for (i in 0 until parts.length()) {
+                sb.append(parts.getJSONObject(i).optString("text", ""))
+            }
+            sb.toString()
+        } catch (e: Exception) {
+            ""
+        }
     }
 
     override fun capabilities(): List<String> = listOf(

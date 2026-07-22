@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    DESIGN TOKEN DISCIPLINE — see design-tokens.md before editing.
+    Outgoing chat bubble. Uses color_secondary_container (neutral gray),
+    NOT a primary/blue container. Rule 3 in design-tokens.md reserves blue
+    for the one primary action / active state on a screen — a bubble that
+    repeats on every single outgoing message is decorative by definition,
+    which is exactly what that rule forbids. See ic_send / bg_button_send
+    for where blue is used instead (the one primary action in this screen).
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/color_secondary_container" />
+    <corners android:radius="@dimen/radius_lg" />
+</shape>

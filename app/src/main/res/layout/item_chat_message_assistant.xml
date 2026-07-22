@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    DESIGN TOKEN DISCIPLINE — see design-tokens.md before editing.
+    Flush-left, no bubble — reuses Widget.Abx.ListRow.IconContainer/Icon
+    (see design-tokens.md section 8, rule 1: use an existing Widget.Abx.*
+    style instead of inventing a new one-off avatar treatment).
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/spacing_sm"
+    android:paddingEnd="@dimen/spacing_xxl">
+
+    <FrameLayout style="@style/Widget.Abx.ListRow.IconContainer">
+        <ImageView
+            style="@style/Widget.Abx.ListRow.Icon"
+            android:src="@drawable/ic_smart_toy"
+            android:contentDescription="@string/chat_assistant_label" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="@dimen/spacing_md"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/assistantLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/chat_assistant_label"
+            android:textAppearance="@style/TextAppearance.Abx.LabelSmall" />
+
+        <TextView
+            android:id="@+id/messageContentText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:textAppearance="@style/TextAppearance.Abx.BodyMedium"
+            android:textIsSelectable="true"
+            tools:text="It sends the prompt to the active provider and streams the response back." />
+
+    </LinearLayout>
+</LinearLayout>

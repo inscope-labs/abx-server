@@ -55,7 +55,7 @@ class ChatManager(
     suspend fun createSession(
         title: String = "New Chat",
         provider: String = "gemini",
-        model: String = "gemini-1.5-pro"
+        model: String = "gemini-2.5-flash"
     ): ChatSession {
         val session = ChatSession(
             id = UUID.randomUUID().toString(),
