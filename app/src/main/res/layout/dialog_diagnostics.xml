@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/spacing_lg">
+
+    <TextView
+        style="@style/TextAppearance.Abx.TitleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Diagnostics &amp; Health" />
+
+    <TextView
+        style="@style/TextAppearance.Abx.BodySmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_xs"
+        android:text="Help us improve ABX Server by enabling optional crash and health reports. No personal data is ever collected." />
+
+    <View
+        style="@style/Widget.Abx.ListRow.Divider"
+        android:layout_marginTop="@dimen/spacing_md"
+        android:layout_marginBottom="@dimen/spacing_md" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/TextAppearance.Abx.TitleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Share Remote Crash Reports" />
+
+            <TextView
+                style="@style/TextAppearance.Abx.BodySmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Transmits anonymized crash dumps to help diagnose instability." />
+        </LinearLayout>
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switchRemoteReporting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_sm" />
+    </LinearLayout>
+
+    <View
+        style="@style/Widget.Abx.ListRow.Divider"
+        android:layout_marginTop="@dimen/spacing_md"
+        android:layout_marginBottom="@dimen/spacing_md" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnExportDiagnosticBundle"
+        style="@style/Widget.Material3.Button.TonalButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Export Diagnostic Bundle"
+        app:cornerRadius="@dimen/radius_md"
+        app:icon="@drawable/ic_download" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnOpenLogViewerDialog"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_xs"
+        android:text="Open Log Viewer"
+        app:cornerRadius="@dimen/radius_md"
+        app:icon="@drawable/ic_search" />
+
+</LinearLayout>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/spacing_lg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/TextAppearance.Abx.TitleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Manual Local Bridge" />
+
+        <TextView
+            style="@style/TextAppearance.Abx.BodySmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:text="Paste or share request descriptions here. The request will run through the secure local authorization engine and return a response to copy back." />
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_md"
+            android:hint="Request (Paste or type)">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editBridgeInput"
+                style="@style/TextAppearance.Abx.Monospace"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                android:minLines="3" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Advanced Toggle Header -->
+        <TextView
+            android:id="@+id/btnToggleBridgeAdvanced"
+            style="@style/TextAppearance.Abx.LabelLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_md"
+            android:paddingVertical="@dimen/spacing_xs"
+            android:text="▼ Advanced Capability Settings"
+            android:textColor="@color/color_primary" />
+
+        <!-- Advanced Settings Container -->
+        <LinearLayout
+            android:id="@+id/containerBridgeAdvanced"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Allowed Roots (comma-separated)">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editBridgeRoots"
+                    style="@style/TextAppearance.Abx.BodySmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:hint="Allowed Operations (comma-separated)">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editBridgeOps"
+                    style="@style/TextAppearance.Abx.BodySmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:hint="Max Request Count (0 = unlimited)">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editBridgeMaxReq"
+                    style="@style/TextAppearance.Abx.BodySmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:text="0" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <!-- Error output view -->
+        <TextView
+            android:id="@+id/txtBridgeError"
+            style="@style/TextAppearance.Abx.BodyMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_md"
+            android:background="@color/color_error_container"
+            android:padding="@dimen/spacing_md"
+            android:textColor="@color/color_on_error_container"
+            android:visibility="gone" />
+
+        <!-- Result output view -->
+        <TextView
+            android:id="@+id/txtBridgeResult"
+            style="@style/TextAppearance.Abx.Monospace"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_md"
+            android:background="@color/color_primary_container"
+            android:maxLines="10"
+            android:padding="@dimen/spacing_md"
+            android:scrollbars="vertical"
+            android:textColor="@color/color_on_primary_container"
+            android:visibility="gone" />
+
+    </LinearLayout>
+</ScrollView>

@@ -53,6 +53,8 @@ class MainActivity : AppCompatActivity(), ToolboxNavigation {
 
         setupRootToolbar()
 
+        handleIntent(intent)
+
         // Only a single fragment is ever shown in mainContentContainer.
         // Loading is first; the toggle row stays hidden until the gate
         // completes and the default Files view is shown.
@@ -189,6 +191,12 @@ class MainActivity : AppCompatActivity(), ToolboxNavigation {
         super.onNewIntent(intent)
         setIntent(intent)
         handleIntent(intent)
+    }
+
+    fun consumeSharedText(): String? {
+        val text = sharedTextState
+        sharedTextState = null
+        return text
     }
 
     private fun handleIntent(intent: Intent?) {
