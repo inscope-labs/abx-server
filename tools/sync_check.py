@@ -34,7 +34,7 @@ REPO_OWNER = "inscope-labs"
 REPO_NAME = "abx-server"
 # Branch is auto-detected from the GitHub API; this is the fallback only.
 DEFAULT_BRANCH_FALLBACK = "main"
-USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) sync_check/3.0"
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) sync_check/3.1"
 REQUEST_TIMEOUT = 15  # seconds
 MAX_RETRIES = 3
 RETRY_BACKOFF_BASE = 2  # seconds
@@ -92,16 +92,21 @@ def is_symlink(path: str) -> bool:
     return os.path.islink(path)
 
 
-def sha1_bytes(data: bytes) -> str:
-    """Return SHA-1 hex digest of bytes."""
-    return hashlib.sha1(data).hexdigest()
+def git_blob_sha1(data: bytes) -> str:
+    """SHA-1 of a git blob object for `data` — matches the `sha`
+    field from GitHub's Tree API / `git hash-object` semantics:
+    SHA-1("blob " + len(data) + "\0" + data). NOT a plain content
+    hash — GitHub's API never returns one of those."""
+    header = f"blob {len(data)}\x00".encode()
+    return hashlib.sha1(header + data).hexdigest()
 
 
 def sha1_file(path: str) -> Optional[str]:
-    """Return SHA-1 hex digest of file contents, or None if unreadable."""
+    """Return the git blob SHA-1 of a file's contents, or None if
+    unreadable."""
     try:
         with open(path, "rb") as f:
-            return sha1_bytes(f.read())
+            return git_blob_sha1(f.read())
     except OSError:
         return None
 
@@ -360,7 +365,7 @@ def collect_local_files() -> set:
 
 
 def main() -> int:
-    log("=== Exhaustive Workspace Sync v3 ===\n")
+    log("=== Exhaustive Workspace Sync v3.1 ===\n")
 
     branch = detect_default_branch(REPO_OWNER, REPO_NAME)
     base_url = f"https://raw.githubusercontent.com/{REPO_OWNER}/{REPO_NAME}/{branch}/"
