@@ -18,7 +18,7 @@ import com.inscopelabs.abx.server.R
 /**
  * Lets the user pick a provider/model and store an API key for it
  * (ChatSecurity persists it in EncryptedSharedPreferences). Opened from the
- * settings icon in ChatFragment's top bar, and also reachable by tapping
+ * settings icon in WorkspaceFragment's top bar, and also reachable by tapping
  * the "no API key" banner.
  */
 class ChatSettingsSheet : DialogFragment() {

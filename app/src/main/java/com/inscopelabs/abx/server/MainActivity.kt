@@ -2,12 +2,7 @@ package com.inscopelabs.abx.server
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -34,15 +29,14 @@ class MainActivity : AppCompatActivity(), ToolboxNavigation, SecureNavigation {
         private var startupSequenceRan = false
     }
 
-    private enum class Workspace {
-        CHAT,
-        DASHBOARD,
-        SECURE,
+    enum class Workspace {
+        WORKSPACE,
+        SERVER,
         TOOLBOX
     }
 
-    private var currentWorkspace = Workspace.SECURE
-    private var previousWorkspace = Workspace.SECURE
+    private var currentWorkspace = Workspace.SERVER
+    private var previousWorkspace = Workspace.SERVER
 
     private var sharedTextState by mutableStateOf<String?>(null)
 
@@ -56,10 +50,8 @@ class MainActivity : AppCompatActivity(), ToolboxNavigation, SecureNavigation {
         handleIntent(intent)
 
         // Only a single fragment is ever shown in mainContentContainer.
-        // Loading is first; the switcher row stays hidden until the gate
-        // completes and the default Secure view is shown.
+        // Loading is first; the default Server view is shown after startup sequence.
         showFragment(LoadingFragment())
-        findViewById<View>(R.id.workspaceSwitcherRow).visibility = View.GONE
 
         runStartupSequence()
     }
@@ -102,96 +94,38 @@ class MainActivity : AppCompatActivity(), ToolboxNavigation, SecureNavigation {
 
     /**
      * Called exactly once, when the startup process finishes. Gates the
-     * default (visible) main view: Secure is shown by default.
+     * default (visible) main view: Server is shown by default.
      */
     private fun onStartupComplete() {
-        showWorkspace(Workspace.SECURE)
-        previousWorkspace = Workspace.SECURE
+        showWorkspace(Workspace.SERVER)
+        previousWorkspace = Workspace.SERVER
+    }
 
-        val switcherRow = findViewById<View>(R.id.workspaceSwitcherRow)
-        switcherRow.visibility = View.VISIBLE
-
-        findViewById<View>(R.id.chatWorkspaceButton).setOnClickListener {
-            if (currentWorkspace == Workspace.TOOLBOX) {
-                previousWorkspace = Workspace.CHAT
-            } else {
-                showWorkspace(Workspace.CHAT)
-            }
-        }
-
-        findViewById<View>(R.id.dashboardWorkspaceButton).setOnClickListener {
-            if (currentWorkspace == Workspace.TOOLBOX) {
-                previousWorkspace = Workspace.DASHBOARD
-            } else {
-                showWorkspace(Workspace.DASHBOARD)
-            }
-        }
-
-        findViewById<View>(R.id.secureWorkspaceButton).setOnClickListener {
-            if (currentWorkspace == Workspace.TOOLBOX) {
-                previousWorkspace = Workspace.SECURE
-            } else {
-                showWorkspace(Workspace.SECURE)
-            }
+    fun switchTopLevelWorkspace(target: Workspace) {
+        if (currentWorkspace == Workspace.TOOLBOX) {
+            previousWorkspace = target
+        } else {
+            showWorkspace(target)
         }
     }
 
     override fun openSecureTab(tab: SecureTab) {
-        if (currentWorkspace == Workspace.SECURE) {
-            val fragment = supportFragmentManager.findFragmentById(R.id.mainContentContainer) as? SecureFragment
+        if (currentWorkspace == Workspace.SERVER) {
+            val fragment = supportFragmentManager.findFragmentById(R.id.mainContentContainer) as? ServerFragment
             fragment?.selectTab(tab)
         } else {
-            showWorkspace(Workspace.SECURE, tab)
+            showWorkspace(Workspace.SERVER, tab)
         }
     }
 
     private fun showWorkspace(workspace: Workspace, secureTab: SecureTab = SecureTab.CONNECT) {
         currentWorkspace = workspace
         val fragment = when (workspace) {
-            Workspace.CHAT -> ChatFragment()
-            Workspace.DASHBOARD -> DashboardFragment()
-            Workspace.SECURE -> SecureFragment.newInstance(secureTab)
+            Workspace.WORKSPACE -> WorkspaceFragment()
+            Workspace.SERVER -> ServerFragment.newInstance(secureTab)
             Workspace.TOOLBOX -> ToolboxFragment()
         }
         showFragment(fragment)
-        updateWorkspaceButtonsUI(workspace)
-    }
-
-    private fun updateWorkspaceButtonsUI(active: Workspace) {
-        val chatContainer = findViewById<FrameLayout>(R.id.chatIconContainer) ?: return
-        val chatIcon = findViewById<ImageView>(R.id.chatIcon) ?: return
-        val chatLabel = findViewById<TextView>(R.id.chatLabel) ?: return
-
-        val dashContainer = findViewById<FrameLayout>(R.id.dashboardIconContainer) ?: return
-        val dashIcon = findViewById<ImageView>(R.id.dashboardIcon) ?: return
-        val dashLabel = findViewById<TextView>(R.id.dashboardLabel) ?: return
-
-        val secureContainer = findViewById<FrameLayout>(R.id.secureIconContainer) ?: return
-        val secureIcon = findViewById<ImageView>(R.id.secureIcon) ?: return
-        val secureLabel = findViewById<TextView>(R.id.secureLabel) ?: return
-
-        val accentBg = R.drawable.bg_icon_container_accent
-        val neutralBg = R.drawable.bg_icon_container_neutral
-        val activeColor = ContextCompat.getColor(this, R.color.color_primary)
-        val inactiveColor = ContextCompat.getColor(this, R.color.color_on_surface_variant)
-
-        // Chat
-        val isChat = active == Workspace.CHAT
-        chatContainer.setBackgroundResource(if (isChat) accentBg else neutralBg)
-        chatIcon.setColorFilter(if (isChat) activeColor else inactiveColor)
-        chatLabel.setTextColor(if (isChat) activeColor else inactiveColor)
-
-        // Dashboard
-        val isDash = active == Workspace.DASHBOARD
-        dashContainer.setBackgroundResource(if (isDash) accentBg else neutralBg)
-        dashIcon.setColorFilter(if (isDash) activeColor else inactiveColor)
-        dashLabel.setTextColor(if (isDash) activeColor else inactiveColor)
-
-        // Secure
-        val isSecure = active == Workspace.SECURE
-        secureContainer.setBackgroundResource(if (isSecure) accentBg else neutralBg)
-        secureIcon.setColorFilter(if (isSecure) activeColor else inactiveColor)
-        secureLabel.setTextColor(if (isSecure) activeColor else inactiveColor)
     }
 
     fun openToolbox() {
@@ -203,10 +137,9 @@ class MainActivity : AppCompatActivity(), ToolboxNavigation, SecureNavigation {
 
     override fun returnFromToolbox() {
         when (previousWorkspace) {
-            Workspace.CHAT -> showWorkspace(Workspace.CHAT)
-            Workspace.DASHBOARD -> showWorkspace(Workspace.DASHBOARD)
-            Workspace.SECURE -> showWorkspace(Workspace.SECURE)
-            else -> showWorkspace(Workspace.SECURE)
+            Workspace.WORKSPACE -> showWorkspace(Workspace.WORKSPACE)
+            Workspace.SERVER -> showWorkspace(Workspace.SERVER)
+            else -> showWorkspace(Workspace.SERVER)
         }
     }
 

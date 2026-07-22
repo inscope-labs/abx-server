@@ -3,8 +3,7 @@
     DESIGN TOKEN DISCIPLINE — see design-tokens.md before editing.
 
     Renders at the exact same coordinates as FilesFragment (both fill
-    mainContentContainer) — toggled via the Chat/Files switch, never shown
-    simultaneously with FilesFragment.
+    mainContentContainer) — toggled via the Workspace/Server switch.
 -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -196,7 +195,7 @@
         android:paddingHorizontal="@dimen/spacing_lg"
         android:paddingTop="@dimen/spacing_sm"
         android:paddingBottom="@dimen/spacing_md"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/workspaceServerSwitch"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -229,5 +228,17 @@
             android:tint="@color/color_on_primary" />
 
     </LinearLayout>
+
+    <com.inscopelabs.abx.server.workspace.widget.WorkspaceServerSwitch
+        android:id="@+id/workspaceServerSwitch"
+        android:layout_width="0dp"
+        android:layout_height="44dp"
+        android:layout_marginStart="@dimen/spacing_lg"
+        android:layout_marginEnd="@dimen/spacing_lg"
+        android:layout_marginBottom="@dimen/spacing_lg"
+        android:layout_marginTop="@dimen/spacing_sm"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

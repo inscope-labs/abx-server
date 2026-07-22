@@ -23,18 +23,19 @@ import com.inscopelabs.abx.server.workspace.chat.ChatSettingsSheet
 import com.inscopelabs.abx.server.workspace.chat.ChatUiState
 import com.inscopelabs.abx.server.workspace.chat.ChatViewModel
 import com.inscopelabs.abx.server.workspace.chat.ChatViewModelFactory
+import com.inscopelabs.abx.server.workspace.widget.WorkspaceServerSwitch
 import kotlinx.coroutines.launch
 
 /**
  * One of the two main user views. Renders at the exact same coordinates as
- * FilesFragment (both fill mainContentContainer) — toggled via the
- * Chat/Files switch, never shown simultaneously with FilesFragment.
+ * ServerFragment (both fill mainContentContainer) — toggled via the
+ * Workspace/Server switch.
  *
- * Wires the previously-unbuilt UI layer to the existing chat subsystem
- * (workspace/chat): ChatManager for send/stream/persist, ChatSecurity
- * for the API key, ChatAdapter for rendering.
+ * Wires the UI layer to the existing chat subsystem (workspace/chat):
+ * ChatManager for send/stream/persist, ChatSecurity for the API key,
+ * ChatAdapter for rendering.
  */
-class ChatFragment : Fragment(R.layout.fragment_chat) {
+class WorkspaceFragment : Fragment(R.layout.fragment_workspace) {
 
     private val viewModel: ChatViewModel by viewModels {
         ChatViewModelFactory(requireActivity().application)
@@ -46,6 +47,12 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val switch = view.findViewById<WorkspaceServerSwitch>(R.id.workspaceServerSwitch)
+        switch?.setInitialPhase(WorkspaceServerSwitch.Phase.WORKSPACE)
+        switch?.onPhaseChanged = {
+            (activity as? MainActivity)?.switchTopLevelWorkspace(MainActivity.Workspace.SERVER)
+        }
 
         setupSwipeToToolbox(view)
 
@@ -185,8 +192,7 @@ class ChatFragment : Fragment(R.layout.fragment_chat) {
 
         // Only the top bar participates in the swipe-down-to-toolbox
         // gesture; the message list and input need their touch events for
-        // scrolling/typing. Matches the same trigger area convention as
-        // FilesFragment.
+        // scrolling/typing.
         val toolbar: Toolbar = view.findViewById(R.id.chatToolbar)
         toolbar.setOnTouchListener { _, event ->
             gestureDetector.onTouchEvent(event)

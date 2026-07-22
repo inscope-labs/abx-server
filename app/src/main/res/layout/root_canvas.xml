@@ -12,11 +12,9 @@
     -->
 
     <!--
-        Single fragment host. Exactly one of LoadingFragment / ChatFragment /
-        FilesFragment occupies this container at any moment, via
+        Single fragment host. Exactly one of LoadingFragment / WorkspaceFragment /
+        ServerFragment occupies this container at any moment, via
         FragmentTransaction.replace() — never more than one shown at once.
-        Chat and Files always render at these exact same coordinates, which
-        is what makes the toggle-swap visually verifiable.
 
         Standard rounded corners: rounded_container_bg supplies the shape,
         and clipToOutline clips whatever fragment is currently hosted
@@ -32,147 +30,10 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/workspaceSwitcherRow"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="@dimen/spacing_lg"
         android:layout_marginStart="@dimen/spacing_lg"
         android:layout_marginEnd="@dimen/spacing_lg"
         android:layout_marginBottom="@dimen/spacing_lg" />
-
-    <!--
-        Top-level Workspace Switcher Row (Chat / Dashboard / Secure).
-        Hidden (GONE) until the loading gate completes — see MainActivity.
-    -->
-    <LinearLayout
-        android:id="@+id/workspaceSwitcherRow"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginStart="@dimen/spacing_lg"
-        android:layout_marginEnd="@dimen/spacing_lg"
-        android:layout_marginBottom="@dimen/spacing_lg">
-
-        <!-- Chat Button -->
-        <LinearLayout
-            android:id="@+id/chatWorkspaceButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?android:attr/selectableItemBackground"
-            android:paddingVertical="@dimen/spacing_xs">
-
-            <FrameLayout
-                android:id="@+id/chatIconContainer"
-                android:layout_width="@dimen/icon_size_lg"
-                android:layout_height="@dimen/icon_size_lg"
-                android:background="@drawable/bg_icon_container_neutral">
-
-                <ImageView
-                    android:id="@+id/chatIcon"
-                    android:layout_width="@dimen/icon_size_sm"
-                    android:layout_height="@dimen/icon_size_sm"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_chat"
-                    app:tint="@color/color_on_surface_variant"
-                    android:contentDescription="@string/label_chat" />
-            </FrameLayout>
-
-            <TextView
-                android:id="@+id/chatLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_xs"
-                android:text="@string/label_chat"
-                android:textAppearance="@style/TextAppearance.Abx.LabelSmall"
-                android:textColor="@color/color_on_surface_variant" />
-        </LinearLayout>
-
-        <!-- Dashboard Button -->
-        <LinearLayout
-            android:id="@+id/dashboardWorkspaceButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?android:attr/selectableItemBackground"
-            android:paddingVertical="@dimen/spacing_xs">
-
-            <FrameLayout
-                android:id="@+id/dashboardIconContainer"
-                android:layout_width="@dimen/icon_size_lg"
-                android:layout_height="@dimen/icon_size_lg"
-                android:background="@drawable/bg_icon_container_neutral">
-
-                <ImageView
-                    android:id="@+id/dashboardIcon"
-                    android:layout_width="@dimen/icon_size_sm"
-                    android:layout_height="@dimen/icon_size_sm"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_dashboard"
-                    app:tint="@color/color_on_surface_variant"
-                    android:contentDescription="@string/label_dashboard" />
-            </FrameLayout>
-
-            <TextView
-                android:id="@+id/dashboardLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_xs"
-                android:text="@string/label_dashboard"
-                android:textAppearance="@style/TextAppearance.Abx.LabelSmall"
-                android:textColor="@color/color_on_surface_variant" />
-        </LinearLayout>
-
-        <!-- Secure Button -->
-        <LinearLayout
-            android:id="@+id/secureWorkspaceButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?android:attr/selectableItemBackground"
-            android:paddingVertical="@dimen/spacing_xs">
-
-            <FrameLayout
-                android:id="@+id/secureIconContainer"
-                android:layout_width="@dimen/icon_size_lg"
-                android:layout_height="@dimen/icon_size_lg"
-                android:background="@drawable/bg_icon_container_accent">
-
-                <ImageView
-                    android:id="@+id/secureIcon"
-                    android:layout_width="@dimen/icon_size_sm"
-                    android:layout_height="@dimen/icon_size_sm"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_secure"
-                    app:tint="@color/color_primary"
-                    android:contentDescription="@string/label_secure" />
-            </FrameLayout>
-
-            <TextView
-                android:id="@+id/secureLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_xs"
-                android:text="@string/label_secure"
-                android:textAppearance="@style/TextAppearance.Abx.LabelSmall"
-                android:textColor="@color/color_primary" />
-        </LinearLayout>
-
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

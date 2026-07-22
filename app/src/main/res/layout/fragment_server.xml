@@ -688,4 +688,12 @@
         </FrameLayout>
     </androidx.core.widget.NestedScrollView>
 
+    <com.inscopelabs.abx.server.workspace.widget.WorkspaceServerSwitch
+        android:id="@+id/workspaceServerSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_marginStart="@dimen/spacing_lg"
+        android:layout_marginEnd="@dimen/spacing_lg"
+        android:layout_marginBottom="@dimen/spacing_lg" />
+
 </LinearLayout>

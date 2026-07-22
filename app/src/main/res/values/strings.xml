@@ -128,9 +128,8 @@
     <string name="skipped_files_warning">Some files were skipped due to size limits, binary format, or security policies.</string>
 
     <!-- Workspace Switcher Strings -->
-    <string name="label_chat">Chat</string>
-    <string name="label_dashboard">Dashboard</string>
-    <string name="label_secure">Secure</string>
+    <string name="label_workspace">Workspace</string>
+    <string name="label_server">Server</string>
 
     <!-- Chat -->
     <string name="chat_title">Chat</string>

@@ -49,6 +49,7 @@ import com.inscopelabs.abx.server.core.session.SessionState
 import com.inscopelabs.abx.server.core.session.UserGesture
 import com.inscopelabs.abx.server.core.tunnel.TunnelService
 import com.inscopelabs.abx.server.workspace.SecureTab
+import com.inscopelabs.abx.server.workspace.widget.WorkspaceServerSwitch
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -63,14 +64,14 @@ import java.util.Locale
 /**
  * Primary workspace fragment for secure-server management in XML/Views.
  */
-class SecureFragment : Fragment(R.layout.fragment_secure) {
+class ServerFragment : Fragment(R.layout.fragment_server) {
 
     companion object {
         private const val ALIAS = "abx_mcp_device_key"
         private const val ARG_TAB = "arg_secure_tab"
 
-        fun newInstance(tab: SecureTab = SecureTab.CONNECT): SecureFragment {
-            val fragment = SecureFragment()
+        fun newInstance(tab: SecureTab = SecureTab.CONNECT): ServerFragment {
+            val fragment = ServerFragment()
             val args = Bundle()
             args.putString(ARG_TAB, tab.name)
             fragment.arguments = args
@@ -113,6 +114,12 @@ class SecureFragment : Fragment(R.layout.fragment_secure) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val switch = view.findViewById<WorkspaceServerSwitch>(R.id.workspaceServerSwitch)
+        switch?.setInitialPhase(WorkspaceServerSwitch.Phase.SERVER)
+        switch?.onPhaseChanged = {
+            (activity as? MainActivity)?.switchTopLevelWorkspace(MainActivity.Workspace.WORKSPACE)
+        }
 
         initDependencies()
         setupGestureDetector(view)
