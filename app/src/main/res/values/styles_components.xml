@@ -82,6 +82,7 @@
         <item name="cardCornerRadius">@dimen/radius_lg</item>
         <item name="cardElevation">0dp</item>
         <item name="contentPadding">@dimen/spacing_lg</item>
+        <item name="android:stateListAnimator">@null</item>
     </style>
 
     <!-- ===== Status chip ===== -->

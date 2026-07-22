@@ -53,6 +53,9 @@
         <item name="textAppearanceLabelSmall">@style/TextAppearance.Abx.LabelSmall</item>
         <item name="textAppearanceLabelMedium">@style/TextAppearance.Abx.LabelMedium</item>
         <item name="textAppearanceLabelLarge">@style/TextAppearance.Abx.LabelLarge</item>
+
+        <item name="materialCardViewStyle">@style/Widget.Abx.Card</item>
+        <item name="materialCardViewOutlinedStyle">@style/Widget.Abx.Card</item>
     </style>
 
     <!-- ===== Text appearances ===== -->
