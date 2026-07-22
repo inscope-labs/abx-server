@@ -3,14 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="?android:attr/colorBackground"
-    android:padding="16dp">
+    android:background="@color/color_surface"
+    android:padding="@dimen/spacing_lg">
 
     <!-- Bottom Sheet Header -->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp">
+        android:layout_height="@dimen/top_bar_height"
+        android:layout_marginBottom="@dimen/spacing_md">
 
         <TextView
             android:id="@+id/tvBottomSheetTitle"
@@ -18,26 +18,22 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="?android:attr/textColorPrimary" />
+            android:textAppearance="@style/TextAppearance.Abx.TitleMedium" />
 
         <Button
             android:id="@+id/btnBottomSheetClose"
-            style="?android:attr/buttonBarButtonStyle"
+            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:text="Close"
-            android:textColor="?android:attr/colorAccent" />
+            android:textColor="@color/color_primary" />
     </RelativeLayout>
 
     <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider"
-        android:layout_marginBottom="12dp" />
+        style="@style/Widget.Abx.ListRow.Divider"
+        android:layout_marginBottom="@dimen/spacing_md" />
 
     <!-- Scrollable compliance HTML reader -->
     <android.webkit.WebView

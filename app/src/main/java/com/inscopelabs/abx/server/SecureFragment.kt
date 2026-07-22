@@ -48,6 +48,7 @@ import com.inscopelabs.abx.server.core.session.SessionManagerProvider
 import com.inscopelabs.abx.server.core.session.SessionState
 import com.inscopelabs.abx.server.core.session.UserGesture
 import com.inscopelabs.abx.server.core.tunnel.TunnelService
+import com.inscopelabs.abx.server.workspace.SecureTab
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -61,12 +62,31 @@ import java.util.Locale
 
 /**
  * Primary workspace fragment for secure-server management in XML/Views.
- * Replaces the legacy Compose EnrollmentScreen with full design-token compliance.
  */
-class FilesFragment : Fragment(R.layout.fragment_files) {
+class SecureFragment : Fragment(R.layout.fragment_secure) {
 
-    private companion object {
+    companion object {
         private const val ALIAS = "abx_mcp_device_key"
+        private const val ARG_TAB = "arg_secure_tab"
+
+        fun newInstance(tab: SecureTab = SecureTab.CONNECT): SecureFragment {
+            val fragment = SecureFragment()
+            val args = Bundle()
+            args.putString(ARG_TAB, tab.name)
+            fragment.arguments = args
+            return fragment
+        }
+    }
+
+    fun selectTab(tab: SecureTab) {
+        val position = when (tab) {
+            SecureTab.CONNECT -> 0
+            SecureTab.ACCESS -> 1
+            SecureTab.REMOVE -> 2
+            SecureTab.ACTIVITY -> 3
+        }
+        val tabLayout = view?.findViewById<TabLayout>(R.id.filesTabLayout)
+        tabLayout?.getTabAt(position)?.select()
     }
 
     private lateinit var keyStoreManager: KeyStoreManager
@@ -86,7 +106,6 @@ class FilesFragment : Fragment(R.layout.fragment_files) {
     private var timerJob: Job? = null
 
     // Container views
-    private lateinit var containerDashboard: LinearLayout
     private lateinit var containerConnect: LinearLayout
     private lateinit var containerAccess: LinearLayout
     private lateinit var containerRemove: LinearLayout
@@ -146,20 +165,19 @@ class FilesFragment : Fragment(R.layout.fragment_files) {
 
     private fun setupTabs(view: View) {
         val tabLayout = view.findViewById<TabLayout>(R.id.filesTabLayout)
-        containerDashboard = view.findViewById(R.id.containerDashboardTab)
         containerConnect = view.findViewById(R.id.containerConnectTab)
         containerAccess = view.findViewById(R.id.containerAccessTab)
         containerRemove = view.findViewById(R.id.containerRemoveTab)
         containerActivity = view.findViewById(R.id.containerActivityTab)
 
         val tabTitles = arrayOf(
-            getString(R.string.tab_dashboard),
             getString(R.string.tab_connect),
             getString(R.string.tab_access),
             getString(R.string.tab_remove),
             getString(R.string.tab_activity)
         )
 
+        tabLayout.removeAllTabs()
         tabTitles.forEach { title ->
             tabLayout.addTab(tabLayout.newTab().setText(title))
         }
@@ -172,39 +190,23 @@ class FilesFragment : Fragment(R.layout.fragment_files) {
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
 
-        updateTabVisibility(0)
+        val initialTabName = arguments?.getString(ARG_TAB) ?: SecureTab.CONNECT.name
+        val initialTab = try { SecureTab.valueOf(initialTabName) } catch (e: Exception) { SecureTab.CONNECT }
+        selectTab(initialTab)
     }
 
     private fun updateTabVisibility(position: Int) {
-        containerDashboard.visibility = if (position == 0) View.VISIBLE else View.GONE
-        containerConnect.visibility = if (position == 1) View.VISIBLE else View.GONE
-        containerAccess.visibility = if (position == 2) View.VISIBLE else View.GONE
-        containerRemove.visibility = if (position == 3) View.VISIBLE else View.GONE
-        containerActivity.visibility = if (position == 4) View.VISIBLE else View.GONE
+        containerConnect.visibility = if (position == 0) View.VISIBLE else View.GONE
+        containerAccess.visibility = if (position == 1) View.VISIBLE else View.GONE
+        containerRemove.visibility = if (position == 2) View.VISIBLE else View.GONE
+        containerActivity.visibility = if (position == 3) View.VISIBLE else View.GONE
 
-        if (position == 4) {
+        if (position == 3) {
             renderAuditLogs()
         }
     }
 
     private fun bindViews(view: View) {
-        // --- Dashboard Tab ---
-        view.findViewById<MaterialButton>(R.id.btnDashStartStopSession).setOnClickListener {
-            toggleSession()
-        }
-        view.findViewById<MaterialButton>(R.id.btnDashLocalBridge).setOnClickListener {
-            showLocalBridgeDialog()
-        }
-        view.findViewById<MaterialButton>(R.id.btnDashCopyFingerprint).setOnClickListener {
-            copyFingerprintToClipboard()
-        }
-        view.findViewById<MaterialButton>(R.id.btnDashDiagnostics).setOnClickListener {
-            showDiagnosticsDialog()
-        }
-        view.findViewById<MaterialButton>(R.id.btnDashOpenLogViewer).setOnClickListener {
-            startActivity(Intent(requireContext(), LogViewerActivity::class.java))
-        }
-
         // --- Connect Tab ---
         view.findViewById<MaterialButton>(R.id.btnConnectCopyFingerprint).setOnClickListener {
             copyFingerprintToClipboard()
@@ -387,12 +389,6 @@ class FilesFragment : Fragment(R.layout.fragment_files) {
         val root = view ?: return
         val isActive = currentSessionState is SessionState.ACTIVE
 
-        // Dashboard Tab Session Card
-        val dashDot = root.findViewById<View>(R.id.dashSessionDot)
-        val dashState = root.findViewById<TextView>(R.id.txtDashSessionState)
-        val dashTtl = root.findViewById<TextView>(R.id.txtDashTtl)
-        val dashBtn = root.findViewById<MaterialButton>(R.id.btnDashStartStopSession)
-
         // Access Tab Session Card
         val accessBadge = root.findViewById<TextView>(R.id.txtAccessSessionBadge)
         val accessTtl = root.findViewById<TextView>(R.id.txtAccessTtl)
@@ -404,13 +400,6 @@ class FilesFragment : Fragment(R.layout.fragment_files) {
         val inactiveColor = ContextCompat.getColor(requireContext(), R.color.color_on_surface_variant)
 
         if (isActive) {
-            dashDot?.setBackgroundColor(activeColor)
-            dashState?.text = "ACTIVE SESSION"
-            dashState?.setTextColor(activeColor)
-            dashTtl?.text = getString(R.string.ttl_display, ttlRemaining)
-            dashBtn?.setText(R.string.btn_stop_session)
-            dashBtn?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.color_error))
-
             accessBadge?.text = "ACTIVE SESSION"
             accessBadge?.setTextColor(activeColor)
             accessTtl?.text = getString(R.string.ttl_display, ttlRemaining)
@@ -420,13 +409,6 @@ class FilesFragment : Fragment(R.layout.fragment_files) {
             accessPolicyDesc?.setText(R.string.policy_summary_desc)
             accessPolicyDetails?.visibility = View.VISIBLE
         } else {
-            dashDot?.setBackgroundColor(inactiveColor)
-            dashState?.text = "INACTIVE / EXPIRED"
-            dashState?.setTextColor(inactiveColor)
-            dashTtl?.setText(R.string.ttl_inactive)
-            dashBtn?.setText(R.string.btn_start_session)
-            dashBtn?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.color_primary))
-
             accessBadge?.text = "INACTIVE / EXPIRED"
             accessBadge?.setTextColor(inactiveColor)
             accessTtl?.setText(R.string.ttl_inactive)
@@ -440,14 +422,12 @@ class FilesFragment : Fragment(R.layout.fragment_files) {
 
     private fun refreshFingerprintViews() {
         val root = view ?: return
-        val dashFp = root.findViewById<TextView>(R.id.txtDashFingerprint)
         val connectFp = root.findViewById<TextView>(R.id.txtConnectFingerprint)
         val btnToggle = root.findViewById<MaterialButton>(R.id.btnConnectToggleFingerprint)
 
         val truncated = getTruncatedFingerprint(formattedFingerprint)
         val displayFp = if (isFingerprintExpanded) formattedFingerprint else truncated
 
-        dashFp?.text = truncated
         connectFp?.text = displayFp
         btnToggle?.setText(if (isFingerprintExpanded) R.string.btn_hide_full else R.string.btn_view_full)
 
