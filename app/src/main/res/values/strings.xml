@@ -132,6 +132,9 @@
     <string name="label_server">Server</string>
     <string name="tab_home">Home</string>
     <string name="tab_chat">Chat</string>
+    <string name="tab_tools">Tools</string>
+    <string name="tab_userdb">UserDB</string>
+    <string name="userdb_placeholder">UserDB tools are coming soon.</string>
 
     <!-- Chat -->
     <string name="chat_title">Chat</string>
