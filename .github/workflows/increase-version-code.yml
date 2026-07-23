@@ -1,0 +1,56 @@
+name: Bump Version Code
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version_code: ${{ steps.bump.outputs.version_code }}
+      version_name: ${{ steps.bump.outputs.version_name }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Increment version in Supabase
+        id: bump
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: |
+          RESPONSE=$(curl -sf -X POST "$SUPABASE_URL/rest/v1/rpc/increment_version_code" \
+            -H "apikey: $SUPABASE_SECRET_KEY" \
+            -H "Authorization: Bearer $SUPABASE_SECRET_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{"p_app_id": "com.inscopelabs.abx.server"}')
+
+          echo "$RESPONSE"
+
+          VERSION_CODE=$(echo "$RESPONSE" | jq -r '.[0].version_code')
+          VERSION_NAME=$(echo "$RESPONSE" | jq -r '.[0].version_name')
+
+          if ! [[ "$VERSION_CODE" =~ ^[0-9]+$ ]]; then
+            echo "Unexpected response from Supabase RPC" >&2
+            exit 1
+          fi
+
+          echo "version_code=$VERSION_CODE" >> "$GITHUB_OUTPUT"
+          echo "version_name=$VERSION_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Write version.properties
+        run: |
+          {
+            echo "VERSION_CODE=${{ steps.bump.outputs.version_code }}"
+            echo "VERSION_NAME=${{ steps.bump.outputs.version_name }}"
+          } > version.properties
+
+      - name: Commit version.properties
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add version.properties
+          git diff --cached --quiet || git commit -m "chore: bump version to ${{ steps.bump.outputs.version_name }} (${{ steps.bump.outputs.version_code }})"
+          git push
