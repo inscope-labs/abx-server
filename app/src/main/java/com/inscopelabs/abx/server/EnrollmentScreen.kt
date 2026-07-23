@@ -228,17 +228,6 @@ fun EnrollmentScreen(
     // Live session ticker
     LaunchedEffect(sessionState) {
         ttlRemaining = sessionManager.getSessionTtl()
-        if (sessionState is SessionState.ACTIVE) {
-            while (true) {
-                delay(1000L)
-                val nextTtl = sessionManager.decrementTtl(1)
-                ttlRemaining = nextTtl
-                if (nextTtl <= 0) {
-                    sessionManager.expireSession()
-                    break
-                }
-            }
-        }
     }
 
     // Main App Bar and Adaptive Layout Container

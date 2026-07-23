@@ -23,11 +23,13 @@ class SessionManagerImpl : SessionManager {
     override fun getSessionTtl(): Int = ttlSeconds
 
     @Synchronized
-    override fun setSessionTtl(seconds: Int) {
-        if (_state.value !is SessionState.ACTIVE) {
-            defaultTtlSeconds = seconds
+    override fun setSessionTtl(seconds: Int): Boolean {
+        if (_state.value is SessionState.ACTIVE) {
+            return false
         }
+        defaultTtlSeconds = seconds
         ttlSeconds = seconds
+        return true
     }
 
     @Synchronized

@@ -62,7 +62,6 @@ class WorkspaceFragment : Fragment(R.layout.fragment_workspace) {
     private lateinit var sessionManager: SessionManager
     private var currentSessionState: SessionState = SessionState.INACTIVE
     private var ttlRemaining = 0
-    private var timerJob: Job? = null
     private var isHardwareBacked = false
     private var isStrongBoxBacked = false
     private var fingerprint: String = ""
@@ -230,28 +229,10 @@ class WorkspaceFragment : Fragment(R.layout.fragment_workspace) {
                 currentSessionState = state
                 if (state is SessionState.ACTIVE) {
                     ttlRemaining = sessionManager.getSessionTtl()
-                    startTimer()
                 } else {
-                    timerJob?.cancel()
                     ttlRemaining = 0
                 }
                 refreshHomeTab()
-            }
-        }
-    }
-
-    private fun startTimer() {
-        timerJob?.cancel()
-        timerJob = viewLifecycleOwner.lifecycleScope.launch {
-            while (currentSessionState is SessionState.ACTIVE) {
-                delay(1000L)
-                val nextTtl = sessionManager.decrementTtl(1)
-                ttlRemaining = nextTtl
-                refreshHomeTab()
-                if (nextTtl <= 0) {
-                    sessionManager.expireSession()
-                    break
-                }
             }
         }
     }

@@ -104,7 +104,6 @@ class ServerFragment : Fragment(R.layout.fragment_server) {
     private var gatewayPairedStatus = "Not Paired (Local Mode Only)"
     private var currentSessionState: SessionState = SessionState.INACTIVE
     private var ttlRemaining = 0
-    private var timerJob: Job? = null
 
     // Container views
     private lateinit var containerConnect: LinearLayout
@@ -274,28 +273,10 @@ class ServerFragment : Fragment(R.layout.fragment_server) {
                 currentSessionState = state
                 if (state is SessionState.ACTIVE) {
                     ttlRemaining = sessionManager.getSessionTtl()
-                    startTimer()
                 } else {
-                    timerJob?.cancel()
                     ttlRemaining = 0
                 }
                 refreshSessionViews()
-            }
-        }
-    }
-
-    private fun startTimer() {
-        timerJob?.cancel()
-        timerJob = viewLifecycleOwner.lifecycleScope.launch {
-            while (currentSessionState is SessionState.ACTIVE) {
-                delay(1000L)
-                val nextTtl = sessionManager.decrementTtl(1)
-                ttlRemaining = nextTtl
-                refreshSessionViews()
-                if (nextTtl <= 0) {
-                    sessionManager.expireSession()
-                    break
-                }
             }
         }
     }

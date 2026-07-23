@@ -119,20 +119,6 @@ class TunnelManagerImpl(
             // Start connection monitoring
             startConnectionMonitoring()
 
-            // Enqueue unique WorkManager TTL check
-            try {
-                val workRequest = androidx.work.OneTimeWorkRequestBuilder<TtlCheckWorker>()
-                    .addTag("TTL_CHECK")
-                    .build()
-                androidx.work.WorkManager.getInstance(context).enqueueUniqueWork(
-                    "TTL_CHECK",
-                    androidx.work.ExistingWorkPolicy.REPLACE,
-                    workRequest
-                )
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
             return true
         } else {
             _stateFlow.value = TunnelState.STOPPED
